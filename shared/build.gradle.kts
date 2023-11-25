@@ -11,15 +11,19 @@ plugins {
 }
 
 val buildConfigGenerator by tasks.registering(Sync::class) {
-    val properties = Properties()
-    val localProperties = File("./local.properties")
-    if (localProperties.isFile) {
-        InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
-            properties.load(reader)
-        }
-    } else error("File from not found")
+    var baseUrl = "YOUR_BASE_URL"
+    try {
+        val properties = Properties()
+        val localProperties = File("./local.properties")
+        if (localProperties.isFile) {
+            InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
+                properties.load(reader)
+            }
+        } else error("File from not found")
+        baseUrl = properties.getProperty("BASE_URL")
+    } catch (ignore: Exception) {
 
-    val baseUrl = properties.getProperty("BASE_URL")
+    }
 
     from(
         resources.text.fromString(
@@ -27,7 +31,7 @@ val buildConfigGenerator by tasks.registering(Sync::class) {
         |package com.helios.kmptranslator
         |
         |object BuildKonfig {
-        |  const val BASE_URL = $baseUrl
+        |  const val BASE_URL = "$baseUrl"
         |}
         |
       """.trimMargin()

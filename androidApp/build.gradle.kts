@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.kotlinSerialization)
 }
 
 android {
@@ -40,9 +43,26 @@ android {
 
 dependencies {
     implementation(projects.shared)
+
+    // Compose
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
+
+    // Hilt
+    implementation(libs.hiltAndroid)
+    kapt(libs.hiltAndroidCompiler)
+    kapt(libs.hiltCompiler)
+    implementation(libs.hiltNavigationCompose)
+
+    // Coil
+    implementation(libs.coilCompose)
+
+    // Ktor
+    implementation(libs.ktor.android)
+
+    kaptAndroidTest(libs.hiltAndroidCompiler)
     debugImplementation(libs.compose.ui.tooling)
+    androidTestImplementation(libs.hiltTesting)
 }

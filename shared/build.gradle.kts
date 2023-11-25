@@ -1,9 +1,43 @@
+import java.io.FileInputStream
+import java.io.InputStreamReader
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.kotlinSerialization)
+}
+
+val buildConfigGenerator by tasks.registering(Sync::class) {
+    val properties = Properties()
+    val localProperties = File("./local.properties")
+    if (localProperties.isFile) {
+        InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
+            properties.load(reader)
+        }
+    } else error("File from not found")
+
+    val baseUrl = properties.getProperty("BASE_URL")
+
+    from(
+        resources.text.fromString(
+            """
+        |package com.helios.kmptranslator
+        |
+        |object BuildKonfig {
+        |  const val BASE_URL = $baseUrl
+        |}
+        |
+      """.trimMargin()
+        )
+    ) {
+        rename { "BuildKonfig.kt" } // set the file name
+        into("com/helios/kmptranslator") // change the directory to match the package
+    }
+
+    into(layout.buildDirectory.dir("generated-src/kotlin/"))
 }
 
 kotlin {
@@ -29,9 +63,12 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         val commonMain by getting {
+            kotlin.srcDir(
+                buildConfigGenerator.map { it.destinationDir }
+            )
             dependencies {
                 implementation(libs.sqlDelightRuntime)
                 implementation(libs.sqlDelightCoroutinesExtensions)

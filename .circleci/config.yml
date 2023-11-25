@@ -12,15 +12,19 @@ jobs:
       resource-class: large
     steps:
       - checkout
+      - android/restore-build-cache
+      - android/restore-gradle-cache
       - run:
           name: Set Up
           command: |
             ./gradlew wrapper
-      - android/restore-build-cache
-      - android/restore-gradle-cache
       - run:
           name: Run Android tests
           command: ./gradlew androidApp:testDebugUnitTest
+      - run:
+          name: Android App Assemble builds
+          command: |
+            ./gradlew androidApp:assembleDebug
       - android/save-gradle-cache
       - android/save-build-cache
       - store_artifacts:
@@ -46,6 +50,10 @@ jobs:
           command: |
             cd iosApp
             pod install
+      - run:
+          name: Install Fastlane
+          command: |
+            gem install fastlane
       - run:
           name: Fastlane Tests
           command: |

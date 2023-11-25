@@ -1,0 +1,67 @@
+version: 2.1
+
+orbs:
+  gradle: circleci/gradle@2.2.0
+  android: circleci/android@2.1.2
+
+jobs:
+  build-android:
+    executor:
+      name: android/android-machine
+      tag: 2023.05.1
+      resource-class: large
+    steps:
+      - checkout
+      - android/restore-build-cache
+      - android/restore-gradle-cache
+      - run:
+          name: Set Up
+          command: |
+            ./gradlew wrapper
+      - run:
+          name: Run Android tests
+          command: ./gradlew androidApp:testDebugUnitTest
+      - run:
+          name: Android App Assemble builds
+          command: |
+            ./gradlew androidApp:assembleDebug
+      - android/save-gradle-cache
+      - android/save-build-cache
+      - store_artifacts:
+          path: androidApp/build/outputs/apk/debug
+  build-ios:
+    macos:
+      xcode: 15.1.0
+    steps:
+      - checkout
+      - run:
+          name: Allow proper XCode dependency resolution
+          command: |
+            sudo defaults write com.apple.dt.Xcode IDEPackageSupportUseBuiltinSCM YES
+            rm ~/.ssh/id_rsa || true
+            for ip in $(dig @8.8.8.8 bitbucket.org +short); do ssh-keyscan bitbucket.org,$ip; ssh-keyscan $ip; done 2>/dev/null >> ~/.ssh/known_hosts || true
+            for ip in $(dig @8.8.8.8 github.com +short); do ssh-keyscan github.com,$ip; ssh-keyscan $ip; done 2>/dev/null >> ~/.ssh/known_hosts || true
+      - run:
+          name: Generate Dummy Framework
+          command: |
+            ./gradlew :shared:generateDummyFramework
+      - run:
+          name: Install Pod dependencies
+          command: |
+            cd iosApp
+            pod install
+      - run:
+          name: Install Fastlane
+          command: |
+            gem install fastlane
+      - run:
+          name: Fastlane Tests
+          command: |
+            cd iosApp
+            fastlane scan
+
+workflows:
+  build-all:
+    jobs:
+      - build-android
+      - build-ios

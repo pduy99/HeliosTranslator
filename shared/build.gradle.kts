@@ -127,3 +127,10 @@ android {
         minSdk = 25
     }
 }
+
+sqldelight {
+    database("TranslateDatabase") {
+        packageName = "com.helios.kmptranslator.database"
+        sourceFolders = listOf("sqldelight")
+    }
+}

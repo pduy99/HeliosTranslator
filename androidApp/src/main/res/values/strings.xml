@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="close">close language picker</string>
+    <string name="open">Open language picker</string>
+    <string name="swap_languages">Swap languages</string>
+</resources>

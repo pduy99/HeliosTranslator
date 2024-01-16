@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="close">close language picker</string>
+    <string name="close_language_picker">close language picker</string>
     <string name="open">Open language picker</string>
     <string name="swap_languages">Swap languages</string>
+    <string name="enter_a_text_to_translate">Enter a text to translate</string>
+    <string name="translate">Translate</string>
+    <string name="copy">Copy</string>
+    <string name="close_translated_text_field">Close translated textfield</string>
+    <string name="play_loud">Play loud</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
 </resources>

@@ -25,5 +25,5 @@ val darkColors = darkColorScheme(
     background = DarkGrey,
     onPrimary = Color.White,
     onBackground = Color.White,
-    onSurface = DarkGrey,
+    onSurface = Color.White,
 )

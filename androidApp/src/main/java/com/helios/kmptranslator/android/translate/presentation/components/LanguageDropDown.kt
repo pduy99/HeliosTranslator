@@ -63,7 +63,7 @@ fun LanguageDropDown(
             Icon(
                 imageVector = if (isOpen) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
                 contentDescription = if (isOpen) {
-                    stringResource(id = R.string.close)
+                    stringResource(id = R.string.close_language_picker)
                 } else {
                     stringResource(id = R.string.open)
                 }

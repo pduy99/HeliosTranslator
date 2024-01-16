@@ -9,4 +9,5 @@
     <string name="close_translated_text_field">Close translated textfield</string>
     <string name="play_loud">Play loud</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="history">History</string>
 </resources>

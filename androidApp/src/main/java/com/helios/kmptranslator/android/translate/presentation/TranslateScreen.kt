@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -29,6 +30,7 @@ import com.helios.kmptranslator.android.translate.presentation.components.SwapLa
 import com.helios.kmptranslator.android.translate.presentation.components.TranslateTextField
 import com.helios.kmptranslator.android.translate.presentation.components.TranslationHistoryItem
 import com.helios.kmptranslator.android.translate.presentation.components.rememberTextToSpeech
+import com.helios.kmptranslator.translate.domain.translate.TranslateError
 import com.helios.kmptranslator.translate.presentation.TranslateEvent
 import com.helios.kmptranslator.translate.presentation.TranslateState
 import java.util.Locale
@@ -40,6 +42,22 @@ fun TranslateScreen(
     onEvent: (TranslateEvent) -> Unit,
 ) {
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = state.error) {
+        val message = when(state.error) {
+            TranslateError.SERVICE_UNAVAILABLE -> context.getString(R.string.service_unavailable)
+            TranslateError.CLIENT_ERROR -> context.getString(R.string.client_error)
+            TranslateError.SERVER_ERROR -> context.getString(R.string.server_error)
+            TranslateError.UNKNOWN_ERROR -> context.getString(R.string.unknown_error)
+            null -> null
+        }
+
+        message?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            onEvent(TranslateEvent.OnErrorSeen)
+        }
+    }
+
     Scaffold(
         floatingActionButton = {},
 

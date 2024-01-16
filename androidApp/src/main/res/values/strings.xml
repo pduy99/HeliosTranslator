@@ -10,4 +10,8 @@
     <string name="play_loud">Play loud</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="history">History</string>
+    <string name="service_unavailable">Oops, an error happened. Please try again later!</string>
+    <string name="client_error">Oops, there is a client error. Please try again later!</string>
+    <string name="server_error">Oops, there is a server error. Please try again later!</string>
+    <string name="unknown_error">Oops, there is an unknown error. Please try again later!</string>
 </resources>

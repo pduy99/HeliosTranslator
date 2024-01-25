@@ -8,20 +8,31 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.R
@@ -44,7 +55,7 @@ fun TranslateScreen(
     val context = LocalContext.current
 
     LaunchedEffect(key1 = state.error) {
-        val message = when(state.error) {
+        val message = when (state.error) {
             TranslateError.SERVICE_UNAVAILABLE -> context.getString(R.string.service_unavailable)
             TranslateError.CLIENT_ERROR -> context.getString(R.string.client_error)
             TranslateError.SERVER_ERROR -> context.getString(R.string.server_error)
@@ -59,9 +70,22 @@ fun TranslateScreen(
     }
 
     Scaffold(
-        floatingActionButton = {},
-
-        ) { paddingValues ->
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { onEvent(TranslateEvent.RecordVoice) },
+                modifier = Modifier.size(75.dp),
+                shape = RoundedCornerShape(50.dp),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.mic),
+                    contentDescription = stringResource(id = R.string.record_voice)
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

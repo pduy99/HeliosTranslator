@@ -140,6 +140,19 @@ class TranslateViewModel(
             TranslateEvent.Translate -> {
                 translate(_state.value)
             }
+
+            is TranslateEvent.SubmitVoiceResult -> {
+                _state.update {
+                    it.copy(
+                        fromText = event.voiceResult ?: it.fromText,
+                        isTranslating = if (event.voiceResult != null) false else it.isTranslating,
+                        toText = if (event.voiceResult != null) null else it.toText
+                    )
+                }
+                translate(_state.value)
+            }
+
+            else -> Unit
         }
     }
 

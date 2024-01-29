@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -12,12 +11,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.helios.kmptranslator.android.translate.presentation.AndroidTranslateViewModel
-import com.helios.kmptranslator.android.translate.presentation.TranslateScreen
+import com.helios.kmptranslator.android.translate.AndroidTranslateViewModel
+import com.helios.kmptranslator.android.translate.TranslateScreen
 import com.helios.kmptranslator.android.voicetotext.presentation.AndroidVoiceToTextViewModel
 import com.helios.kmptranslator.android.voicetotext.presentation.VoiceToTextScreen
-import com.helios.kmptranslator.translate.presentation.TranslateEvent
-import com.helios.kmptranslator.voicetotext.presentation.VoiceToTextEvent
+import com.helios.kmptranslator.translate.TranslateEvent
+import com.helios.kmptranslator.voicetotext.VoiceToTextEvent
 
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {

@@ -1,6 +1,6 @@
 package com.helios.kmptranslator.voicetotext.domain
 
-import com.helios.kmptranslator.core.domain.util.CommonStateFlow
+import com.helios.kmptranslator.core.util.CommonStateFlow
 
 interface VoiceToTextParser {
 

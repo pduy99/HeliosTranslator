@@ -39,9 +39,9 @@ import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.R
 import com.helios.kmptranslator.android.core.theme.LightBlue
 import com.helios.kmptranslator.android.voicetotext.presentation.components.VoiceRecorderDisplay
-import com.helios.kmptranslator.voicetotext.presentation.DisplayState
-import com.helios.kmptranslator.voicetotext.presentation.VoiceToTextEvent
-import com.helios.kmptranslator.voicetotext.presentation.VoiceToTextState
+import com.helios.kmptranslator.voicetotext.DisplayState
+import com.helios.kmptranslator.voicetotext.VoiceToTextEvent
+import com.helios.kmptranslator.voicetotext.VoiceToTextState
 
 @Composable
 fun VoiceToTextScreen(

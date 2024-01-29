@@ -3,8 +3,8 @@ package com.helios.kmptranslator.android.voicetotext.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.helios.kmptranslator.voicetotext.domain.VoiceToTextParser
-import com.helios.kmptranslator.voicetotext.presentation.VoiceToTextEvent
-import com.helios.kmptranslator.voicetotext.presentation.VoiceToTextViewModel
+import com.helios.kmptranslator.voicetotext.VoiceToTextEvent
+import com.helios.kmptranslator.voicetotext.VoiceToTextViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

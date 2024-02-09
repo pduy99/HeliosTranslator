@@ -1,6 +1,6 @@
 package com.helios.kmptranslator.core.presentation
 
-import com.helios.kmptranslator.core.domain.language.Language
+import com.helios.kmptranslator.core.domain.model.Language
 
 expect class UiLanguage {
 

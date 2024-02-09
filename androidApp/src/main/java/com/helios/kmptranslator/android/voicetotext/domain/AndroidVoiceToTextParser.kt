@@ -7,8 +7,8 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import com.helios.kmptranslator.android.R
-import com.helios.kmptranslator.core.domain.util.CommonStateFlow
-import com.helios.kmptranslator.core.domain.util.toCommonStateFlow
+import com.helios.kmptranslator.core.util.CommonStateFlow
+import com.helios.kmptranslator.core.util.toCommonStateFlow
 import com.helios.kmptranslator.voicetotext.domain.VoiceToTextParser
 import com.helios.kmptranslator.voicetotext.domain.VoiceToTextParserState
 import kotlinx.coroutines.flow.MutableStateFlow

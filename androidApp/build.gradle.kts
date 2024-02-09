@@ -45,6 +45,7 @@ dependencies {
     implementation(projects.shared)
 
     // Compose
+    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)

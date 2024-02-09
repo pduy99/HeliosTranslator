@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.core.theme.HeliosTranslatorTheme
-import com.helios.kmptranslator.android.translate.presentation.components.gradientSurface
+import com.helios.kmptranslator.android.translate.components.gradientSurface
 import kotlin.random.Random
 
 @Composable

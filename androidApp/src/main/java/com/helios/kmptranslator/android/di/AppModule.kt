@@ -1,14 +1,19 @@
 package com.helios.kmptranslator.android.di
 
 import android.app.Application
+import com.helios.kmptranslator.core.data.datasource.TranslateDataSource
+import com.helios.kmptranslator.core.data.datasource.TranslateHistoryDataSource
+import com.helios.kmptranslator.core.data.repository.OfflineTranslateHistoryRepository
+import com.helios.kmptranslator.core.data.repository.RemoteTranslateRepository
+import com.helios.kmptranslator.core.data.repository.TranslateHistoryRepository
+import com.helios.kmptranslator.core.data.repository.TranslateRepository
+import com.helios.kmptranslator.core.database.DatabaseDriverFactory
+import com.helios.kmptranslator.core.database.SqlDelightTranslateHistoryDataSource
+import com.helios.kmptranslator.core.domain.usecase.GetTranslateHistoryUseCase
+import com.helios.kmptranslator.core.domain.usecase.TranslateUseCase
+import com.helios.kmptranslator.core.network.HttpClientFactory
+import com.helios.kmptranslator.core.network.KtorTranslateDataSource
 import com.helios.kmptranslator.database.TranslateDatabase
-import com.helios.kmptranslator.translate.data.history.SqlDelightHistoryDataSource
-import com.helios.kmptranslator.translate.data.local.DatabaseDriverFactory
-import com.helios.kmptranslator.translate.data.remote.HttpClientFactory
-import com.helios.kmptranslator.translate.data.translate.KtorTranslateClient
-import com.helios.kmptranslator.translate.domain.history.HistoryDataSource
-import com.helios.kmptranslator.translate.domain.translate.TranslateClient
-import com.helios.kmptranslator.translate.domain.translate.TranslateUseCase
 import com.squareup.sqldelight.db.SqlDriver
 import dagger.Module
 import dagger.Provides
@@ -29,8 +34,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesTranslateClient(httpClient: HttpClient): TranslateClient {
-        return KtorTranslateClient(httpClient)
+    fun providesTranslateDataSource(httpClient: HttpClient): TranslateDataSource {
+        return KtorTranslateDataSource(httpClient)
     }
 
     @Provides
@@ -41,16 +46,37 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesHistoryDataSource(sqlDriver: SqlDriver): HistoryDataSource {
-        return SqlDelightHistoryDataSource(TranslateDatabase(driver = sqlDriver))
+    fun providesHistoryDataSource(sqlDriver: SqlDriver): TranslateHistoryDataSource {
+        return SqlDelightTranslateHistoryDataSource(TranslateDatabase(driver = sqlDriver))
     }
 
     @Provides
     @Singleton
     fun providesTranslateUseCase(
-        translateClient: TranslateClient,
-        dataSource: HistoryDataSource
+        translateRepository: TranslateRepository,
+        translateHistoryRepository: TranslateHistoryRepository
     ): TranslateUseCase {
-        return TranslateUseCase(translateClient, dataSource)
+        return TranslateUseCase(translateRepository, translateHistoryRepository)
+    }
+
+
+    @Provides
+    @Singleton
+    fun providesTranslateHistoryRepository(
+        translateHistoryDataSource: TranslateHistoryDataSource
+    ): TranslateHistoryRepository {
+        return OfflineTranslateHistoryRepository(translateHistoryDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetTranslateHistoryUseCase(translateHistoryRepository: TranslateHistoryRepository): GetTranslateHistoryUseCase {
+        return GetTranslateHistoryUseCase(translateHistoryRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesTranslateRepository(translateDataSource: TranslateDataSource): TranslateRepository {
+        return RemoteTranslateRepository(translateDataSource)
     }
 }

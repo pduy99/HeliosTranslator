@@ -1,13 +1,11 @@
 package com.helios.kmptranslator.translate
 
-import com.helios.kmptranslator.core.data.datasource.TranslateHistoryDataSource
-import com.helios.kmptranslator.core.domain.usecase.TranslateUseCase
-import com.helios.kmptranslator.core.util.Resource
-import com.helios.kmptranslator.core.util.toCommonStateFlow
-import com.helios.kmptranslator.core.presentation.UiLanguage
-import com.helios.kmptranslator.core.data.error.TranslateException
 import com.helios.kmptranslator.core.domain.usecase.GetTranslateHistoryUseCase
+import com.helios.kmptranslator.core.domain.usecase.TranslateUseCase
+import com.helios.kmptranslator.core.domain.util.Result
 import com.helios.kmptranslator.core.presentation.UiHistoryItem
+import com.helios.kmptranslator.core.presentation.UiLanguage
+import com.helios.kmptranslator.core.util.toCommonStateFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -173,7 +171,7 @@ class TranslateViewModel(
                 toLanguage = state.toLanguage.language
             )
             when (result) {
-                is Resource.Success -> {
+                is Result.Success -> {
                     _state.update {
                         it.copy(
                             isTranslating = false,
@@ -182,11 +180,11 @@ class TranslateViewModel(
                     }
                 }
 
-                is Resource.Error -> {
+                is Result.Failure -> {
                     _state.update {
                         it.copy(
                             isTranslating = false,
-                            error = (result.throwable as? TranslateException)?.error
+                            error = result.error
                         )
                     }
                 }

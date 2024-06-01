@@ -19,13 +19,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition.Companion.Center
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -35,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.R
 import com.helios.kmptranslator.android.core.theme.LightBlue
@@ -207,4 +213,95 @@ fun VoiceToTextScreen(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun VoiceToTextBottomSheet(
+    state: VoiceToTextState,
+    languageCode: String,
+    onResult: (String) -> Unit,
+    onEvent: (VoiceToTextEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val recordAudioPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        onEvent(
+            VoiceToTextEvent.PermissionResult(
+                isGranted,
+                !isGranted && (context as ComponentActivity).shouldShowRequestPermissionRationale(
+                    android.Manifest.permission.RECORD_AUDIO
+                )
+            )
+        )
+        if (isGranted) {
+            onEvent(VoiceToTextEvent.ToggleRecording(languageCode))
+        }
+    }
+
+    LaunchedEffect(recordAudioPermissionLauncher) {
+        recordAudioPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+    }
+
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(initialValue = SheetValue.Expanded)
+    )
+
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
+        sheetContent = {
+            Text(
+                text = "Say something",
+                modifier = Modifier.fillMaxWidth(),
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center
+            )
+            AnimatedContent(targetState = state.displayState, label = "") { displayState ->
+                when (displayState) {
+                    DisplayState.WAITING_TO_TALK,
+                    DisplayState.SPEAKING -> {
+                        VoiceRecorderDisplay(
+                            powerRatios = state.powerRatios,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                        )
+                    }
+
+                    DisplayState.DISPLAYING_RESULTS -> {
+                        Text(
+                            text = state.spokenText,
+                            style = MaterialTheme.typography.headlineMedium,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    DisplayState.ERROR -> {
+                        Text(
+                            text = state.recordError ?: "Unknown error",
+                            style = MaterialTheme.typography.headlineMedium,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+
+                    else -> Unit
+                }
+            }
+        }) {
+
+    }
+}
+
+@Preview
+@Composable
+fun VoiceToTextPreview() {
+    VoiceToTextBottomSheet(
+        state = VoiceToTextState(displayState = DisplayState.SPEAKING, powerRatios = listOf(0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f)),
+        languageCode = "en-US",
+        onResult = {},
+        onEvent = {}
+    )
 }

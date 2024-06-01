@@ -135,3 +135,7 @@ sqldelight {
         sourceFolders = listOf("sqldelight")
     }
 }
+
+tasks.named("build"){
+    dependsOn(buildConfigGenerator)
+}

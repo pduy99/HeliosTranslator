@@ -3,9 +3,9 @@ import java.io.InputStreamReader
 import java.util.Properties
 
 plugins {
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinCocoapods)
-    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.kotlinSerialization)
 }
@@ -119,6 +119,7 @@ kotlin {
             iosSimulatorArm64Test.dependsOn(this)
         }
     }
+    task("testClasses")
 }
 
 android {

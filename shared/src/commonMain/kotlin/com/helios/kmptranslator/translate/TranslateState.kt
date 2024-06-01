@@ -1,6 +1,5 @@
 package com.helios.kmptranslator.translate
 
-import androidx.compose.runtime.Stable
 import com.helios.kmptranslator.core.presentation.UiLanguage
 import com.helios.kmptranslator.core.presentation.UiHistoryItem
 

@@ -1,7 +1,8 @@
 package com.helios.kmptranslator.core.data.repository
 
 import com.helios.kmptranslator.core.data.datasource.TranslateDataSource
-
+import com.helios.kmptranslator.core.domain.util.Result
+import com.helios.kmptranslator.translate.TranslateError
 
 class RemoteTranslateRepository(
     private val translateDataSource: TranslateDataSource
@@ -11,7 +12,7 @@ class RemoteTranslateRepository(
         fromLanguageCode: String,
         toLanguageCode: String,
         fromText: String
-    ): String {
+    ): Result<String, TranslateError> {
         return translateDataSource.translate(fromLanguageCode, toLanguageCode, fromText)
     }
 }

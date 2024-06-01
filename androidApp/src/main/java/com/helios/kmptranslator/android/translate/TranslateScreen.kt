@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -32,12 +31,13 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.R
+import com.helios.kmptranslator.android.core.util.asString
 import com.helios.kmptranslator.android.translate.components.LanguageDropDown
 import com.helios.kmptranslator.android.translate.components.SwapLanguagesButton
 import com.helios.kmptranslator.android.translate.components.TranslateTextField
 import com.helios.kmptranslator.android.translate.components.TranslationHistoryItem
 import com.helios.kmptranslator.android.translate.components.rememberTextToSpeech
-import com.helios.kmptranslator.core.data.error.TranslateError
+import com.helios.kmptranslator.android.translate.presentation.asUiText
 import com.helios.kmptranslator.translate.TranslateEvent
 import com.helios.kmptranslator.translate.TranslateState
 import java.util.Locale
@@ -48,18 +48,12 @@ fun TranslateScreen(
     onEvent: (TranslateEvent) -> Unit,
 ) {
     val context = LocalContext.current
+    val fromLanguage = state.fromLanguage
+    val toLanguage = state.toLanguage
 
     LaunchedEffect(key1 = state.error) {
-        val message = when (state.error) {
-            TranslateError.SERVICE_UNAVAILABLE -> context.getString(R.string.service_unavailable)
-            TranslateError.CLIENT_ERROR -> context.getString(R.string.client_error)
-            TranslateError.SERVER_ERROR -> context.getString(R.string.server_error)
-            TranslateError.UNKNOWN_ERROR -> context.getString(R.string.unknown_error)
-            null -> null
-        }
-
-        message?.let {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        state.error?.let {
+            Toast.makeText(context, it.asUiText().asString(context), Toast.LENGTH_SHORT).show()
             onEvent(TranslateEvent.OnErrorSeen)
         }
     }
@@ -96,7 +90,7 @@ fun TranslateScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     LanguageDropDown(
-                        language = state.fromLanguage,
+                        language = fromLanguage,
                         isOpen = state.isChoosingFromLanguage,
                         onClick = { onEvent(TranslateEvent.OpenFromLanguageDropDown) },
                         onDismiss = { onEvent(TranslateEvent.StopChoosingLanguage) },
@@ -108,7 +102,7 @@ fun TranslateScreen(
                     SwapLanguagesButton(onClick = { onEvent(TranslateEvent.SwapLanguages) })
                     Spacer(modifier = Modifier.weight(1f))
                     LanguageDropDown(
-                        language = state.toLanguage,
+                        language = toLanguage,
                         isOpen = state.isChoosingToLanguage,
                         onClick = { onEvent(TranslateEvent.OpenToLanguageDropDown) },
                         onDismiss = { onEvent(TranslateEvent.StopChoosingLanguage) },
@@ -126,8 +120,8 @@ fun TranslateScreen(
                     fromText = state.fromText,
                     toText = state.toText,
                     isTranslating = state.isTranslating,
-                    fromLanguage = state.fromLanguage,
-                    toLanguage = state.toLanguage,
+                    fromLanguage = fromLanguage,
+                    toLanguage = toLanguage,
                     onTranslateClick = {
                         keyboardController?.hide()
                         onEvent(TranslateEvent.Translate)
@@ -147,7 +141,7 @@ fun TranslateScreen(
                     },
                     onCloseClick = { onEvent(TranslateEvent.CloseTranslation) },
                     onSpeakerClick = {
-                        tts.language = state.toLanguage.toLocale() ?: Locale.ENGLISH
+                        tts.language = toLanguage.toLocale() ?: Locale.ENGLISH
                         tts.speak(
                             state.toText,
                             TextToSpeech.QUEUE_FLUSH,

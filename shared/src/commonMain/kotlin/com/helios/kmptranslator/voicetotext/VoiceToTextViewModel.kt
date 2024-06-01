@@ -40,6 +40,11 @@ class VoiceToTextViewModel(
                         it.copy(powerRatios = it.powerRatios + parser.state.value.powerRatio)
                     }
                 }
+                if (state.value.displayState == DisplayState.WAITING_TO_TALK) {
+                    _state.update {
+                        it.copy(powerRatios = it.powerRatios + 0.1f)
+                    }
+                }
                 delay(50L)
             }
         }

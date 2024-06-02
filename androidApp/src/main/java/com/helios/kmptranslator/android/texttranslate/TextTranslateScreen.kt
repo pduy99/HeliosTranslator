@@ -22,8 +22,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.R
+import com.helios.kmptranslator.android.core.theme.HeliosTranslatorTheme
 import com.helios.kmptranslator.android.core.util.asString
 import com.helios.kmptranslator.android.texttranslate.components.LanguageDropDown
 import com.helios.kmptranslator.android.texttranslate.components.SwapLanguagesButton
@@ -31,6 +33,7 @@ import com.helios.kmptranslator.android.texttranslate.components.TranslateTextFi
 import com.helios.kmptranslator.android.texttranslate.components.TranslationHistoryItem
 import com.helios.kmptranslator.android.texttranslate.components.rememberTextToSpeech
 import com.helios.kmptranslator.android.texttranslate.presentation.asUiText
+import com.helios.kmptranslator.core.presentation.UiLanguage
 import com.helios.kmptranslator.translate.TranslateEvent
 import com.helios.kmptranslator.translate.TranslateState
 import java.util.Locale
@@ -92,7 +95,6 @@ fun TextTranslateScreen(
             item {
                 val clipboardManager = LocalClipboardManager.current
                 val keyboardController = LocalSoftwareKeyboardController.current
-                val tts = rememberTextToSpeech()
                 TranslateTextField(
                     fromText = state.fromText,
                     toText = state.toText,
@@ -118,13 +120,7 @@ fun TextTranslateScreen(
                     },
                     onCloseClick = { onEvent(TranslateEvent.CloseTranslation) },
                     onSpeakerClick = {
-                        tts.language = toLanguage.toLocale() ?: Locale.ENGLISH
-                        tts.speak(
-                            state.toText,
-                            TextToSpeech.QUEUE_FLUSH,
-                            null,
-                            null
-                        )
+                        onEvent(TranslateEvent.ReadAloudText)
                     },
                     onTextFieldClick = { onEvent(TranslateEvent.EditTranslation) },
                     modifier = Modifier.fillMaxWidth()
@@ -150,5 +146,26 @@ fun TextTranslateScreen(
 
         }
 
+    }
+}
+
+@Preview
+@Composable
+fun TextTranslateScreenPreview() {
+    HeliosTranslatorTheme(darkTheme = true) {
+        TextTranslateScreen(
+            state = TranslateState(
+                fromText = "Hello",
+                toText = "お問い合わせ",
+                isTranslating = false,
+                fromLanguage = UiLanguage.byCode("en"),
+                toLanguage = UiLanguage.byCode("ja"),
+                isChoosingFromLanguage = false,
+                isChoosingToLanguage = false,
+                error = null,
+                history = emptyList()
+            ),
+            onEvent = {}
+        )
     }
 }

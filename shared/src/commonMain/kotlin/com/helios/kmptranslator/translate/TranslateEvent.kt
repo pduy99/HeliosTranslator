@@ -30,4 +30,6 @@ sealed class TranslateEvent {
     data object EditTranslation : TranslateEvent()
 
     data object OnErrorSeen : TranslateEvent()
+
+    data object ReadAloudText : TranslateEvent()
 }

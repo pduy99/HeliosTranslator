@@ -1,6 +1,7 @@
 package com.helios.kmptranslator.android.texttranslate.components
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,10 +35,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.R
+import com.helios.kmptranslator.android.core.theme.HeliosTranslatorTheme
 import com.helios.kmptranslator.android.core.theme.LightBlue
 import com.helios.kmptranslator.core.presentation.UiLanguage
 
@@ -60,7 +61,7 @@ fun TranslateTextField(
         modifier = modifier
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .clip(RoundedCornerShape(20.dp))
-            .gradientSurface()
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .clickable { onTextFieldClick() }
             .padding(16.dp)
     ) {
@@ -169,16 +170,16 @@ private fun IdleTranslateTextField(
         BasicTextField(
             value = fromText,
             onValueChange = onTextChanged,
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
             modifier = Modifier
                 .fillMaxSize()
                 .onFocusChanged { isFocused = it.isFocused },
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface)
+            textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface)
         )
         if (fromText.isEmpty() && !isFocused) {
             Text(
                 text = stringResource(id = R.string.enter_a_text_to_translate),
-                color = LightBlue
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         ProgressButton(
@@ -193,19 +194,21 @@ private fun IdleTranslateTextField(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun TranslateTextFieldPreview() {
-    TranslateTextField(
-        fromText = "",
-        toText = null,
-        isTranslating = false,
-        fromLanguage = UiLanguage.allLanguages[0],
-        toLanguage = UiLanguage.allLanguages[1],
-        onTranslateClick = { /*TODO*/ },
-        onTextChanged = {},
-        onCopyClick = {},
-        onCloseClick = { },
-        onSpeakerClick = { },
-        onTextFieldClick = { })
+    HeliosTranslatorTheme(true) {
+        TranslateTextField(
+            fromText = "",
+            toText = null,
+            isTranslating = false,
+            fromLanguage = UiLanguage.allLanguages[0],
+            toLanguage = UiLanguage.allLanguages[1],
+            onTranslateClick = { /*TODO*/ },
+            onTextChanged = {},
+            onCopyClick = {},
+            onCloseClick = { },
+            onSpeakerClick = { },
+            onTextFieldClick = { })
+    }
 }

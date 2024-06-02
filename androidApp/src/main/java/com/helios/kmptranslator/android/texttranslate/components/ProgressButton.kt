@@ -40,8 +40,10 @@ fun ProgressButton(
                 )
             } else {
                 Text(
-                    text = text.uppercase(),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    text = text,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
         }

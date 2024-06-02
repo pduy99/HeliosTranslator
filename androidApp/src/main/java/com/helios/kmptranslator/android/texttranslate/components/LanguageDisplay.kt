@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.helios.kmptranslator.android.core.components.SmallLanguageIcon
 import com.helios.kmptranslator.android.core.theme.LightBlue
 import com.helios.kmptranslator.core.presentation.UiLanguage
 

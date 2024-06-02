@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.core.theme.HeliosTranslatorTheme
-import com.helios.kmptranslator.android.texttranslate.components.gradientSurface
 import kotlin.random.Random
 
 @Composable
@@ -31,7 +30,6 @@ fun VoiceRecorderDisplay(
         modifier = modifier
             .shadow(elevation = 4.dp, shape = RoundedCornerShape(20.dp))
             .clip(RoundedCornerShape(20.dp))
-            .gradientSurface()
             .padding(horizontal = 32.dp, vertical = 8.dp)
             .drawBehind {
                 val powerRatiWidth = 3.dp.toPx()

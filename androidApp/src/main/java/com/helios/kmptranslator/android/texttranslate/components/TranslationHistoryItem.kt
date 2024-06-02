@@ -1,5 +1,6 @@
 package com.helios.kmptranslator.android.texttranslate.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,9 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.helios.kmptranslator.android.core.theme.LightBlue
+import com.helios.kmptranslator.android.core.components.SmallLanguageIcon
+import com.helios.kmptranslator.android.core.theme.HeliosTranslatorTheme
 import com.helios.kmptranslator.core.presentation.UiHistoryItem
+import com.helios.kmptranslator.core.presentation.UiLanguage
 
 @Composable
 fun TranslationHistoryItem(
@@ -34,7 +38,7 @@ fun TranslationHistoryItem(
                 shape = RoundedCornerShape(20.dp)
             )
             .clip(RoundedCornerShape(20.dp))
-            .gradientSurface()
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .clickable(onClick = onClick)
             .padding(16.dp)
     ) {
@@ -47,7 +51,7 @@ fun TranslationHistoryItem(
             Text(
                 text = historyItem.fromText,
                 style = MaterialTheme.typography.bodyMedium,
-                color = LightBlue,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -68,4 +72,22 @@ fun TranslationHistoryItem(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun TranslationHistoryItemPreview() {
+    HeliosTranslatorTheme(darkTheme = true) {
+        TranslationHistoryItem(
+            historyItem = UiHistoryItem(
+                fromLanguage = UiLanguage.byCode("en"),
+                toLanguage = UiLanguage.byCode("ja"),
+                fromText = "Hello, world!",
+                toText = "¡Hola, mundo!",
+                id = 1
+            ),
+            onClick = {}
+        )
+    }
+
 }

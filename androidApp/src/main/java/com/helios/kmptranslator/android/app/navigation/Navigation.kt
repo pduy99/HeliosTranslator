@@ -59,7 +59,7 @@ fun TranslateAppNavigationSuiteScaffold(
             navigationBarContentColor = NavigationDefaults.navigationContentColor(),
             navigationRailContainerColor = Color.Transparent,
         ),
-        modifier = modifier,
+        modifier = modifier
     ) {
         content()
     }
@@ -97,8 +97,8 @@ object NavigationDefaults {
     fun navigationContentColor() = MaterialTheme.colorScheme.onSurfaceVariant
 
     @Composable
-    fun navigationSelectedItemColor() = MaterialTheme.colorScheme.onPrimaryContainer
+    fun navigationSelectedItemColor() = MaterialTheme.colorScheme.onSecondaryContainer
 
     @Composable
-    fun navigationIndicatorColor() = MaterialTheme.colorScheme.primaryContainer
+    fun navigationIndicatorColor() = Color.Transparent
 }

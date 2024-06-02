@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.texttranslate.components
+package com.helios.kmptranslator.android.core.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size

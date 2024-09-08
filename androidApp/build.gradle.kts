@@ -65,6 +65,9 @@ dependencies {
     // Ktor
     implementation(libs.ktor.android)
 
+    // Lottie
+    implementation(libs.lottieCompose)
+
     kspAndroidTest(libs.hiltAndroidCompiler)
     debugImplementation(libs.compose.ui.tooling)
     androidTestImplementation(libs.hiltTesting)

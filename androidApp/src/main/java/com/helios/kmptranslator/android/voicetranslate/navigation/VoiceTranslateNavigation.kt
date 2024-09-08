@@ -9,6 +9,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.helios.kmptranslator.android.voicetranslate.presentation.AndroidVoiceToTextViewModel
 import com.helios.kmptranslator.android.voicetranslate.presentation.VoiceTranslateScreen
+import com.helios.kmptranslator.core.presentation.UiLanguage
 import com.helios.kmptranslator.voicetotext.VoiceToTextEvent
 
 const val VOICE_TRANSLATE_ROUTE = "voice_translate"
@@ -23,23 +24,11 @@ fun NavGraphBuilder.voiceTranslateScreen() {
     ) {
         val viewModel = hiltViewModel<AndroidVoiceToTextViewModel>()
         val state by viewModel.state.collectAsState()
-        val languageCode = it.arguments?.getString("languageCode") ?: "en"
+
         VoiceTranslateScreen(
-            state = state,
-            languageCode = languageCode,
-            onResult = {
-
-            },
-            onEvent = { event ->
-                when (event) {
-                    is VoiceToTextEvent.Close -> {
-
-                    }
-
-                    else -> viewModel.onEvent(event)
-                }
-            }
+            fromLanguage = UiLanguage.byCode("en"),
+            toLanguage = UiLanguage.byCode("ja"),
+            onEvent = { }
         )
     }
-
 }

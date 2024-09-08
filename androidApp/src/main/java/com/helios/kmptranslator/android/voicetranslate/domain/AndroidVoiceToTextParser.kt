@@ -28,7 +28,7 @@ class AndroidVoiceToTextParser(
     override fun startListening(languageCode: String) {
         _state.update { VoiceToTextParserState() }
 
-        if (SpeechRecognizer.isRecognitionAvailable(app)) {
+        if (!SpeechRecognizer.isRecognitionAvailable(app)) {
             _state.update {
                 it.copy(
                     error = app.getString(R.string.recognition_not_available)
@@ -43,6 +43,7 @@ class AndroidVoiceToTextParser(
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
             )
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageCode)
+            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
         }
 
         recognizer.setRecognitionListener(this)
@@ -107,7 +108,13 @@ class AndroidVoiceToTextParser(
             }
     }
 
-    override fun onPartialResults(partialResults: Bundle?) = Unit
+    override fun onPartialResults(partialResults: Bundle?) {
+        partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+            ?.getOrNull(0)
+            ?.let { text ->
+                _state.update { it.copy(result = text) }
+            }
+    }
 
     override fun onEvent(eventType: Int, params: Bundle?) = Unit
 

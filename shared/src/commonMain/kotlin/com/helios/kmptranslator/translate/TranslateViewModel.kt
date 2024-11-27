@@ -161,6 +161,10 @@ class TranslateViewModel(
                         onComplete = {})
                 }
             }
+
+            TranslateEvent.OpenHistory -> {
+
+            }
         }
     }
 

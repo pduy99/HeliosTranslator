@@ -26,10 +26,10 @@ import androidx.navigation.navOptions
 import com.helios.kmptranslator.android.app.navigation.AppNavHost
 import com.helios.kmptranslator.android.app.navigation.TopLevelDestination
 import com.helios.kmptranslator.android.app.navigation.TranslateAppNavigationSuiteScaffold
-import com.helios.kmptranslator.android.scantranslate.navigation.navigateToScanTranslate
-import com.helios.kmptranslator.android.settings.navigation.navigateToSettings
-import com.helios.kmptranslator.android.texttranslate.navigation.navigateToTextTranslate
-import com.helios.kmptranslator.android.voicetranslate.navigation.navigateToVoiceTranslate
+import com.helios.kmptranslator.android.features.scantranslate.navigation.navigateToScanTranslate
+import com.helios.kmptranslator.android.features.settings.navigation.navigateToSettings
+import com.helios.kmptranslator.android.features.texttranslate.navigation.navigateToTextTranslate
+import com.helios.kmptranslator.android.features.voicetranslate.navigation.navigateToVoiceTranslate
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -59,11 +59,22 @@ fun TranslateApp(
                             // Restore state when reselecting a previously selected item
                             restoreState = true
                         }
-                        when(destination) {
-                            TopLevelDestination.TEXT_TRANSLATE -> navController.navigateToTextTranslate(topLevelNavOptions)
-                            TopLevelDestination.VOICE_TRANSLATE -> navController.navigateToVoiceTranslate(topLevelNavOptions)
-                            TopLevelDestination.SCAN_TRANSLATE -> navController.navigateToScanTranslate(topLevelNavOptions)
-                            TopLevelDestination.SETTINGS -> navController.navigateToSettings(topLevelNavOptions)
+                        when (destination) {
+                            TopLevelDestination.TEXT_TRANSLATE -> navController.navigateToTextTranslate(
+                                topLevelNavOptions
+                            )
+
+                            TopLevelDestination.VOICE_TRANSLATE -> navController.navigateToVoiceTranslate(
+                                topLevelNavOptions
+                            )
+
+                            TopLevelDestination.SCAN_TRANSLATE -> navController.navigateToScanTranslate(
+                                topLevelNavOptions
+                            )
+
+                            TopLevelDestination.SETTINGS -> navController.navigateToSettings(
+                                topLevelNavOptions
+                            )
                         }
                     },
                     icon = { Icon(destination.unselectedIcon, contentDescription = null) },
@@ -73,7 +84,7 @@ fun TranslateApp(
                 )
             }
         },
-        windowAdaptiveInfo = windowAdaptiveInfo
+        windowAdaptiveInfo = windowAdaptiveInfo,
     ) {
         Scaffold(
             modifier = Modifier.semantics { testTagsAsResourceId = true },
@@ -81,7 +92,11 @@ fun TranslateApp(
             contentColor = MaterialTheme.colorScheme.onBackground,
             contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { padding ->
-            AppNavHost(navController = navController, modifier = modifier.padding(padding))
+            AppNavHost(
+                navController = navController,
+                modifier = modifier
+                    .padding(padding)
+            )
         }
     }
 }

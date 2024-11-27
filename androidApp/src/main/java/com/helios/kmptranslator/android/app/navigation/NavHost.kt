@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.helios.kmptranslator.android.scantranslate.navigation.scanTranslateScreen
-import com.helios.kmptranslator.android.settings.navigation.settingScreen
-import com.helios.kmptranslator.android.texttranslate.navigation.TEXT_TRANSLATE_ROUTE
-import com.helios.kmptranslator.android.texttranslate.navigation.textTranslateScreen
-import com.helios.kmptranslator.android.voicetranslate.navigation.voiceTranslateScreen
+import com.helios.kmptranslator.android.features.scantranslate.navigation.scanTranslateScreen
+import com.helios.kmptranslator.android.features.settings.navigation.settingScreen
+import com.helios.kmptranslator.android.features.texttranslate.navigation.TEXT_TRANSLATE_ROUTE
+import com.helios.kmptranslator.android.features.texttranslate.navigation.textTranslateScreen
+import com.helios.kmptranslator.android.features.voicetranslate.navigation.voiceTranslateScreen
 
 @Composable
 fun AppNavHost(
@@ -16,7 +16,11 @@ fun AppNavHost(
     modifier: Modifier = Modifier,
     startDestination: String = TEXT_TRANSLATE_ROUTE
 ) {
-    NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        modifier = modifier
+    ) {
         textTranslateScreen()
         voiceTranslateScreen()
         scanTranslateScreen()

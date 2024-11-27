@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.texttranslate.components
+package com.helios.kmptranslator.android.features.texttranslate.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
@@ -16,7 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +39,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.R
 import com.helios.kmptranslator.android.core.theme.HeliosTranslatorTheme
-import com.helios.kmptranslator.android.core.theme.LightBlue
 import com.helios.kmptranslator.core.presentation.UiLanguage
 
 @Composable
@@ -117,19 +116,19 @@ private fun TranslatedTextField(
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.copy),
                     contentDescription = stringResource(id = R.string.copy),
-                    tint = LightBlue
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
             IconButton(onClick = { onCloseClick() }) {
                 Icon(
                     imageVector = Icons.Rounded.Close,
                     contentDescription = stringResource(id = R.string.close_translated_text_field),
-                    tint = LightBlue
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Divider()
+        HorizontalDivider()
         Spacer(modifier = Modifier.height(16.dp))
         LanguageDisplay(language = toLanguage)
         Spacer(modifier = Modifier.height(16.dp))
@@ -140,14 +139,14 @@ private fun TranslatedTextField(
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.copy),
                     contentDescription = stringResource(id = R.string.copy),
-                    tint = LightBlue
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
             IconButton(onClick = { onSpeakerClick() }) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.speaker),
                     contentDescription = stringResource(id = R.string.play_loud),
-                    tint = LightBlue
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         }

@@ -32,15 +32,14 @@ fun SwapLanguagesButton(
                 ambientColor = Color(0x26000000)
             )
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primary),
-
-        ) {
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+    ) {
         Icon(
             imageVector = Icons.Filled.Repeat,
             contentDescription = stringResource(
                 id = R.string.swap_languages
             ),
-            tint = MaterialTheme.colorScheme.onPrimary
+            tint = MaterialTheme.colorScheme.onSurface
         )
     }
 }

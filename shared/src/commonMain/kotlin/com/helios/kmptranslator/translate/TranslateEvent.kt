@@ -32,4 +32,6 @@ sealed class TranslateEvent {
     data object OnErrorSeen : TranslateEvent()
 
     data object ReadAloudText : TranslateEvent()
+
+    data object OpenHistory : TranslateEvent()
 }

@@ -55,7 +55,6 @@ fun LanguagePickerComponent(
                 },
                 modifier = Modifier.weight(1f)
             )
-            Spacer(modifier = Modifier.weight(1f))
             LanguageDropDown(
                 language = toLanguage,
                 isOpen = isChoosingToLanguage,

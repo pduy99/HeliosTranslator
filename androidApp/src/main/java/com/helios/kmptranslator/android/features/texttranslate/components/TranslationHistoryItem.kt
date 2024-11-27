@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.texttranslate.components
+package com.helios.kmptranslator.android.features.texttranslate.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

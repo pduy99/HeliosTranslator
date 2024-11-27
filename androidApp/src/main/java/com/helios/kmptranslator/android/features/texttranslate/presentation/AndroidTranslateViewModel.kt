@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.texttranslate
+package com.helios.kmptranslator.android.features.texttranslate.presentation
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

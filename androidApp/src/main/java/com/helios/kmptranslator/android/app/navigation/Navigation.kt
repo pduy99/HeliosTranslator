@@ -56,6 +56,7 @@ fun TranslateAppNavigationSuiteScaffold(
         layoutType = layoutType,
         containerColor = Color.Transparent,
         navigationSuiteColors = NavigationSuiteDefaults.colors(
+            navigationBarContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             navigationBarContentColor = NavigationDefaults.navigationContentColor(),
             navigationRailContainerColor = Color.Transparent,
         ),

@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.texttranslate.navigation
+package com.helios.kmptranslator.android.features.texttranslate.navigation
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -7,8 +7,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.helios.kmptranslator.android.texttranslate.AndroidTranslateViewModel
-import com.helios.kmptranslator.android.texttranslate.TextTranslateScreen
+import com.helios.kmptranslator.android.features.texttranslate.presentation.AndroidTranslateViewModel
+import com.helios.kmptranslator.android.features.texttranslate.presentation.TextTranslateScreen
 
 const val TEXT_TRANSLATE_ROUTE = "text_translate"
 

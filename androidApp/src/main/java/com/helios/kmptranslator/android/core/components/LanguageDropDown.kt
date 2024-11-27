@@ -26,28 +26,10 @@ fun LanguageDropDown(
     onSelectLanguage: (UiLanguage) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val allLanguages = remember {
-        UiLanguage.allLanguages
-    }
+    val allLanguages = remember { UiLanguage.allLanguages }
     Box(modifier = modifier) {
-        if (isOpen) {
-            DropdownMenu(
-                expanded = true,
-                onDismissRequest = onDismiss
-            ) {
-                allLanguages.forEach { language ->
-                    LanguageDropDownItem(
-                        language = language,
-                        onClick = { onSelectLanguage(language) },
-                        modifier = modifier
-                    )
-                }
-            }
-        }
-
         Row(
-            modifier = Modifier
-                .clickable { onClick() },
+            modifier = Modifier.clickable { onClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
@@ -57,6 +39,18 @@ fun LanguageDropDown(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(text = language.language.langName, color = MaterialTheme.colorScheme.onSurface)
+        }
+        DropdownMenu(
+            expanded = isOpen,
+            onDismissRequest = onDismiss,
+            modifier = Modifier.align(Alignment.TopStart)
+        ) {
+            allLanguages.forEach { language ->
+                LanguageDropDownItem(
+                    language = language,
+                    onClick = { onSelectLanguage(language) }
+                )
+            }
         }
     }
 }

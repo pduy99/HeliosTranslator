@@ -1,10 +1,10 @@
-package com.helios.kmptranslator.android.settings.navigation
+package com.helios.kmptranslator.android.features.settings.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.helios.kmptranslator.android.settings.SettingScreen
+import com.helios.kmptranslator.android.features.settings.SettingScreen
 
 const val SETTINGS_ROUTE = "settings"
 

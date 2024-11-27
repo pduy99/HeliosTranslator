@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.settings
+package com.helios.kmptranslator.android.features.scantranslate
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SettingScreen() {
+fun ScanTranslateScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
-        Text(text = "Settings")
+        Text(text = "Scan and Translate")
     }
 }

@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.texttranslate.presentation
+package com.helios.kmptranslator.android.features.texttranslate.presentation
 
 import com.helios.kmptranslator.android.R
 import com.helios.kmptranslator.core.presentation.UiText

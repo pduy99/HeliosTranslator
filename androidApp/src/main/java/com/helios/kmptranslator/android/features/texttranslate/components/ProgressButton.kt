@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.texttranslate.components
+package com.helios.kmptranslator.android.features.texttranslate.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
@@ -26,7 +26,7 @@ fun ProgressButton(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(100))
-            .background(MaterialTheme.colorScheme.primary)
+            .background(MaterialTheme.colorScheme.tertiaryContainer)
             .clickable { onClick() }
             .padding(8.dp),
         contentAlignment = Alignment.Center
@@ -35,14 +35,14 @@ fun ProgressButton(
             if (inProgress) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(20.dp),
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onTertiary,
                     strokeWidth = 2.dp
                 )
             } else {
                 Text(
                     text = text,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onTertiary,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }

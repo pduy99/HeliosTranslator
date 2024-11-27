@@ -3,9 +3,9 @@ import java.io.InputStreamReader
 import java.util.Properties
 
 plugins {
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinCocoapods)
-    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.kotlinSerialization)
 }
@@ -79,6 +79,7 @@ kotlin {
                 implementation(libs.ktor.core)
                 implementation(libs.ktor.serialization)
                 implementation(libs.ktor.serialization.json)
+                implementation(libs.ktor.client.logging)
                 implementation(libs.kotlinDateTime)
                 implementation(libs.kotlinx.coroutines.core)
             }
@@ -94,6 +95,7 @@ kotlin {
             dependencies {
                 implementation(libs.ktor.android)
                 implementation(libs.sqlDelight.android.driver)
+                implementation(libs.slf4j.simple)
             }
         }
         val iosX64Main by getting
@@ -119,6 +121,7 @@ kotlin {
             iosSimulatorArm64Test.dependsOn(this)
         }
     }
+    task("testClasses")
 }
 
 android {

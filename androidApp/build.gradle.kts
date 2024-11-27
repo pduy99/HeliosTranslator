@@ -1,8 +1,9 @@
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlinAndroid)
-    id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.compose)
     alias(libs.plugins.kotlinSerialization)
 }
 
@@ -19,9 +20,7 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -45,18 +44,20 @@ dependencies {
     implementation(projects.shared)
 
     // Compose
-    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
+    implementation(libs.compose.material3.windowSizeClass)
+    implementation(libs.compose.material3.adaptiveNavigationSuite)
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.material.extended.icons)
 
     // Hilt
-    implementation(libs.hiltAndroid)
-    kapt(libs.hiltAndroidCompiler)
-    kapt(libs.hiltCompiler)
-    implementation(libs.hiltNavigationCompose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    ksp(libs.hilt.ext.compiler)
 
     // Coil
     implementation(libs.coilCompose)
@@ -64,7 +65,10 @@ dependencies {
     // Ktor
     implementation(libs.ktor.android)
 
-    kaptAndroidTest(libs.hiltAndroidCompiler)
+    // Lottie
+    implementation(libs.lottieCompose)
+
+    kspAndroidTest(libs.hiltAndroidCompiler)
     debugImplementation(libs.compose.ui.tooling)
     androidTestImplementation(libs.hiltTesting)
 }

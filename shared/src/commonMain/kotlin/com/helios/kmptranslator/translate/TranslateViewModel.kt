@@ -5,6 +5,7 @@ import com.helios.kmptranslator.core.domain.usecase.TranslateUseCase
 import com.helios.kmptranslator.core.domain.util.Result
 import com.helios.kmptranslator.core.presentation.UiHistoryItem
 import com.helios.kmptranslator.core.presentation.UiLanguage
+import com.helios.kmptranslator.core.speech.TextToSpeech
 import com.helios.kmptranslator.core.util.toCommonStateFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +19,9 @@ import kotlinx.coroutines.launch
 
 class TranslateViewModel(
     private val translateUseCase: TranslateUseCase,
-    private val getTranslateHistoryUseCase: GetTranslateHistoryUseCase,
-    private val coroutineScope: CoroutineScope?
+    private val textToSpeech: TextToSpeech,
+    getTranslateHistoryUseCase: GetTranslateHistoryUseCase,
+    coroutineScope: CoroutineScope?,
 ) {
 
     private val viewModelScope =
@@ -151,7 +153,18 @@ class TranslateViewModel(
                 translate(_state.value)
             }
 
-            else -> Unit
+            is TranslateEvent.ReadAloudText -> {
+                _state.value.toText?.let {
+                    textToSpeech.speak(
+                        language = state.value.toLanguage.language.langCode,
+                        text = it,
+                        onComplete = {})
+                }
+            }
+
+            TranslateEvent.OpenHistory -> {
+
+            }
         }
     }
 
@@ -190,5 +203,10 @@ class TranslateViewModel(
                 }
             }
         }
+    }
+
+    fun shutdownTts() {
+        textToSpeech.stopSpeaking()
+        textToSpeech.shutdown()
     }
 }

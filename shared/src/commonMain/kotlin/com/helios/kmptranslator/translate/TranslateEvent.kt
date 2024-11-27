@@ -23,8 +23,6 @@ sealed class TranslateEvent {
 
     data object CloseTranslation : TranslateEvent()
 
-    data object RecordVoice : TranslateEvent()
-
     data class SubmitVoiceResult(val voiceResult: String?) : TranslateEvent()
 
     data class SelectHistoryTranslationItem(val item: UiHistoryItem) : TranslateEvent()
@@ -32,4 +30,8 @@ sealed class TranslateEvent {
     data object EditTranslation : TranslateEvent()
 
     data object OnErrorSeen : TranslateEvent()
+
+    data object ReadAloudText : TranslateEvent()
+
+    data object OpenHistory : TranslateEvent()
 }

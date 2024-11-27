@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.voicetranslate.domain
+package com.helios.kmptranslator.android.features.voicetranslate.domain
 
 import android.app.Application
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.util.Log
 import com.helios.kmptranslator.android.R
 import com.helios.kmptranslator.core.util.CommonStateFlow
 import com.helios.kmptranslator.core.util.toCommonStateFlow
@@ -13,6 +14,7 @@ import com.helios.kmptranslator.voicetotext.domain.VoiceToTextParser
 import com.helios.kmptranslator.voicetotext.domain.VoiceToTextParserState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+
 
 class AndroidVoiceToTextParser(
     private val app: Application,
@@ -43,6 +45,7 @@ class AndroidVoiceToTextParser(
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
             )
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageCode)
+            putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, languageCode)
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
         }
 
@@ -55,7 +58,6 @@ class AndroidVoiceToTextParser(
     }
 
     override fun stopListening() {
-        _state.update { VoiceToTextParserState() }
         recognizer.stopListening()
     }
 
@@ -70,7 +72,7 @@ class AndroidVoiceToTextParser(
     override fun onReadyForSpeech(params: Bundle?) {
         _state.update {
             it.copy(
-                error = null
+                error = null,
             )
         }
     }
@@ -78,25 +80,34 @@ class AndroidVoiceToTextParser(
     override fun onBeginningOfSpeech() = Unit
 
     override fun onRmsChanged(rmsdB: Float) {
+        val volume = (rmsdB / MAX_DECIBEL).coerceIn(0f, 1f)
+
         _state.update { state ->
             state.copy(
-                powerRatio = rmsdB * (1f / (DECIBEL_RANGE))
+                powerRatio = volume
             )
         }
     }
 
     override fun onBufferReceived(buffer: ByteArray?) = Unit
 
-    override fun onEndOfSpeech() {
-        _state.update { state ->
-            state.copy(
-                isSpeaking = false
-            )
-        }
-    }
+    override fun onEndOfSpeech() = Unit
 
     override fun onError(error: Int) {
-        _state.update { it.copy(error = "Error: $error") }
+        Log.e("DUY", "onError: $error")
+        val errorMessage = when (error) {
+            SpeechRecognizer.ERROR_AUDIO -> "Audio recording error"
+            SpeechRecognizer.ERROR_CLIENT -> "Client side error"
+            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "Insufficient permissions"
+            SpeechRecognizer.ERROR_NETWORK -> "Network error"
+            SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> "Network timeout"
+            SpeechRecognizer.ERROR_NO_MATCH -> "No match found"
+            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> "RecognitionService busy"
+            SpeechRecognizer.ERROR_SERVER -> "Server error"
+            SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "No speech input"
+            else -> "Unknown error"
+        }
+        _state.update { it.copy(error = errorMessage, isSpeaking = false) }
     }
 
     override fun onResults(results: Bundle?) {
@@ -104,7 +115,8 @@ class AndroidVoiceToTextParser(
             ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             ?.getOrNull(0)
             ?.let { text ->
-                _state.update { it.copy(result = text) }
+                Log.d("DUY", "onResults: $text")
+                _state.update { it.copy(isSpeaking = false) }
             }
     }
 
@@ -112,6 +124,7 @@ class AndroidVoiceToTextParser(
         partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             ?.getOrNull(0)
             ?.let { text ->
+                Log.d("DUY", "onPartialResults data: $text")
                 _state.update { it.copy(result = text) }
             }
     }
@@ -119,8 +132,6 @@ class AndroidVoiceToTextParser(
     override fun onEvent(eventType: Int, params: Bundle?) = Unit
 
     companion object {
-        private const val MIN_DECIBEL = -2f
-        private const val MAX_DECIBEL = 12f
-        private const val DECIBEL_RANGE = MAX_DECIBEL - MIN_DECIBEL
+        private const val MAX_DECIBEL = 15f
     }
 }

@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.voicetranslate.navigation
+package com.helios.kmptranslator.android.features.voicetranslate.navigation
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -7,10 +7,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.helios.kmptranslator.android.voicetranslate.presentation.AndroidVoiceToTextViewModel
-import com.helios.kmptranslator.android.voicetranslate.presentation.VoiceTranslateScreen
-import com.helios.kmptranslator.core.presentation.UiLanguage
-import com.helios.kmptranslator.voicetotext.VoiceToTextEvent
+import com.helios.kmptranslator.android.features.voicetranslate.presentation.AndroidVoiceToTextViewModel
+import com.helios.kmptranslator.android.features.voicetranslate.presentation.VoiceTranslateScreen
 
 const val VOICE_TRANSLATE_ROUTE = "voice_translate"
 
@@ -26,9 +24,8 @@ fun NavGraphBuilder.voiceTranslateScreen() {
         val state by viewModel.state.collectAsState()
 
         VoiceTranslateScreen(
-            fromLanguage = UiLanguage.byCode("en"),
-            toLanguage = UiLanguage.byCode("ja"),
-            onEvent = { }
+            uiState = state,
+            onEvent = viewModel::onEvent
         )
     }
 }

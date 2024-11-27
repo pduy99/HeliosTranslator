@@ -27,4 +27,6 @@
     <string name="feature_voice_translate_title">Voice</string>
     <string name="feature_scan_translate_title">Scan</string>
     <string name="settings">Settings</string>
+    <string name="voice_translate_hint">"Tap the mic button to start the conversation"</string>
+    <string name="conversation">Conversation</string>
 </resources>

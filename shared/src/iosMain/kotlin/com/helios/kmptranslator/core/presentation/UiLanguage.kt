@@ -2,7 +2,7 @@ package com.helios.kmptranslator.core.presentation
 
 import com.helios.kmptranslator.core.domain.model.Language
 
-actual class UiLanguage (
+actual class UiLanguage(
     actual val language: Language,
     val imageName: String
 ) {

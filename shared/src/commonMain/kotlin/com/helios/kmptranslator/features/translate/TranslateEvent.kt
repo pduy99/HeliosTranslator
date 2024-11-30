@@ -1,6 +1,5 @@
 package com.helios.kmptranslator.features.translate
 
-import com.helios.kmptranslator.core.presentation.UiHistoryItem
 import com.helios.kmptranslator.core.presentation.UiLanguage
 
 sealed class TranslateEvent {

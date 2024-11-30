@@ -1,6 +1,5 @@
 package com.helios.kmptranslator.core.util
 
-import com.helios.kmptranslator.core.util.CommonFlow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
 

@@ -81,6 +81,7 @@ class VoiceToTextViewModel(
                 is ConversationTranslateEvent.OpenHistory -> {
 
                 }
+
                 is ConversationTranslateEvent.ToggleFaceToFaceMode -> {
                     _state.update {
                         it.copy(faceToFaceMode = !it.faceToFaceMode)

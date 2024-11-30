@@ -139,6 +139,6 @@ sqldelight {
     }
 }
 
-tasks.named("build"){
+tasks.named("build") {
     dependsOn(buildConfigGenerator)
 }

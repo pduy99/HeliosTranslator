@@ -23,3 +23,26 @@ INTO historyEntity(
     timestamp
 )
 VALUES(?, ?, ?, ?, ?, ?);
+
+deleteHistory:
+DELETE FROM historyEntity
+WHERE id = ?;
+
+deleteAllHistory:
+DELETE FROM historyEntity;
+
+getHistoryOlderThan:
+SELECT *
+FROM historyEntity
+WHERE timestamp < ?
+ORDER BY timestamp DESC;
+
+deleteHistoryOlderThan:
+DELETE FROM historyEntity
+WHERE timestamp < ?;
+
+getHistoryNewerThan:
+SELECT *
+FROM historyEntity
+WHERE timestamp >= ?
+ORDER BY timestamp DESC;

@@ -1,7 +1,7 @@
-package com.helios.kmptranslator.translate
+package com.helios.kmptranslator.features.translate
 
-import com.helios.kmptranslator.core.presentation.UiLanguage
 import com.helios.kmptranslator.core.presentation.UiHistoryItem
+import com.helios.kmptranslator.core.presentation.UiLanguage
 
 data class TranslateState(
     val fromText: String = "",

@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.voicetotext.domain
+package com.helios.kmptranslator.features.voicetotext.domain
 
 data class VoiceToTextParserState(
     val result: String = "",

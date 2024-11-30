@@ -5,7 +5,7 @@ import com.helios.kmptranslator.core.data.datasource.TranslateDataSource
 import com.helios.kmptranslator.core.domain.util.Result
 import com.helios.kmptranslator.core.network.dto.TranslateDto
 import com.helios.kmptranslator.core.network.dto.TranslatedDto
-import com.helios.kmptranslator.translate.TranslateError
+import com.helios.kmptranslator.features.translate.TranslateError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post

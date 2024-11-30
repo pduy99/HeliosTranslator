@@ -3,7 +3,6 @@ package com.helios.kmptranslator.android.features.voicetranslate.presentation
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,10 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Splitscreen
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,8 +30,8 @@ import com.helios.kmptranslator.android.core.theme.HeliosTranslatorTheme
 import com.helios.kmptranslator.android.features.voicetranslate.presentation.components.VoiceState
 import com.helios.kmptranslator.android.features.voicetranslate.presentation.components.VoiceTranslateBox
 import com.helios.kmptranslator.core.presentation.UiLanguage
-import com.helios.kmptranslator.voicetotext.ConversationTranslateEvent
-import com.helios.kmptranslator.voicetotext.ConversationTranslateUiState
+import com.helios.kmptranslator.features.voicetotext.ConversationTranslateEvent
+import com.helios.kmptranslator.features.voicetotext.ConversationTranslateUiState
 
 @Composable
 fun VoiceTranslateScreen(
@@ -58,7 +59,6 @@ fun VoiceTranslateScreen(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.padding(vertical = 8.dp)
         ) {
             Text(
@@ -69,22 +69,36 @@ fun VoiceTranslateScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Icon(
-                modifier = Modifier.clickable {
+            IconButton(
+                modifier = Modifier
+                    .size(48.dp),
+                onClick = {
                     onEvent(ConversationTranslateEvent.ToggleFaceToFaceMode)
                 },
-                imageVector = Icons.Outlined.Splitscreen,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.tertiary
+                content = {
+                    Icon(
+                        imageVector = Icons.Outlined.Splitscreen,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             )
 
-            Icon(
-                modifier = Modifier.clickable {
+            IconButton(
+                modifier = Modifier
+                    .size(48.dp),
+                onClick = {
                     onEvent(ConversationTranslateEvent.OpenHistory)
                 },
-                imageVector = Icons.Default.AccessTime,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.tertiary
+                content = {
+                    Icon(
+                        imageVector = Icons.Outlined.AccessTime,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             )
         }
 

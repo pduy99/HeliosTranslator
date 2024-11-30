@@ -9,6 +9,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.helios.kmptranslator.android.features.texttranslate.presentation.AndroidTranslateViewModel
 import com.helios.kmptranslator.android.features.texttranslate.presentation.TextTranslateScreen
+import com.helios.kmptranslator.features.translate.TranslateEvent
 
 const val TEXT_TRANSLATE_ROUTE = "text_translate"
 
@@ -16,7 +17,9 @@ fun NavController.navigateToTextTranslate(navOptions: NavOptions) {
     navigate(TEXT_TRANSLATE_ROUTE, navOptions)
 }
 
-fun NavGraphBuilder.textTranslateScreen() {
+fun NavGraphBuilder.textTranslateScreen(
+    onOpenHistoryScreen: () -> Unit,
+) {
     composable(route = TEXT_TRANSLATE_ROUTE) {
 
         val viewModel = hiltViewModel<AndroidTranslateViewModel>()
@@ -25,7 +28,11 @@ fun NavGraphBuilder.textTranslateScreen() {
         TextTranslateScreen(
             state = state,
             onEvent = { event ->
-                viewModel.onEvent(event)
+                if (event is TranslateEvent.OpenHistory) {
+                    onOpenHistoryScreen()
+                } else {
+                    viewModel.onEvent(event)
+                }
             }
         )
     }

@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.voicetotext
+package com.helios.kmptranslator.features.voicetotext
 
 import com.helios.kmptranslator.core.presentation.UiLanguage
 

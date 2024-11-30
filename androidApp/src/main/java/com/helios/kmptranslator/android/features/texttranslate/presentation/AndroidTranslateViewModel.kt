@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.helios.kmptranslator.core.domain.usecase.GetTranslateHistoryUseCase
 import com.helios.kmptranslator.core.domain.usecase.TranslateUseCase
 import com.helios.kmptranslator.core.speech.TextToSpeech
-import com.helios.kmptranslator.translate.TranslateEvent
-import com.helios.kmptranslator.translate.TranslateViewModel
+import com.helios.kmptranslator.features.translate.TranslateEvent
+import com.helios.kmptranslator.features.translate.TranslateViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

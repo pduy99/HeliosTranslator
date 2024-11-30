@@ -1,7 +1,7 @@
 package com.helios.kmptranslator.core.data.datasource
 
 import com.helios.kmptranslator.core.domain.util.Result
-import com.helios.kmptranslator.translate.TranslateError
+import com.helios.kmptranslator.features.translate.TranslateError
 
 interface TranslateDataSource {
 

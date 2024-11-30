@@ -1,7 +1,7 @@
-package com.helios.kmptranslator.voicetotext
+package com.helios.kmptranslator.features.voicetotext
 
 import com.helios.kmptranslator.core.presentation.UiLanguage
-import com.helios.kmptranslator.translate.TranslateError
+import com.helios.kmptranslator.features.translate.TranslateError
 
 data class ConversationTranslateUiState(
     val personOne: PersonState = PersonState(language = UiLanguage.byCode("en")),

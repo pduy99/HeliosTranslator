@@ -8,4 +8,12 @@ interface TranslateHistoryRepository {
     fun getHistory(): CommonFlow<List<HistoryEntity>>
 
     suspend fun insertHistory(item: HistoryEntity)
+
+    suspend fun deleteHistory(item: HistoryEntity)
+
+    suspend fun deleteAllHistory()
+
+    suspend fun deleteHistoryOlderThan(timestamp: Long)
+
+    fun getHistoryNewerThan(timestamp: Long): CommonFlow<List<HistoryEntity>>
 }

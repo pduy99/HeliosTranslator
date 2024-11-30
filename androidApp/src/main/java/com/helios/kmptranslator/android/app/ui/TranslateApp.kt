@@ -39,6 +39,8 @@ fun TranslateApp(
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
+    val isTopLevelDestination = isTopLevelDestination(currentDestination)
+
     Log.d("TranslateApp", "currentDestination: $currentDestination")
     TranslateAppNavigationSuiteScaffold(
         navigationSuiteItems = {
@@ -78,13 +80,19 @@ fun TranslateApp(
                         }
                     },
                     icon = { Icon(destination.unselectedIcon, contentDescription = null) },
-                    selectedIcon = { Icon(destination.selectedIcon, contentDescription = null) },
+                    selectedIcon = {
+                        Icon(
+                            destination.selectedIcon,
+                            contentDescription = null
+                        )
+                    },
                     label = { Text(stringResource(id = destination.titleTextId)) },
                     modifier = Modifier.testTag("NavItem")
                 )
             }
         },
         windowAdaptiveInfo = windowAdaptiveInfo,
+        isTopLevelDestination = isTopLevelDestination
     ) {
         Scaffold(
             modifier = Modifier.semantics { testTagsAsResourceId = true },
@@ -105,3 +113,11 @@ private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLev
     this?.hierarchy?.any {
         it.route?.contains(destination.name, true) ?: false
     } ?: false
+
+private fun isTopLevelDestination(destination: NavDestination?): Boolean {
+    return TopLevelDestination.entries.any { topLevelDest ->
+        destination?.hierarchy?.any {
+            it.route?.contains(topLevelDest.name, true) ?: false
+        } ?: false
+    }
+}

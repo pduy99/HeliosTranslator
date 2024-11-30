@@ -9,6 +9,7 @@ import com.helios.kmptranslator.core.data.repository.TranslateHistoryRepository
 import com.helios.kmptranslator.core.data.repository.TranslateRepository
 import com.helios.kmptranslator.core.database.DatabaseDriverFactory
 import com.helios.kmptranslator.core.database.SqlDelightTranslateHistoryDataSource
+import com.helios.kmptranslator.core.domain.usecase.GetAndCleanTranslateHistoryUseCase
 import com.helios.kmptranslator.core.domain.usecase.GetTranslateHistoryUseCase
 import com.helios.kmptranslator.core.domain.usecase.TranslateUseCase
 import com.helios.kmptranslator.core.network.HttpClientFactory
@@ -72,6 +73,14 @@ object AppModule {
     @Singleton
     fun providesGetTranslateHistoryUseCase(translateHistoryRepository: TranslateHistoryRepository): GetTranslateHistoryUseCase {
         return GetTranslateHistoryUseCase(translateHistoryRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetAndCleanTranslateHistoryUseCase(
+        translateHistoryRepository: TranslateHistoryRepository
+    ): GetAndCleanTranslateHistoryUseCase {
+        return GetAndCleanTranslateHistoryUseCase(translateHistoryRepository)
     }
 
     @Provides

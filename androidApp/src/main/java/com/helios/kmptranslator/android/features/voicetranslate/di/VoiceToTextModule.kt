@@ -2,7 +2,7 @@ package com.helios.kmptranslator.android.features.voicetranslate.di
 
 import android.app.Application
 import com.helios.kmptranslator.android.features.voicetranslate.domain.AndroidVoiceToTextParser
-import com.helios.kmptranslator.voicetotext.domain.VoiceToTextParser
+import com.helios.kmptranslator.features.voicetotext.domain.VoiceToTextParser
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

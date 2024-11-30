@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.translate
+package com.helios.kmptranslator.features.translate
 
 import com.helios.kmptranslator.core.domain.usecase.GetTranslateHistoryUseCase
 import com.helios.kmptranslator.core.domain.usecase.TranslateUseCase
@@ -101,19 +101,6 @@ class TranslateViewModel(
                 _state.update {
                     it.copy(
                         isChoosingToLanguage = true
-                    )
-                }
-            }
-
-            is TranslateEvent.SelectHistoryTranslationItem -> {
-                translateJob?.cancel()
-                _state.update {
-                    it.copy(
-                        fromText = event.item.fromText,
-                        toText = event.item.toText,
-                        isTranslating = false,
-                        fromLanguage = event.item.fromLanguage,
-                        toLanguage = event.item.toLanguage
                     )
                 }
             }

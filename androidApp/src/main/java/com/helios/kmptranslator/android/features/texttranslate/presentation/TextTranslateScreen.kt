@@ -2,7 +2,6 @@ package com.helios.kmptranslator.android.features.texttranslate.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,11 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,10 +33,9 @@ import com.helios.kmptranslator.android.core.components.LanguagePickerComponent
 import com.helios.kmptranslator.android.core.theme.HeliosTranslatorTheme
 import com.helios.kmptranslator.android.core.util.asString
 import com.helios.kmptranslator.android.features.texttranslate.components.TranslateTextField
-import com.helios.kmptranslator.android.features.texttranslate.components.TranslationHistoryItem
 import com.helios.kmptranslator.core.presentation.UiLanguage
-import com.helios.kmptranslator.translate.TranslateEvent
-import com.helios.kmptranslator.translate.TranslateState
+import com.helios.kmptranslator.features.translate.TranslateEvent
+import com.helios.kmptranslator.features.translate.TranslateState
 
 @Composable
 fun TextTranslateScreen(
@@ -76,13 +75,20 @@ fun TextTranslateScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Icon(
-                    modifier = Modifier.clickable {
+                IconButton(
+                    modifier = Modifier
+                        .size(48.dp),
+                    onClick = {
                         onEvent(TranslateEvent.OpenHistory)
                     },
-                    imageVector = Icons.Default.AccessTime,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.tertiary
+                    content = {
+                        Icon(
+                            imageVector = Icons.Outlined.AccessTime,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 )
             }
         }
@@ -133,25 +139,6 @@ fun TextTranslateScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-
-        item {
-            if (state.history.isNotEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.history),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            }
-        }
-
-        items(state.history) { historyItem ->
-            TranslationHistoryItem(
-                historyItem = historyItem,
-                onClick = { onEvent(TranslateEvent.SelectHistoryTranslationItem(historyItem)) },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
     }
 }
 

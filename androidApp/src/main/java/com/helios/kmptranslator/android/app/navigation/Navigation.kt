@@ -6,11 +6,11 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItemColors
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +20,7 @@ fun TranslateAppNavigationSuiteScaffold(
     navigationSuiteItems: TranslateAppNavigationSuiteScope.() -> Unit,
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
+    isTopLevelDestination: Boolean,
     content: @Composable () -> Unit,
 ) {
     val layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
@@ -51,15 +52,12 @@ fun TranslateAppNavigationSuiteScaffold(
             TranslateAppNavigationSuiteScope(
                 navigationSuiteScope = this,
                 navigationSuiteItemColors = navigationSuiteItemColors
-            ).run(navigationSuiteItems)
+            ).apply {
+                navigationSuiteItems()
+            }
         },
-        layoutType = layoutType,
+        layoutType = if (isTopLevelDestination) layoutType else NavigationSuiteType.None,
         containerColor = Color.Transparent,
-        navigationSuiteColors = NavigationSuiteDefaults.colors(
-            navigationBarContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-            navigationBarContentColor = NavigationDefaults.navigationContentColor(),
-            navigationRailContainerColor = Color.Transparent,
-        ),
         modifier = modifier
     ) {
         content()

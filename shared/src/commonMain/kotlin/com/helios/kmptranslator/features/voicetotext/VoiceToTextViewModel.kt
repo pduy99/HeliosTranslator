@@ -1,10 +1,10 @@
-package com.helios.kmptranslator.voicetotext
+package com.helios.kmptranslator.features.voicetotext
 
 import com.helios.kmptranslator.core.domain.usecase.TranslateUseCase
 import com.helios.kmptranslator.core.domain.util.Result
 import com.helios.kmptranslator.core.presentation.UiLanguage
-import com.helios.kmptranslator.voicetotext.domain.VoiceToTextParser
-import com.helios.kmptranslator.voicetotext.domain.VoiceToTextParserState
+import com.helios.kmptranslator.features.voicetotext.domain.VoiceToTextParser
+import com.helios.kmptranslator.features.voicetotext.domain.VoiceToTextParserState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

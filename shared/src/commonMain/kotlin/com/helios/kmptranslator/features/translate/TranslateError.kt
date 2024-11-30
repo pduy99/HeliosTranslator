@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.translate
+package com.helios.kmptranslator.features.translate
 
 import com.helios.kmptranslator.core.domain.util.Error
 

@@ -9,6 +9,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.helios.kmptranslator.android.features.voicetranslate.presentation.AndroidVoiceToTextViewModel
 import com.helios.kmptranslator.android.features.voicetranslate.presentation.VoiceTranslateScreen
+import com.helios.kmptranslator.features.voicetotext.ConversationTranslateEvent
 
 const val VOICE_TRANSLATE_ROUTE = "voice_translate"
 
@@ -16,7 +17,9 @@ fun NavController.navigateToVoiceTranslate(navOptions: NavOptions) {
     navigate(VOICE_TRANSLATE_ROUTE, navOptions)
 }
 
-fun NavGraphBuilder.voiceTranslateScreen() {
+fun NavGraphBuilder.voiceTranslateScreen(
+    onOpenHistoryScreen: () -> Unit,
+) {
     composable(
         route = VOICE_TRANSLATE_ROUTE
     ) {
@@ -25,7 +28,13 @@ fun NavGraphBuilder.voiceTranslateScreen() {
 
         VoiceTranslateScreen(
             uiState = state,
-            onEvent = viewModel::onEvent
+            onEvent = {
+                if (it is ConversationTranslateEvent.OpenHistory) {
+                    onOpenHistoryScreen()
+                } else {
+                    viewModel.onEvent(it)
+                }
+            }
         )
     }
 }

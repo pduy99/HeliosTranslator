@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.core.theme.HeliosTranslatorTheme
 import com.helios.kmptranslator.core.presentation.UiLanguage
-import com.helios.kmptranslator.translate.TranslateEvent
+import com.helios.kmptranslator.features.translate.TranslateEvent
 
 @Composable
 fun LanguagePickerComponent(

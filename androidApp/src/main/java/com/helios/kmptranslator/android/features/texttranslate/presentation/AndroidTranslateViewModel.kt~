@@ -31,7 +31,11 @@ class AndroidTranslateViewModel @Inject constructor(
     val state = viewModel.state
 
     fun onEvent(event: TranslateEvent) {
-        viewModel.onEvent(event)
+        if (event is TranslateEvent.OpenHistory) {
+            
+        } else {
+            viewModel.onEvent(event)
+        }
     }
 
     override fun onCleared() {

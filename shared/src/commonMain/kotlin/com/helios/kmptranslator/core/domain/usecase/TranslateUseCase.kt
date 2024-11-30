@@ -6,7 +6,7 @@ import com.helios.kmptranslator.core.domain.mapper.toEntity
 import com.helios.kmptranslator.core.domain.model.HistoryItem
 import com.helios.kmptranslator.core.domain.model.Language
 import com.helios.kmptranslator.core.domain.util.Result
-import com.helios.kmptranslator.translate.TranslateError
+import com.helios.kmptranslator.features.translate.TranslateError
 
 class TranslateUseCase(
     private val translateRepository: TranslateRepository,

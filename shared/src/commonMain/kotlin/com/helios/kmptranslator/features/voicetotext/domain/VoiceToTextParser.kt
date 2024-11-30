@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.voicetotext.domain
+package com.helios.kmptranslator.features.voicetotext.domain
 
 import com.helios.kmptranslator.core.util.CommonStateFlow
 

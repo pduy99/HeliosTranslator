@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.translate
+package com.helios.kmptranslator.features.translate
 
 import com.helios.kmptranslator.core.presentation.UiHistoryItem
 import com.helios.kmptranslator.core.presentation.UiLanguage
@@ -24,8 +24,6 @@ sealed class TranslateEvent {
     data object CloseTranslation : TranslateEvent()
 
     data class SubmitVoiceResult(val voiceResult: String?) : TranslateEvent()
-
-    data class SelectHistoryTranslationItem(val item: UiHistoryItem) : TranslateEvent()
 
     data object EditTranslation : TranslateEvent()
 

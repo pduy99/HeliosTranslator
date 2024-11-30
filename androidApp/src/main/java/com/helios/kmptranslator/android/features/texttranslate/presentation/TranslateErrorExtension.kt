@@ -2,7 +2,7 @@ package com.helios.kmptranslator.android.features.texttranslate.presentation
 
 import com.helios.kmptranslator.android.R
 import com.helios.kmptranslator.core.presentation.UiText
-import com.helios.kmptranslator.translate.TranslateError
+import com.helios.kmptranslator.features.translate.TranslateError
 
 fun TranslateError.asUiText(): UiText {
     return when (this) {

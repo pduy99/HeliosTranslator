@@ -63,6 +63,8 @@ fun TranslateHistoryScreen(
             }
         },
         action = {
+            if (uiState.history.isEmpty()) return@CollapsingToolbarLayout
+
             if (uiState.menuExpanded) {
                 Box(
                     modifier = Modifier

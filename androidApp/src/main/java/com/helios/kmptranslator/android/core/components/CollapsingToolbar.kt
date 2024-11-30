@@ -57,10 +57,10 @@ fun CollapsingToolbarLayout(
                 title = {
                     Column {
                         Text(title, color = MaterialTheme.colorScheme.tertiary)
-                        if (showingSubTitle) {
+                        if (showingSubTitle && subTitle != null) {
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                subTitle!!,
+                                subTitle,
                                 style = MaterialTheme.typography.bodySmall.copy(color = Color.White),
                                 modifier = Modifier.alpha(
                                     (1 - (topAppBarState.collapsedFraction / 0.4f)).coerceIn(0f, 1f)

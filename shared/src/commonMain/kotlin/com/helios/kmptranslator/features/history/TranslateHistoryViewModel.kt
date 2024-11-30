@@ -1,6 +1,7 @@
 package com.helios.kmptranslator.features.history
 
-import com.helios.kmptranslator.core.domain.usecase.GetTranslateHistoryUseCase
+import com.helios.kmptranslator.core.data.repository.TranslateHistoryRepository
+import com.helios.kmptranslator.core.domain.usecase.GetAndCleanTranslateHistoryUseCase
 import com.helios.kmptranslator.core.presentation.UiHistoryItem
 import com.helios.kmptranslator.core.presentation.UiLanguage
 import com.helios.kmptranslator.core.util.CommonStateFlow
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TranslateHistoryViewModel(
-    private val getTranslateHistoryUseCase: GetTranslateHistoryUseCase,
+    private val getAndCleanTranslateHistoryUseCase: GetAndCleanTranslateHistoryUseCase,
+    private val translateHistoryRepository: TranslateHistoryRepository,
     coroutineScope: CoroutineScope?,
 ) {
     private val viewModelScope =
@@ -24,7 +26,7 @@ class TranslateHistoryViewModel(
 
     init {
         viewModelScope.launch {
-            getTranslateHistoryUseCase.execute().collect { historyItems ->
+            getAndCleanTranslateHistoryUseCase.execute().collect { historyItems ->
                 _state.update {
                     it.copy(
                         history = historyItems.map { item ->
@@ -45,7 +47,9 @@ class TranslateHistoryViewModel(
     fun onEvent(event: TranslateHistoryEvent) {
         when (event) {
             is TranslateHistoryEvent.DeleteAllHistory -> {
-
+                viewModelScope.launch {
+                    translateHistoryRepository.deleteAllHistory()
+                }
             }
 
             is TranslateHistoryEvent.ToggleMenu -> {

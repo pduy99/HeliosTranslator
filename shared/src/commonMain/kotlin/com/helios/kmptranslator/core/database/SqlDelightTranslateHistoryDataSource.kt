@@ -32,4 +32,20 @@ class SqlDelightTranslateHistoryDataSource(
             timestamp = Clock.System.now().toEpochMilliseconds()
         )
     }
+
+    override suspend fun deleteHistory(item: HistoryEntity) {
+        queries.deleteHistory(item.id)
+    }
+
+    override suspend fun deleteAllHistory() {
+        queries.deleteAllHistory()
+    }
+
+    override suspend fun deleteHistoryOlderThan(timestamp: Long) {
+        queries.deleteHistoryOlderThan(timestamp)
+    }
+
+    override fun getHistoryNewerThan(timestamp: Long): CommonFlow<List<HistoryEntity>> {
+        return queries.getHistoryNewerThan(timestamp).asFlow().mapToList().toCommonFlow()
+    }
 }

@@ -44,7 +44,7 @@ fun TranslationHistoryItem(
                 shape = RoundedCornerShape(20.dp)
             )
             .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -72,7 +72,7 @@ fun TranslationHistoryItem(
                         Icon(
                             imageVector = Icons.Outlined.ContentCopy,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface,
+                            tint = MaterialTheme.colorScheme.inverseOnSurface,
                             modifier = Modifier.size(16.dp)
                         )
                     }
@@ -84,7 +84,7 @@ fun TranslationHistoryItem(
             Text(
                 text = historyItem.fromText,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onPrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -115,7 +115,7 @@ fun TranslationHistoryItem(
                         Icon(
                             imageVector = Icons.Outlined.ContentCopy,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface,
+                            tint = MaterialTheme.colorScheme.inverseOnSurface,
                             modifier = Modifier.size(16.dp)
                         )
                     }
@@ -127,7 +127,7 @@ fun TranslationHistoryItem(
             Text(
                 text = historyItem.toText,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.inversePrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

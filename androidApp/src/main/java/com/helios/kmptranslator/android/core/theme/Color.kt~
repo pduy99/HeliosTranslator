@@ -32,7 +32,7 @@ val darkColors = darkColorScheme(
     inverseOnSurface = md_theme_inverse_on_surface,
     inversePrimary = md_theme_inverse_primary,
     primaryContainer = md_theme_primary_container,
-    onPrimaryContainer = md_theme_on_primary_container
+    onPrimaryContainer = md_theme_inverse_on_surface
 )
 
 

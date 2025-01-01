@@ -1,17 +1,15 @@
 package com.helios.kmptranslator.android.core.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.SwapHoriz
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,47 +30,49 @@ fun LanguagePickerComponent(
     onEvent: (TranslateEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(60.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
-            .padding(horizontal = 16.dp)
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            LanguageDropDown(
-                language = fromLanguage,
-                isOpen = isChoosingFromLanguage,
-                onClick = { onEvent(TranslateEvent.OpenFromLanguageDropDown) },
-                onDismiss = { onEvent(TranslateEvent.StopChoosingLanguage) },
-                onSelectLanguage = {
-                    onEvent(TranslateEvent.ChooseFromLanguage(it))
-                },
-                modifier = Modifier.weight(1f)
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            LanguageDropDown(
-                language = toLanguage,
-                isOpen = isChoosingToLanguage,
-                onClick = { onEvent(TranslateEvent.OpenToLanguageDropDown) },
-                onDismiss = { onEvent(TranslateEvent.StopChoosingLanguage) },
-                onSelectLanguage = {
-                    onEvent(TranslateEvent.ChooseToLanguage(it))
-                },
-                modifier = Modifier.weight(1f)
-            )
-        }
-        SwapLanguagesButton(
-            onClick = { onEvent(TranslateEvent.SwapLanguages) },
+        LanguageDropDown(
+            language = fromLanguage,
+            isOpen = isChoosingFromLanguage,
+            onClick = { onEvent(TranslateEvent.OpenFromLanguageDropDown) },
+            onDismiss = { onEvent(TranslateEvent.StopChoosingLanguage) },
+            onSelectLanguage = { onEvent(TranslateEvent.ChooseFromLanguage(it)) },
             modifier = Modifier
-                .align(Alignment.Center)
-                .aspectRatio(1f)
-                .size(30.dp)
+                .weight(3.5f)
+                .clip(
+                    RoundedCornerShape(10.dp)
+                )
+                .background(MaterialTheme.colorScheme.primary)
+                .aspectRatio(3f)
+        )
+
+        Icon(
+            modifier = Modifier
+                .weight(1f)
+                .size(32.dp)
+                .clickable { onEvent(TranslateEvent.SwapLanguages) },
+            imageVector = Icons.Outlined.SwapHoriz,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground
+        )
+
+        LanguageDropDown(
+            language = toLanguage,
+            isOpen = isChoosingToLanguage,
+            onClick = { onEvent(TranslateEvent.OpenToLanguageDropDown) },
+            onDismiss = { onEvent(TranslateEvent.StopChoosingLanguage) },
+            onSelectLanguage = { onEvent(TranslateEvent.ChooseToLanguage(it)) },
+            modifier = Modifier
+                .weight(3.5f)
+                .clip(
+                    RoundedCornerShape(10.dp)
+                )
+                .background(MaterialTheme.colorScheme.primary)
+                .aspectRatio(3f)
         )
     }
 }

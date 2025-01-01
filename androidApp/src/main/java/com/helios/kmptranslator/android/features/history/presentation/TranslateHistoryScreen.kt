@@ -6,13 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,7 +30,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.kmptranslator.android.R
-import com.helios.kmptranslator.android.core.components.CollapsingToolbarLayout
+import com.helios.kmptranslator.android.core.components.CenteredTitleScrollAppBar
 import com.helios.kmptranslator.android.core.theme.HeliosTranslatorTheme
 import com.helios.kmptranslator.android.features.history.components.TranslationHistoryItem
 import com.helios.kmptranslator.core.presentation.UiHistoryItem
@@ -50,21 +47,19 @@ fun TranslateHistoryScreen(
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
 
-    CollapsingToolbarLayout(
-        title = "History",
+    CenteredTitleScrollAppBar(
+        title = stringResource(R.string.history),
         subTitle = if (uiState.history.isNotEmpty()) stringResource(R.string.translations_are_deleted_after_24_hours) else null,
-        initiallyCollapsed = uiState.history.isEmpty(),
         navigationIcon = {
             IconButton(onClick = onNavigateUp) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = stringResource(R.string.navigate_up)
                 )
             }
         },
         action = {
-            if (uiState.history.isEmpty()) return@CollapsingToolbarLayout
-
+            if (uiState.history.isEmpty()) return@CenteredTitleScrollAppBar
             if (uiState.menuExpanded) {
                 Box(
                     modifier = Modifier
@@ -97,36 +92,14 @@ fun TranslateHistoryScreen(
                 }
             }
         },
-        modifier = Modifier.clickable(
-            interactionSource = null,
-            indication = null,
-        ) {
-            if (uiState.menuExpanded) {
-                onEvent(TranslateHistoryEvent.ToggleMenu(forceClose = true))
-            }
-        }
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
-        ) {
-            if (uiState.history.isEmpty()) {
-                item {
-                    TranslateHistoryEmptyPlaceholder(modifier = Modifier.fillParentMaxSize())
-                }
-            } else {
+        content = {
+            if (uiState.history.isNotEmpty()) {
                 items(uiState.history) { historyItem ->
                     TranslationHistoryItem(
                         historyItem = historyItem,
                         onCopyClick = {
                             clipboardManager.setText(
-                                buildAnnotatedString {
-                                    append(it)
-                                }
+                                buildAnnotatedString { append(it) }
                             )
                             Toast.makeText(
                                 context,
@@ -134,12 +107,18 @@ fun TranslateHistoryScreen(
                                 Toast.LENGTH_SHORT
                             ).show()
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp, horizontal = 16.dp)
                     )
+                }
+            } else {
+                item {
+                    TranslateHistoryEmptyPlaceholder(modifier = Modifier.fillParentMaxSize())
                 }
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -147,15 +126,18 @@ fun TranslateHistoryEmptyPlaceholder(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = stringResource(R.string.no_items), style = MaterialTheme.typography.bodyLarge)
+        Text(
+            text = stringResource(R.string.no_items),
+            style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground)
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(R.string.translations_are_deleted_after_24_hours),
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onBackground)
         )
     }
 }

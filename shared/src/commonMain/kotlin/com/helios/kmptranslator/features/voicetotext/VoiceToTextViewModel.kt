@@ -1,5 +1,6 @@
 package com.helios.kmptranslator.features.voicetotext
 
+import co.touchlab.kermit.Logger
 import com.helios.kmptranslator.core.domain.usecase.TranslateUseCase
 import com.helios.kmptranslator.core.domain.util.Result
 import com.helios.kmptranslator.core.presentation.UiLanguage
@@ -37,6 +38,7 @@ class VoiceToTextViewModel(
         viewModelScope.launch {
             parser.state.collect { parserState ->
                 if (!parserState.isSpeaking) {
+                    Logger.d(tag = "DUY", messageString = "TranslateIfNeeded")
                     translateIfNeeded()
                 }
             }
@@ -78,9 +80,6 @@ class VoiceToTextViewModel(
                 )
 
                 is ConversationTranslateEvent.StopChoosingLanguage -> handleStopChoosingLanguage()
-                is ConversationTranslateEvent.OpenHistory -> {
-
-                }
 
                 is ConversationTranslateEvent.ToggleFaceToFaceMode -> {
                     _state.update {
@@ -163,6 +162,8 @@ class VoiceToTextViewModel(
 
     private fun translateIfNeeded() {
         val state = state.value
+        val parserState = parser.state.value
+
         if (state.isTranslating) {
             return
         }
@@ -171,8 +172,7 @@ class VoiceToTextViewModel(
             if (state.personTalking == ConversationTranslateUiState.TalkingPerson.PERSON_ONE) state.personOne.language.language else state.personTwo.language.language
         val toLanguage =
             if (state.personTalking == ConversationTranslateUiState.TalkingPerson.PERSON_ONE) state.personTwo.language.language else state.personOne.language.language
-        val fromText =
-            if (state.personTalking == ConversationTranslateUiState.TalkingPerson.PERSON_ONE) state.personOne.text else state.personTwo.text
+        val fromText = parserState.result
 
         if (fromText.isBlank()) {
             return

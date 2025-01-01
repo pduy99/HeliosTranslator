@@ -30,5 +30,9 @@ sealed class TranslateEvent {
 
     data object ReadAloudText : TranslateEvent()
 
-    data object OpenHistory : TranslateEvent()
+    data object OpenHistoryScreen : TranslateEvent()
+
+    data object OpenCameraTranslateScreen : TranslateEvent()
+
+    data object OpenConversationTranslateScreen : TranslateEvent()
 }

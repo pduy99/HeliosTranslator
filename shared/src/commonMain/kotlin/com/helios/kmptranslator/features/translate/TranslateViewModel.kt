@@ -149,9 +149,7 @@ class TranslateViewModel(
                 }
             }
 
-            TranslateEvent.OpenHistory -> {
-
-            }
+            else -> Unit
         }
     }
 

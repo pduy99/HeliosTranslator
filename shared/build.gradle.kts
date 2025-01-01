@@ -82,6 +82,7 @@ kotlin {
                 implementation(libs.ktor.client.logging)
                 implementation(libs.kotlinDateTime)
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.touchlab.kermit)
             }
         }
         val commonTest by getting {

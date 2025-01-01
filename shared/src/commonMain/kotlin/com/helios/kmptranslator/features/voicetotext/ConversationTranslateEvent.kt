@@ -19,7 +19,5 @@ sealed class ConversationTranslateEvent {
     data class ToggleRecording(val person: ConversationTranslateUiState.TalkingPerson) :
         ConversationTranslateEvent()
 
-    data object OpenHistory : ConversationTranslateEvent()
-
     data object ToggleFaceToFaceMode : ConversationTranslateEvent()
 }

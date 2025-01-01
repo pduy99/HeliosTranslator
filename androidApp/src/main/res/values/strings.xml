@@ -32,4 +32,5 @@
     <string name="translations_are_deleted_after_24_hours">Translations are deleted after 24 hours.</string>
     <string name="no_items">No items</string>
     <string name="delete_history">Delete history</string>
+    <string name="navigate_up">Navigate up</string>
 </resources>

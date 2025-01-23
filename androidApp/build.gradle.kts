@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.compose.material3.windowSizeClass)
     implementation(libs.compose.material3.adaptiveNavigationSuite)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.compose.material.extended.icons)
 
     // Hilt
@@ -67,6 +68,15 @@ dependencies {
 
     // Lottie
     implementation(libs.lottieCompose)
+
+    // CameraX
+    implementation(libs.camerax.core)
+    implementation(libs.camerax.camera2)
+    implementation(libs.camerax.lifecycle)
+    implementation(libs.camerax.view)
+
+    // Accompanist
+    implementation(libs.accompanist.permissions)
 
     kspAndroidTest(libs.hiltAndroidCompiler)
     debugImplementation(libs.compose.ui.tooling)

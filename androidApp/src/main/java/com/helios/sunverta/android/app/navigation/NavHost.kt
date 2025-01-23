@@ -41,7 +41,14 @@ fun AppNavHost(
                 navController.navigateUp()
             },
         )
-        scanTranslateScreen()
+        scanTranslateScreen(
+            onPermissionDenied = {
+                navController.navigateUp()
+            },
+            onNavigateUp = {
+                navController.navigateUp()
+            }
+        )
         settingScreen()
         translateHistoryScreen(
             onNavigateUp = {

@@ -1,24 +1,24 @@
-package com.helios.sunverta.android.app.navigation
+package com.helios.kmptranslator.android.app.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.helios.sunverta.android.features.conversation.navigation.VOICE_TRANSLATE_ROUTE
-import com.helios.sunverta.android.features.conversation.navigation.voiceTranslateScreen
-import com.helios.sunverta.android.features.history.navigation.TRANSLATE_HISTORY_ROUTE
-import com.helios.sunverta.android.features.history.navigation.translateHistoryScreen
-import com.helios.sunverta.android.features.scan.navigation.SCAN_TRANSLATE_ROUTE
-import com.helios.sunverta.android.features.scan.navigation.scanTranslateScreen
-import com.helios.sunverta.android.features.settings.navigation.settingScreen
-import com.helios.sunverta.android.features.text.navigation.TEXT_TRANSLATE_ROUTE
-import com.helios.sunverta.android.features.text.navigation.textTranslateScreen
+import com.helios.kmptranslator.android.features.conversation.navigation.VOICE_TRANSLATE_ROUTE
+import com.helios.kmptranslator.android.features.conversation.navigation.voiceTranslateScreen
+import com.helios.kmptranslator.android.features.history.navigation.TranslateHistoryDestination
+import com.helios.kmptranslator.android.features.history.navigation.translateHistoryScreen
+import com.helios.kmptranslator.android.features.scan.navigation.ScanTranslateDestination
+import com.helios.kmptranslator.android.features.scan.navigation.scanTranslateScreen
+import com.helios.kmptranslator.android.features.settings.navigation.settingScreen
+import com.helios.kmptranslator.android.features.text.navigation.TextTranslateDestination
+import com.helios.kmptranslator.android.features.text.navigation.textTranslateScreen
 
 @Composable
 fun AppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = TEXT_TRANSLATE_ROUTE
+    startDestination: Any = TextTranslateDestination
 ) {
     NavHost(
         navController = navController,
@@ -27,13 +27,13 @@ fun AppNavHost(
     ) {
         textTranslateScreen(
             onOpenHistoryScreen = {
-                navController.navigate(TRANSLATE_HISTORY_ROUTE)
+                navController.navigate(TranslateHistoryDestination)
             },
             onOpenConversationTranslateScreen = {
                 navController.navigate(VOICE_TRANSLATE_ROUTE)
             },
             onOpenCameraTranslateScreen = {
-                navController.navigate(SCAN_TRANSLATE_ROUTE)
+                navController.navigate(ScanTranslateDestination)
             }
         )
         voiceTranslateScreen(

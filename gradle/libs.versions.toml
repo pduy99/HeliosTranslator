@@ -1,9 +1,9 @@
 [versions]
-composeBom = "2024.12.01"
-kotlin = "2.0.21"
+composeBom = "2025.01.01"
+kotlin = "2.1.10"
 compose-material3 = "1.3.1"
 compose-material3-adaptiveNavigationSuite = "1.3.1"
-androidx-activityCompose = "1.9.3"
+androidx-activityCompose = "1.10.0"
 dagger = "2.51.1"
 kotlinxCoroutinesCore = "1.9.0"
 slf4jSimple = "2.0.9"
@@ -13,11 +13,11 @@ assertK = "0.25"
 turbine = "1.1.0"
 coilComposeVersion = "2.6.0"
 kotlinDateTime = "0.6.1"
-ksp = "2.0.21-1.0.28"
+ksp = "2.1.10-1.0.29"
 version-catalog-update = "0.8.4"
 hilt = "2.51.1"
 hiltExt = "1.2.0"
-androidGradlePlugin = "8.7.0-rc01"
+androidGradlePlugin = "8.7.3"
 gradle-versions = "0.51.0"
 androidxHiltNavigationCompose = "1.2.0"
 lottieCompose = "6.4.1"
@@ -25,6 +25,7 @@ kermit = "2.0.5"
 cameraX = "1.4.1"
 accompanist = "0.37.0"
 
+composeNavigation = "2.8.6"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -39,6 +40,7 @@ compose-material3-adaptiveNavigationSuite = { module = "androidx.compose.materia
 compose-material-extended-icons = {module = "androidx.compose.material:material-icons-extended"}
 hiltAndroidCompiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-ext-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltExt" }
@@ -68,6 +70,8 @@ accompanist-permissions = { module = "com.google.accompanist:accompanist-permiss
 # TESTING
 assertK = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertK" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "composeNavigation" }
+
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

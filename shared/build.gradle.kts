@@ -140,6 +140,13 @@ sqldelight {
     }
 }
 
-tasks.named("build") {
+tasks.named("preBuild") {
     dependsOn(buildConfigGenerator)
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
+        freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+    }
 }

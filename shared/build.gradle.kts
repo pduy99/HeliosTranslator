@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.util.Properties
@@ -8,6 +10,8 @@ plugins {
     alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose)
 }
 
 val buildConfigGenerator by tasks.registering(Sync::class) {
@@ -45,13 +49,7 @@ val buildConfigGenerator by tasks.registering(Sync::class) {
 }
 
 kotlin {
-    androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-    }
+    androidTarget()
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -83,6 +81,10 @@ kotlin {
                 implementation(libs.kotlinDateTime)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.touchlab.kermit)
+                implementation(compose.ui)
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
             }
         }
         val commonTest by getting {

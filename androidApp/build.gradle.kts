@@ -79,7 +79,11 @@ dependencies {
     // Accompanist
     implementation(libs.accompanist.permissions)
 
+    // MlKit
+    implementation(libs.mlkit.text.recognition)
+
     kspAndroidTest(libs.hiltAndroidCompiler)
     debugImplementation(libs.compose.ui.tooling)
     androidTestImplementation(libs.hiltTesting)
+    androidTestImplementation(libs.androidx.navigation.testing)
 }

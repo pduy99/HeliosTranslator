@@ -26,7 +26,7 @@ class ScanTranslateViewModel(
 
     fun onEvent(event: ScanTranslateEvent) {
         when (event) {
-            is ScanTranslateEvent.CaptureImage -> {
+            is ScanTranslateEvent.TranslateImage -> {
                 _state.update {
                     it.copy(capturedImage = event.image)
                 }
@@ -54,6 +54,16 @@ class ScanTranslateViewModel(
                         capturedImage = null
                     )
                 }
+            }
+
+            is ScanTranslateEvent.ToggleTorch -> {
+                _state.update {
+                    it.copy(isTorchEnable = !it.isTorchEnable)
+                }
+            }
+
+            else -> {
+
             }
         }
     }

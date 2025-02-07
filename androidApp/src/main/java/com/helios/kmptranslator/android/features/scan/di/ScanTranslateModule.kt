@@ -15,7 +15,8 @@ object ScanTranslateModule {
 
     @Provides
     @ViewModelScoped
-    fun provideImageTranslator(translateUseCase: TranslateUseCase): ImageTranslator = AndroidImageTranslator(
-        translateUseCase = translateUseCase
-    )
+    fun provideImageTranslator(translateUseCase: TranslateUseCase): ImageTranslator =
+        AndroidImageTranslator(
+            translateUseCase = translateUseCase
+        )
 }

@@ -24,12 +24,17 @@ class KtorTranslateDataSource(
         fromText: String
     ): Result<String, TranslateError.Network> {
         try {
+            val isAllUppercase = fromText == fromText.uppercase()
+            val isFirstLetterUppercase =
+                fromText.first().isUpperCase() && fromText.drop(1) == fromText.drop(1).lowercase()
+            val lowercaseText = fromText.lowercase()
+
             val response = httpClient.post {
                 url(BuildKonfig.BASE_URL + "/translate")
                 contentType(ContentType.Application.Json)
                 setBody(
                     TranslateDto(
-                        textToTranslate = fromText,
+                        textToTranslate = lowercaseText,
                         sourceLanguageCode = fromLanguageCode,
                         targetLanguageCode = toLanguageCode
                     )
@@ -39,7 +44,15 @@ class KtorTranslateDataSource(
             return when (response.status.value) {
                 in 200..299 -> {
                     val result = response.body<TranslatedDto>()
-                    Result.Success(result.translatedText)
+                    val finalText = when {
+                        isAllUppercase -> result.translatedText.uppercase()
+                        isFirstLetterUppercase -> result.translatedText.replaceFirstChar {
+                            if (it.isLowerCase()) it.uppercase() else it.toString()
+                        }
+
+                        else -> result.translatedText
+                    }
+                    Result.Success(finalText)
                 }
 
                 500 -> Result.Failure(TranslateError.Network.SERVER_ERROR)

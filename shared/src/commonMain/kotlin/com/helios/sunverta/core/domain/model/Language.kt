@@ -1,0 +1,36 @@
+package com.helios.sunverta.core.domain.model
+
+enum class Language(
+    val langCode: String,
+    val bcp47Code: String,
+    val langName: String
+) {
+    ENGLISH("en", "en-US", "English"),
+    ARABIC("ar", "ar-SA", "Arabic"),
+    AZERBAIJANI("az", "az-AZ", "Azerbaijani"),
+    CHINESE("zh", "zh-CN", "Chinese"),
+    CZECH("cs", "cs-CZ", "Czech"),
+    DANISH("da", "da-DK", "Danish"),
+    DUTCH("nl", "nl-NL", "Dutch"),
+    FINNISH("fi", "fi-FI", "Finnish"),
+    FRENCH("fr", "fr-FR", "French"),
+    GERMAN("de", "de-DE", "German"),
+    GREEK("el", "el-GR", "Greek"),
+    HEBREW("he", "he-IL", "Hebrew"),
+    HINDI("hi", "hi-IN", "Hindi"),
+    HUNGARIAN("hu", "hu-HU", "Hungarian"),
+    INDONESIAN("id", "id-ID", "Indonesian"),
+    IRISH("ga", "ga-IE", "Irish"),
+    ITALIAN("it", "it-IT", "Italian"),
+    JAPANESE("ja", "ja-JP", "Japanese"),
+    KOREAN("ko", "ko-KR", "Korean"),
+    PERSIAN("fa", "fa-IR", "Persian"),
+    POLISH("pl", "pl-PL", "Polish"),
+    PORTUGUESE("pt", "pt-PT", "Portuguese"),
+    RUSSIAN("ru", "ru-RU", "Russian"),
+    SLOVAK("sk", "sk-SK", "Slovak"),
+    SPANISH("es", "es-ES", "Spanish"),
+    SWEDISH("sv", "sv-SE", "Swedish"),
+    TURKISH("tr", "tr-TR", "Turkish"),
+    UKRAINIAN("uk", "uk-UA", "Ukrainian"),
+}

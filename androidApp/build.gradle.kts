@@ -8,10 +8,10 @@ plugins {
 }
 
 android {
-    namespace = "com.helios.kmptranslator.android"
+    namespace = "com.helios.sunverta.android"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.helios.kmptranslator.android.beta"
+        applicationId = "com.helios.sunverta.android"
         minSdk = 25
         targetSdk = 34
         versionCode = 1

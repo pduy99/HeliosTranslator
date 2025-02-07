@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Sunverta</string>
     <string name="close_language_picker">close language picker</string>
     <string name="open">Open language picker</string>
     <string name="swap_languages">Swap languages</string>

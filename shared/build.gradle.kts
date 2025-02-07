@@ -28,7 +28,7 @@ val buildConfigGenerator by tasks.registering(Sync::class) {
     from(
         resources.text.fromString(
             """
-        |package com.helios.kmptranslator
+        |package com.helios.sunverta
         |
         |object BuildKonfig {
         |  const val BASE_URL = "$baseUrl"
@@ -38,7 +38,7 @@ val buildConfigGenerator by tasks.registering(Sync::class) {
         )
     ) {
         rename { "BuildKonfig.kt" } // set the file name
-        into("com/helios/kmptranslator") // change the directory to match the package
+        into("com/helios/sunverta") // change the directory to match the package
     }
 
     into(layout.buildDirectory.dir("generated-src/kotlin/"))
@@ -126,7 +126,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.helios.kmptranslator"
+    namespace = "com.helios.sunverta"
     compileSdk = 34
     defaultConfig {
         minSdk = 25
@@ -135,7 +135,7 @@ android {
 
 sqldelight {
     database("TranslateDatabase") {
-        packageName = "com.helios.kmptranslator.database"
+        packageName = "com.helios.sunverta.database"
         sourceFolders = listOf("sqldelight")
     }
 }

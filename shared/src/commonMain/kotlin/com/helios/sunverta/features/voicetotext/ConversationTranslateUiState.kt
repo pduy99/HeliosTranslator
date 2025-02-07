@@ -1,7 +1,7 @@
 package com.helios.sunverta.features.voicetotext
 
+import com.helios.sunverta.core.data.model.TranslateError
 import com.helios.sunverta.core.presentation.UiLanguage
-import com.helios.sunverta.features.translate.TranslateError
 
 data class ConversationTranslateUiState(
     val personOne: PersonState = PersonState(language = UiLanguage.byCode("en")),

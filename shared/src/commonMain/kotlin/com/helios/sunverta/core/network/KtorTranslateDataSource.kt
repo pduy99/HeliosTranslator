@@ -2,10 +2,10 @@ package com.helios.sunverta.core.network
 
 import com.helios.sunverta.BuildKonfig
 import com.helios.sunverta.core.data.datasource.TranslateDataSource
-import com.helios.sunverta.core.domain.util.Result
+import com.helios.sunverta.core.data.model.TranslateError
 import com.helios.sunverta.core.network.dto.TranslateDto
 import com.helios.sunverta.core.network.dto.TranslatedDto
-import com.helios.sunverta.features.translate.TranslateError
+import com.helios.sunverta.core.result.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -13,7 +13,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.utils.io.errors.IOException
+import kotlinx.io.IOException
 
 class KtorTranslateDataSource(
     private val httpClient: HttpClient,

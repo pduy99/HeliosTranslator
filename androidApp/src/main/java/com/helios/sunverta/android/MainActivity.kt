@@ -8,7 +8,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
-import com.helios.sunverta.android.app.ui.TranslateApp
+import com.helios.sunverta.android.app.ui.Sunverta
 import com.helios.sunverta.android.core.theme.HeliosTranslatorTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             HeliosTranslatorTheme(darkTheme = true) {
-                TranslateApp(navController = rememberNavController())
+                Sunverta(navController = rememberNavController())
             }
         }
     }

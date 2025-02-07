@@ -1,18 +1,18 @@
-package com.helios.kmptranslator.android.app.navigation
+package com.helios.sunverta.android.app.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.helios.kmptranslator.android.features.conversation.navigation.VOICE_TRANSLATE_ROUTE
-import com.helios.kmptranslator.android.features.conversation.navigation.voiceTranslateScreen
-import com.helios.kmptranslator.android.features.history.navigation.TranslateHistoryDestination
-import com.helios.kmptranslator.android.features.history.navigation.translateHistoryScreen
-import com.helios.kmptranslator.android.features.scan.navigation.ScanTranslateDestination
-import com.helios.kmptranslator.android.features.scan.navigation.scanTranslateScreen
-import com.helios.kmptranslator.android.features.settings.navigation.settingScreen
+import com.helios.sunverta.android.features.conversation.navigation.VoiceTranslateDestination
+import com.helios.sunverta.android.features.conversation.navigation.voiceTranslateScreen
 import com.helios.kmptranslator.android.features.text.navigation.TextTranslateDestination
 import com.helios.kmptranslator.android.features.text.navigation.textTranslateScreen
+import com.helios.sunverta.android.features.history.navigation.TranslateHistoryDestination
+import com.helios.sunverta.android.features.history.navigation.translateHistoryScreen
+import com.helios.sunverta.android.features.scan.navigation.ScanTranslateDestination
+import com.helios.sunverta.android.features.scan.navigation.scanTranslateScreen
+import com.helios.sunverta.android.features.settings.navigation.settingScreen
 
 @Composable
 fun AppNavHost(
@@ -30,7 +30,7 @@ fun AppNavHost(
                 navController.navigate(TranslateHistoryDestination)
             },
             onOpenConversationTranslateScreen = {
-                navController.navigate(VOICE_TRANSLATE_ROUTE)
+                navController.navigate(VoiceTranslateDestination)
             },
             onOpenCameraTranslateScreen = {
                 navController.navigate(ScanTranslateDestination)

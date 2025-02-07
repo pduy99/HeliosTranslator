@@ -1,5 +1,6 @@
 package com.helios.sunverta.features.translate
 
+import com.helios.sunverta.core.data.model.TranslateError
 import com.helios.sunverta.core.presentation.UiHistoryItem
 import com.helios.sunverta.core.presentation.UiLanguage
 

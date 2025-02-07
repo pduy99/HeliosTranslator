@@ -23,8 +23,9 @@ fun VoiceRecorderDisplay(
 ) {
     val onSurfaceContainer = MaterialTheme.colorScheme.onSurface
 
-    Canvas(modifier = modifier
-        .padding(start = 0.dp, top = 24.dp, bottom = 24.dp, end = 16.dp),
+    Canvas(
+        modifier = modifier
+            .padding(start = 0.dp, top = 24.dp, bottom = 24.dp, end = 16.dp),
         onDraw = {
             val powerRatiWidth = 3.dp.toPx()
             val powerRatioCount = (size.width / (2 * powerRatiWidth)).toInt()

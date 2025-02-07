@@ -1,12 +1,12 @@
-package com.helios.kmptranslator.android.features.history.navigation
+package com.helios.sunverta.android.features.history.navigation
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.helios.kmptranslator.android.features.history.presentation.AndroidTranslateHistoryViewModel
-import com.helios.kmptranslator.android.features.history.presentation.TranslateHistoryScreen
+import com.helios.sunverta.android.features.history.presentation.AndroidTranslateHistoryViewModel
+import com.helios.sunverta.android.features.history.presentation.TranslateHistoryScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

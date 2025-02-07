@@ -2,9 +2,9 @@ package com.helios.sunverta.features.translate
 
 import com.helios.sunverta.core.domain.usecase.GetTranslateHistoryUseCase
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
-import com.helios.sunverta.core.domain.util.Result
 import com.helios.sunverta.core.presentation.UiHistoryItem
 import com.helios.sunverta.core.presentation.UiLanguage
+import com.helios.sunverta.core.result.Result
 import com.helios.sunverta.core.speech.TextToSpeech
 import com.helios.sunverta.core.util.toCommonStateFlow
 import kotlinx.coroutines.CoroutineScope

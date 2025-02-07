@@ -1,8 +1,8 @@
 package com.helios.sunverta.android.features.text.presentation
 
 import com.helios.sunverta.android.R
+import com.helios.sunverta.core.data.model.TranslateError
 import com.helios.sunverta.core.presentation.UiText
-import com.helios.sunverta.features.translate.TranslateError
 
 fun TranslateError.asUiText(): UiText {
     return when (this) {

@@ -2,8 +2,8 @@ package com.helios.sunverta.features.voicetotext
 
 import co.touchlab.kermit.Logger
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
-import com.helios.sunverta.core.domain.util.Result
 import com.helios.sunverta.core.presentation.UiLanguage
+import com.helios.sunverta.core.result.Result
 import com.helios.sunverta.features.voicetotext.domain.VoiceToTextParser
 import com.helios.sunverta.features.voicetotext.domain.VoiceToTextParserState
 import kotlinx.coroutines.CoroutineScope

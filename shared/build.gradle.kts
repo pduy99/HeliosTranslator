@@ -129,7 +129,7 @@ kotlin {
 
 android {
     namespace = "com.helios.sunverta"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         minSdk = 25
     }

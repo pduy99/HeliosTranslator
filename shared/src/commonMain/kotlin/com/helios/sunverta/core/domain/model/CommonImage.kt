@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.core.domain.model
+package com.helios.sunverta.core.domain.model
 
 import androidx.compose.ui.graphics.ImageBitmap
 

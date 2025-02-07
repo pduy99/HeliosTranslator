@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.helios.sunverta.android"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.helios.sunverta.android"
         minSdk = 25

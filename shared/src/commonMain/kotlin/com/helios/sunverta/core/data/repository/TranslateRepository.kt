@@ -1,7 +1,7 @@
 package com.helios.sunverta.core.data.repository
 
-import com.helios.sunverta.core.domain.util.Result
-import com.helios.sunverta.features.translate.TranslateError
+import com.helios.sunverta.core.data.model.TranslateError
+import com.helios.sunverta.core.result.Result
 
 interface TranslateRepository {
 

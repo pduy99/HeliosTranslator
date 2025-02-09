@@ -1,6 +1,6 @@
-package com.helios.sunverta.features.translate
+package com.helios.sunverta.core.data.model
 
-import com.helios.sunverta.core.domain.util.Error
+import com.helios.sunverta.core.result.Error
 
 sealed interface TranslateError : Error {
     enum class Network : TranslateError {

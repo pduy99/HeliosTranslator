@@ -1,4 +1,4 @@
-package com.helios.sunverta.android.features.text.navigation
+package com.helios.kmptranslator.android.features.text.navigation
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -8,16 +8,17 @@ import androidx.navigation.compose.composable
 import com.helios.sunverta.android.features.text.presentation.AndroidTranslateViewModel
 import com.helios.sunverta.android.features.text.presentation.TextTranslateScreen
 import com.helios.sunverta.features.translate.TranslateEvent
+import kotlinx.serialization.Serializable
 
-const val TEXT_TRANSLATE_ROUTE = "text_translate"
+@Serializable
+object TextTranslateDestination
 
 fun NavGraphBuilder.textTranslateScreen(
     onOpenHistoryScreen: () -> Unit,
     onOpenCameraTranslateScreen: () -> Unit,
     onOpenConversationTranslateScreen: () -> Unit
 ) {
-    composable(route = TEXT_TRANSLATE_ROUTE) {
-
+    composable<TextTranslateDestination> {
         val viewModel = hiltViewModel<AndroidTranslateViewModel>()
         val state by viewModel.state.collectAsState()
 
@@ -33,5 +34,4 @@ fun NavGraphBuilder.textTranslateScreen(
             }
         )
     }
-
 }

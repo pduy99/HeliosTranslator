@@ -1,4 +1,4 @@
-package com.helios.sunverta.core.domain.util
+package com.helios.sunverta.core.result
 
 typealias RootError = Error
 

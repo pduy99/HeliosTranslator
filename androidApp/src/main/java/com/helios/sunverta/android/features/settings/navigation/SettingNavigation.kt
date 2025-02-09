@@ -1,19 +1,15 @@
 package com.helios.sunverta.android.features.settings.navigation
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.helios.sunverta.android.features.settings.SettingScreen
+import kotlinx.serialization.Serializable
 
-const val SETTINGS_ROUTE = "settings"
-
-fun NavController.navigateToSettings(navOptions: NavOptions) {
-    navigate(SETTINGS_ROUTE, navOptions)
-}
+@Serializable
+object SettingDestination
 
 fun NavGraphBuilder.settingScreen() {
-    composable(route = SETTINGS_ROUTE) {
+    composable<SettingDestination> {
         SettingScreen()
     }
 }

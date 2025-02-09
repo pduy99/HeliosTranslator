@@ -10,15 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import com.helios.sunverta.android.app.navigation.AppNavHost
-import com.helios.sunverta.android.app.navigation.TopLevelDestination
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TranslateApp(
+fun Sunverta(
     modifier: Modifier = Modifier,
     navController: NavHostController,
 ) {
@@ -33,18 +30,5 @@ fun TranslateApp(
             modifier = modifier
                 .padding(padding)
         )
-    }
-}
-
-private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) =
-    this?.hierarchy?.any {
-        it.route?.contains(destination.name, true) ?: false
-    } ?: false
-
-private fun isTopLevelDestination(destination: NavDestination?): Boolean {
-    return TopLevelDestination.entries.any { topLevelDest ->
-        destination?.hierarchy?.any {
-            it.route?.contains(topLevelDest.name, true) ?: false
-        } ?: false
     }
 }

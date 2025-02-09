@@ -7,13 +7,15 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.helios.sunverta.android.features.history.presentation.AndroidTranslateHistoryViewModel
 import com.helios.sunverta.android.features.history.presentation.TranslateHistoryScreen
+import kotlinx.serialization.Serializable
 
-const val TRANSLATE_HISTORY_ROUTE = "translate_history"
+@Serializable
+object TranslateHistoryDestination
 
 fun NavGraphBuilder.translateHistoryScreen(
     onNavigateUp: () -> Unit
 ) {
-    composable(route = TRANSLATE_HISTORY_ROUTE) {
+    composable<TranslateHistoryDestination> {
 
         val viewModel = hiltViewModel<AndroidTranslateHistoryViewModel>()
         val uiState by viewModel.state.collectAsState()

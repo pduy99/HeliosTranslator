@@ -9,11 +9,11 @@ plugins {
 
 android {
     namespace = "com.helios.sunverta.android"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.helios.sunverta.android"
         minSdk = 25
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
@@ -51,7 +51,9 @@ dependencies {
     implementation(libs.compose.material3.windowSizeClass)
     implementation(libs.compose.material3.adaptiveNavigationSuite)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.compose.material.extended.icons)
+    implementation(libs.androidx.navigation.compose)
 
     // Hilt
     implementation(libs.androidx.hilt.navigation.compose)
@@ -68,7 +70,20 @@ dependencies {
     // Lottie
     implementation(libs.lottieCompose)
 
+    // CameraX
+    implementation(libs.camerax.core)
+    implementation(libs.camerax.camera2)
+    implementation(libs.camerax.lifecycle)
+    implementation(libs.camerax.compose)
+
+    // Accompanist
+    implementation(libs.accompanist.permissions)
+
+    // MlKit
+    implementation(libs.mlkit.text.recognition)
+
     kspAndroidTest(libs.hiltAndroidCompiler)
     debugImplementation(libs.compose.ui.tooling)
     androidTestImplementation(libs.hiltTesting)
+    androidTestImplementation(libs.androidx.navigation.testing)
 }

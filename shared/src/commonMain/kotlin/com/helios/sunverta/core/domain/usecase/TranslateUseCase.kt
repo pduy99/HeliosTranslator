@@ -1,12 +1,12 @@
 package com.helios.sunverta.core.domain.usecase
 
+import com.helios.sunverta.core.data.model.TranslateError
 import com.helios.sunverta.core.data.repository.TranslateHistoryRepository
 import com.helios.sunverta.core.data.repository.TranslateRepository
 import com.helios.sunverta.core.domain.mapper.toEntity
 import com.helios.sunverta.core.domain.model.HistoryItem
 import com.helios.sunverta.core.domain.model.Language
-import com.helios.sunverta.core.domain.util.Result
-import com.helios.sunverta.features.translate.TranslateError
+import com.helios.sunverta.core.result.Result
 
 class TranslateUseCase(
     private val translateRepository: TranslateRepository,

@@ -2,10 +2,10 @@ package com.helios.sunverta.core.network
 
 import com.helios.sunverta.BuildKonfig
 import com.helios.sunverta.core.data.datasource.TranslateDataSource
-import com.helios.sunverta.core.domain.util.Result
+import com.helios.sunverta.core.data.model.TranslateError
 import com.helios.sunverta.core.network.dto.TranslateDto
 import com.helios.sunverta.core.network.dto.TranslatedDto
-import com.helios.sunverta.features.translate.TranslateError
+import com.helios.sunverta.core.result.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -13,7 +13,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.utils.io.errors.IOException
+import kotlinx.io.IOException
 
 class KtorTranslateDataSource(
     private val httpClient: HttpClient,
@@ -24,12 +24,17 @@ class KtorTranslateDataSource(
         fromText: String
     ): Result<String, TranslateError.Network> {
         try {
+            val isAllUppercase = fromText == fromText.uppercase()
+            val isFirstLetterUppercase =
+                fromText.first().isUpperCase() && fromText.drop(1) == fromText.drop(1).lowercase()
+            val lowercaseText = fromText.lowercase()
+
             val response = httpClient.post {
                 url(BuildKonfig.BASE_URL + "/translate")
                 contentType(ContentType.Application.Json)
                 setBody(
                     TranslateDto(
-                        textToTranslate = fromText,
+                        textToTranslate = lowercaseText,
                         sourceLanguageCode = fromLanguageCode,
                         targetLanguageCode = toLanguageCode
                     )
@@ -39,7 +44,15 @@ class KtorTranslateDataSource(
             return when (response.status.value) {
                 in 200..299 -> {
                     val result = response.body<TranslatedDto>()
-                    Result.Success(result.translatedText)
+                    val finalText = when {
+                        isAllUppercase -> result.translatedText.uppercase()
+                        isFirstLetterUppercase -> result.translatedText.replaceFirstChar {
+                            if (it.isLowerCase()) it.uppercase() else it.toString()
+                        }
+
+                        else -> result.translatedText
+                    }
+                    Result.Success(finalText)
                 }
 
                 500 -> Result.Failure(TranslateError.Network.SERVER_ERROR)

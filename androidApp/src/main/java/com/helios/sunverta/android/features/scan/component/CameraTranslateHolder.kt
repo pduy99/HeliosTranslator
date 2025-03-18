@@ -39,6 +39,7 @@ fun CameraTranslateHolder(
             toLanguage = toLanguage,
             isChoosingToLanguage = false,
             onEvent = { },
+            availableLanguages = emptyList(),
             modifier = Modifier
                 .fillMaxWidth()
                 .safeContentPadding()
@@ -52,8 +53,8 @@ fun CameraTranslateHolder(
 private fun CameraTranslateHolderPreview() {
     HeliosTranslatorTheme {
         CameraTranslateHolder(
-            fromLanguage = UiLanguage.byCode("en"),
-            toLanguage = UiLanguage.byCode("ja"),
+            fromLanguage = UiLanguage.fromLanguageCode("en"),
+            toLanguage = UiLanguage.fromLanguageCode("ja"),
             content = {
                 Box(
                     modifier = Modifier

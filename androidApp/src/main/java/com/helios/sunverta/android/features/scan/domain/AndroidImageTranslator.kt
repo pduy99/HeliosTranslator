@@ -10,7 +10,7 @@ import com.helios.sunverta.core.domain.model.Language
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
 import com.helios.sunverta.core.result.Result
 import com.helios.sunverta.features.scantranslate.domain.ImageTranslator
-import com.helios.sunverta.features.scantranslate.domain.TextBlockData
+import com.helios.sunverta.features.scantranslate.domain.TextWithBound
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -29,7 +29,7 @@ class AndroidImageTranslator @Inject constructor(
         fromLanguage: Language,
         toLanguage: Language,
         image: CommonImage
-    ): List<TextBlockData> = withContext(Dispatchers.IO) {
+    ): List<TextWithBound> = withContext(Dispatchers.IO) {
         val textBlocks = detectTextFromImage(image.bitmap)
         val translatedTextBlocks = coroutineScope {
             textBlocks.map { block ->
@@ -50,15 +50,24 @@ class AndroidImageTranslator @Inject constructor(
         translatedTextBlocks.filterNotNull()
     }
 
-    suspend fun detectTextFromImage(bitmap: Bitmap): List<TextBlockData> =
+    suspend fun detectTextFromImage(bitmap: Bitmap): List<TextWithBound> =
         suspendCoroutine { continuation ->
             val image = InputImage.fromBitmap(bitmap, 0)
             val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
             recognizer.process(image)
                 .addOnSuccessListener { text ->
-                    val detectedTextBlocks = text.textBlocks.map { block ->
-                        TextBlockData(block.text, block.boundingBox?.toComposeRect())
+                    val detectedTextBlocks = mutableListOf<TextWithBound>()
+
+                    text.textBlocks.forEach { block ->
+                        block.lines.filter { it.confidence >= 0.5f }.forEach {
+                            detectedTextBlocks.add(
+                                TextWithBound(
+                                    it.text,
+                                    it.boundingBox?.toComposeRect()
+                                )
+                            )
+                        }
                     }
                     continuation.resume(detectedTextBlocks)
                 }
@@ -70,10 +79,10 @@ class AndroidImageTranslator @Inject constructor(
 
 fun Rect.toComposeRect(): androidx.compose.ui.geometry.Rect {
     return androidx.compose.ui.geometry.Rect(
-        this.left.toFloat(),
-        this.top.toFloat(),
-        this.right.toFloat(),
-        this.bottom.toFloat()
+        left = this.left.toFloat(),
+        top = this.top.toFloat(),
+        right = this.right.toFloat(),
+        bottom = this.bottom.toFloat()
     )
 }
 

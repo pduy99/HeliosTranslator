@@ -2,8 +2,8 @@ package com.helios.sunverta.android.features.scan.presentation
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.util.Log
 import android.util.Size
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -23,6 +23,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.helios.sunverta.core.data.repository.LanguageRepository
 import com.helios.sunverta.core.domain.model.CommonImage
 import com.helios.sunverta.features.scantranslate.ScanTranslateEvent
 import com.helios.sunverta.features.scantranslate.ScanTranslateViewModel
@@ -42,10 +43,12 @@ import kotlin.coroutines.suspendCoroutine
 @HiltViewModel
 class AndroidScanTranslateViewModel @Inject constructor(
     imageTranslator: ImageTranslator,
+    languageRepository: LanguageRepository
 ) : ViewModel() {
 
     private val viewModel = ScanTranslateViewModel(
         imageTranslator,
+        languageRepository,
         viewModelScope
     )
 
@@ -96,7 +99,6 @@ class AndroidScanTranslateViewModel @Inject constructor(
         try {
             awaitCancellation()
         } finally {
-            Log.d("DUY", "Unbind camera")
             processCameraProvider.unbindAll()
             this.camera = null
         }
@@ -120,20 +122,26 @@ class AndroidScanTranslateViewModel @Inject constructor(
             object : ImageCapture.OnImageCapturedCallback() {
                 override fun onCaptureSuccess(imageProxy: ImageProxy) {
                     super.onCaptureSuccess(imageProxy)
-                    val bitmap = imageProxy.toBitmap()
 
-                    val rotatedBitmap = Bitmap.createBitmap(
-                        bitmap,
-                        0,
-                        0,
-                        bitmap.width,
-                        bitmap.height,
-                        Matrix().apply { postRotate(90f) },
-                        true
-                    )
+                    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                    val bitmap = imageProxyToBitmap(imageProxy)
+
+                    val rotatedBitmap = if (rotationDegrees != 0) {
+                        val matrix = Matrix()
+                        matrix.postRotate(rotationDegrees.toFloat())
+                        Bitmap.createBitmap(
+                            bitmap,
+                            0, 0,
+                            bitmap.width, bitmap.height,
+                            matrix,
+                            true
+                        )
+                    } else {
+                        bitmap
+                    }
 
                     imageProxy.close()
-                    continuation.resume(rotatedBitmap)
+                    continuation.resume(CommonImage(rotatedBitmap, rotationDegrees))
                 }
 
                 override fun onError(exception: ImageCaptureException) {
@@ -141,6 +149,13 @@ class AndroidScanTranslateViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    private fun imageProxyToBitmap(imageProxy: ImageProxy): Bitmap {
+        val buffer = imageProxy.planes[0].buffer
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
 
     fun onEvent(event: ScanTranslateEvent) {
@@ -152,8 +167,8 @@ class AndroidScanTranslateViewModel @Inject constructor(
 
             is ScanTranslateEvent.CaptureImage -> {
                 viewModelScope.launch {
-                    val bitmap = captureImage()
-                    onEvent(ScanTranslateEvent.TranslateImage(CommonImage(bitmap)))
+                    val capturedImage = captureImage()
+                    onEvent(ScanTranslateEvent.TranslateImage(capturedImage))
                 }
             }
 
@@ -161,5 +176,12 @@ class AndroidScanTranslateViewModel @Inject constructor(
                 viewModel.onEvent(event)
             }
         }
+    }
+
+    fun cleanup() {
+        _surfaceRequest.update {
+            null
+        }
+        camera = null
     }
 }

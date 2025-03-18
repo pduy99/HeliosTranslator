@@ -38,13 +38,17 @@ fun NavGraphBuilder.scanTranslateScreen(
             surfaceRequest = surfaceRequest,
             onPermissionDenied = onPermissionDenied,
             onTapToFocus = viewModel::tapToFocus,
-            onNavigateUp = onNavigateUp,
+            onNavigateUp = {
+                viewModel.cleanup()
+                onNavigateUp()
+            },
             uiState = uiState,
             onEvent = viewModel::onEvent
         )
 
         BackHandler {
             if (uiState.capturedImage == null) {
+                viewModel.cleanup()
                 onNavigateUp()
             } else {
                 viewModel.onEvent(ScanTranslateEvent.Reset)

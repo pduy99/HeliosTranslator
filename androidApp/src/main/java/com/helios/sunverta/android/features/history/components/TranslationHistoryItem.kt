@@ -56,7 +56,7 @@ fun TranslationHistoryItem(
                 SmallLanguageIcon(language = historyItem.fromLanguage)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = historyItem.fromLanguage.language.langName,
+                    text = historyItem.fromLanguage.language.displayNameInEnglish!!,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -100,7 +100,7 @@ fun TranslationHistoryItem(
                 SmallLanguageIcon(language = historyItem.toLanguage)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = historyItem.toLanguage.language.langName,
+                    text = historyItem.toLanguage.language.displayNameInEnglish!!,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -142,8 +142,8 @@ fun TranslationHistoryItemPreview() {
     HeliosTranslatorTheme(darkTheme = true) {
         TranslationHistoryItem(
             historyItem = UiHistoryItem(
-                fromLanguage = UiLanguage.byCode("en"),
-                toLanguage = UiLanguage.byCode("ja"),
+                fromLanguage = UiLanguage.fromLanguageCode("en"),
+                toLanguage = UiLanguage.fromLanguageCode("ja"),
                 fromText = "Hello, world!",
                 toText = "¡Hola, mundo!",
                 id = 1

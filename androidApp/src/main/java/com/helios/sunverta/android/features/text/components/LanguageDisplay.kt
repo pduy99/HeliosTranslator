@@ -17,6 +17,9 @@ fun LanguageDisplay(language: UiLanguage, modifier: Modifier = Modifier) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         SmallLanguageIcon(language = language)
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = language.language.langName, color = MaterialTheme.colorScheme.onSurface)
+        Text(
+            text = language.language.displayNameInEnglish!!,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }

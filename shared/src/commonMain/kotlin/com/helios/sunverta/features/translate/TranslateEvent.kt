@@ -22,8 +22,6 @@ sealed class TranslateEvent {
 
     data object CloseTranslation : TranslateEvent()
 
-    data class SubmitVoiceResult(val voiceResult: String?) : TranslateEvent()
-
     data object EditTranslation : TranslateEvent()
 
     data object OnErrorSeen : TranslateEvent()

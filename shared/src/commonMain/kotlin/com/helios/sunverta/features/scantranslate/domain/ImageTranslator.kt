@@ -9,5 +9,5 @@ interface ImageTranslator {
         fromLanguage: Language,
         toLanguage: Language,
         image: CommonImage
-    ): List<TextBlockData>
+    ): List<TextWithBound>
 }

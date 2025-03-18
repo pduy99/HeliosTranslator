@@ -1,6 +1,8 @@
 package com.helios.sunverta.features.voicetotext
 
 import co.touchlab.kermit.Logger
+import com.helios.sunverta.core.data.repository.LanguageRepository
+import com.helios.sunverta.core.domain.model.Language
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
 import com.helios.sunverta.core.presentation.UiLanguage
 import com.helios.sunverta.core.result.Result
@@ -19,6 +21,7 @@ import kotlinx.coroutines.launch
 class VoiceToTextViewModel(
     private val parser: VoiceToTextParser,
     private val translateUseCase: TranslateUseCase,
+    private val languageRepository: LanguageRepository,
     coroutineScope: CoroutineScope? = null
 ) {
 
@@ -27,7 +30,13 @@ class VoiceToTextViewModel(
     private var translateJob: Job? = null
 
     private val _state = MutableStateFlow(ConversationTranslateUiState())
-    val state = combine(_state, parser.state, ::mergeStates)
+    val state = combine(
+        _state,
+        parser.state,
+        languageRepository.getToLanguage(),
+        languageRepository.getFromLanguage(),
+        ::mergeStates
+    )
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
@@ -43,21 +52,35 @@ class VoiceToTextViewModel(
                 }
             }
         }
+
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    availableLanguages = languageRepository.getAvailableLanguages().map {
+                        UiLanguage.fromLanguageCode(it.langCode)
+                    }
+                )
+            }
+        }
     }
 
     private fun mergeStates(
         uiState: ConversationTranslateUiState,
-        parserState: VoiceToTextParserState
+        parserState: VoiceToTextParserState,
+        toLanguage: Language,
+        fromLanguage: Language
     ): ConversationTranslateUiState {
         return uiState.copy(
             recordError = parserState.error,
             isListening = parserState.isSpeaking,
             powerRatio = parserState.powerRatio,
             personOne = uiState.personOne.copy(
+                language = UiLanguage.fromLanguageCode(fromLanguage.langCode),
                 text = if (uiState.personTalking == ConversationTranslateUiState.TalkingPerson.PERSON_ONE)
                     parserState.result else uiState.personOne.text
             ),
             personTwo = uiState.personTwo.copy(
+                language = UiLanguage.fromLanguageCode(toLanguage.langCode),
                 text = if (uiState.personTalking == ConversationTranslateUiState.TalkingPerson.PERSON_TWO)
                     parserState.result else uiState.personTwo.text
             ),
@@ -123,21 +146,28 @@ class VoiceToTextViewModel(
     ) {
         _state.update {
             when (person) {
-                ConversationTranslateUiState.TalkingPerson.PERSON_ONE ->
+                ConversationTranslateUiState.TalkingPerson.PERSON_ONE -> {
+                    viewModelScope.launch {
+                        languageRepository.saveFromLanguage(language.language)
+                    }
                     it.copy(
                         personOne = it.personOne.copy(
                             isChoosingLanguage = false,
-                            language = language
                         )
                     )
+                }
 
-                ConversationTranslateUiState.TalkingPerson.PERSON_TWO ->
+
+                ConversationTranslateUiState.TalkingPerson.PERSON_TWO -> {
+                    viewModelScope.launch {
+                        languageRepository.saveToLanguage(language.language)
+                    }
                     it.copy(
                         personTwo = it.personTwo.copy(
                             isChoosingLanguage = false,
-                            language = language
                         )
                     )
+                }
 
                 else -> it
             }
@@ -156,7 +186,9 @@ class VoiceToTextViewModel(
                     personTwo = it.personTwo.copy(text = "")
                 )
             }
-            parser.startListening(currentState.getCurrentLanguage(person).language.bcp47Code)
+            val languageCode = currentState.getCurrentLanguage(person).language.bcp47Code
+                ?: currentState.getCurrentLanguage(person).language.langCode
+            parser.startListening(languageCode)
         }
     }
 

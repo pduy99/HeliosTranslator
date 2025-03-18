@@ -1,18 +1,22 @@
 package com.helios.sunverta.features.scantranslate
 
 
-import com.helios.sunverta.core.util.CommonStateFlow
+import com.helios.sunverta.core.data.repository.LanguageRepository
+import com.helios.sunverta.core.presentation.UiLanguage
 import com.helios.sunverta.core.util.toCommonStateFlow
 import com.helios.sunverta.features.scantranslate.domain.ImageTranslator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ScanTranslateViewModel(
     val imageTranslator: ImageTranslator,
+    languageRepository: LanguageRepository,
     coroutineScope: CoroutineScope?
 ) {
 
@@ -23,7 +27,18 @@ class ScanTranslateViewModel(
         MutableStateFlow(
             ScanTranslateUiState()
         )
-    val state: CommonStateFlow<ScanTranslateUiState> = _state.asStateFlow().toCommonStateFlow()
+
+    val state = combine(
+        _state,
+        languageRepository.getToLanguage(),
+        languageRepository.getFromLanguage()
+    ) { state, toLanguage, fromLanguage ->
+        state.copy(
+            toLanguage = UiLanguage.fromLanguageCode(toLanguage.langCode),
+            fromLanguage = UiLanguage.fromLanguageCode(fromLanguage.langCode)
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ScanTranslateUiState())
+        .toCommonStateFlow()
 
     fun onEvent(event: ScanTranslateEvent) {
         when (event) {
@@ -42,7 +57,10 @@ class ScanTranslateViewModel(
                         image = event.image
                     )
                     _state.update {
-                        it.copy(isTranslating = false, translatedTextBlock = translatedTextBlock)
+                        it.copy(
+                            isTranslating = false,
+                            translatedTextBlock = translatedTextBlock
+                        )
                     }
                 }
             }

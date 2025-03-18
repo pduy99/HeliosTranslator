@@ -13,7 +13,7 @@ class SqlDelightTranslateHistoryDataSource(
     db: TranslateDatabase
 ) : TranslateHistoryDataSource {
 
-    private val queries = db.translateQueries
+    private val queries = db.translateHistoryQueries
 
     override fun getHistory(): CommonFlow<List<HistoryEntity>> {
         return queries.getHistory()

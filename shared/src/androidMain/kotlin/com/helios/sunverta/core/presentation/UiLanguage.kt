@@ -3,68 +3,61 @@ package com.helios.sunverta.core.presentation
 import androidx.annotation.DrawableRes
 import com.helios.sunverta.R
 import com.helios.sunverta.core.domain.model.Language
-import java.util.Locale
 
 actual class UiLanguage(
     @DrawableRes val drawableRes: Int,
     actual val language: Language
 ) {
-
-    fun toLocale(): Locale? {
-        return when (language) {
-            Language.ENGLISH -> Locale.ENGLISH
-            Language.CHINESE -> Locale.CHINESE
-            Language.FRENCH -> Locale.FRENCH
-            Language.GERMAN -> Locale.GERMAN
-            Language.ITALIAN -> Locale.ITALIAN
-            Language.JAPANESE -> Locale.JAPANESE
-            Language.KOREAN -> Locale.KOREAN
-            else -> null
-        }
-    }
-
     actual companion object {
-        actual fun byCode(languageCode: String): UiLanguage {
-            return allLanguages.find { it.language.langCode == languageCode }
-                ?: throw IllegalArgumentException("Unsupported language code")
+        actual fun fromLanguageCode(languageCode: String): UiLanguage {
+            val language = Language(langCode = languageCode)
+            return fromLanguage(language)
         }
 
-        actual val allLanguages: List<UiLanguage>
-            get() = Language.entries.map { language ->
-                UiLanguage(
-                    language = language,
-                    drawableRes = when (language) {
-                        Language.ENGLISH -> R.drawable.english
-                        Language.ARABIC -> R.drawable.arabic
-                        Language.AZERBAIJANI -> R.drawable.azerbaijani
-                        Language.CHINESE -> R.drawable.chinese
-                        Language.CZECH -> R.drawable.czech
-                        Language.DANISH -> R.drawable.danish
-                        Language.DUTCH -> R.drawable.dutch
-                        Language.FINNISH -> R.drawable.finnish
-                        Language.FRENCH -> R.drawable.french
-                        Language.GERMAN -> R.drawable.german
-                        Language.GREEK -> R.drawable.greek
-                        Language.HEBREW -> R.drawable.hebrew
-                        Language.HINDI -> R.drawable.hindi
-                        Language.HUNGARIAN -> R.drawable.hungarian
-                        Language.INDONESIAN -> R.drawable.indonesian
-                        Language.IRISH -> R.drawable.irish
-                        Language.ITALIAN -> R.drawable.italian
-                        Language.JAPANESE -> R.drawable.japanese
-                        Language.KOREAN -> R.drawable.korean
-                        Language.PERSIAN -> R.drawable.persian
-                        Language.POLISH -> R.drawable.polish
-                        Language.PORTUGUESE -> R.drawable.portuguese
-                        Language.RUSSIAN -> R.drawable.russian
-                        Language.SLOVAK -> R.drawable.slovak
-                        Language.SPANISH -> R.drawable.spanish
-                        Language.SWEDISH -> R.drawable.swedish
-                        Language.TURKISH -> R.drawable.turkish
-                        Language.UKRAINIAN -> R.drawable.ukrainian
+        actual fun fromLanguage(language: Language): UiLanguage {
+            return UiLanguage(
+                language = language,
+                drawableRes = when (language.langCode) {
+                    "en" -> R.drawable.english
+                    "ar" -> R.drawable.arabic
+                    "sq" -> R.drawable.albanian
+                    "bg" -> R.drawable.bulgaria
+                    "zt" -> R.drawable.taiwan
+                    "et" -> R.drawable.estonian
+                    "ms" -> R.drawable.malay
+                    "nb" -> R.drawable.norwegian
+                    "th" -> R.drawable.thai
+                    "az" -> R.drawable.azerbaijani
+                    "zh" -> R.drawable.chinese
+                    "cs" -> R.drawable.czech
+                    "da" -> R.drawable.danish
+                    "nl" -> R.drawable.dutch
+                    "fi" -> R.drawable.finnish
+                    "fr" -> R.drawable.french
+                    "de" -> R.drawable.german
+                    "el" -> R.drawable.greek
+                    "he" -> R.drawable.hebrew
+                    "hi" -> R.drawable.hindi
+                    "hu" -> R.drawable.hungarian
+                    "id" -> R.drawable.indonesian
+                    "ga" -> R.drawable.irish
+                    "it" -> R.drawable.italian
+                    "ja" -> R.drawable.japanese
+                    "ko" -> R.drawable.korean
+                    "fa" -> R.drawable.persian
+                    "pl" -> R.drawable.polish
+                    "pt" -> R.drawable.portuguese
+                    "ru" -> R.drawable.russian
+                    "sk" -> R.drawable.slovak
+                    "es" -> R.drawable.spanish
+                    "sv" -> R.drawable.swedish
+                    "tr" -> R.drawable.turkish
+                    "uk" -> R.drawable.ukrainian
+                    else -> {
+                        R.drawable.english
                     }
-                )
-            }.sortedBy { it.language.langName }
+                }
+            )
+        }
     }
-
 }

@@ -2,6 +2,7 @@ package com.helios.sunverta.android.features.conversation.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.helios.sunverta.core.data.repository.LanguageRepository
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
 import com.helios.sunverta.features.voicetotext.ConversationTranslateEvent
 import com.helios.sunverta.features.voicetotext.VoiceToTextViewModel
@@ -12,11 +13,12 @@ import javax.inject.Inject
 @HiltViewModel
 class AndroidVoiceToTextViewModel @Inject constructor(
     parser: VoiceToTextParser,
-    translateUseCase: TranslateUseCase
+    translateUseCase: TranslateUseCase,
+    languageRepository: LanguageRepository,
 ) : ViewModel() {
 
     private val viewModel: VoiceToTextViewModel =
-        VoiceToTextViewModel(parser, translateUseCase, viewModelScope)
+        VoiceToTextViewModel(parser, translateUseCase, languageRepository, viewModelScope)
 
     val state = viewModel.state
 

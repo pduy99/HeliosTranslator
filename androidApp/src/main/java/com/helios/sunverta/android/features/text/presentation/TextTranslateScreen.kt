@@ -133,6 +133,7 @@ fun TextTranslateScreen(
 
             item {
                 LanguagePickerComponent(
+                    availableLanguages = state.availableLanguages,
                     fromLanguage = state.fromLanguage,
                     isChoosingFromLanguage = state.isChoosingFromLanguage,
                     toLanguage = state.toLanguage,
@@ -300,12 +301,11 @@ fun TextTranslateScreenPreview() {
                 fromText = "Hello",
                 toText = "お問い合わせ",
                 isTranslating = false,
-                fromLanguage = UiLanguage.byCode("en"),
-                toLanguage = UiLanguage.byCode("ja"),
+                fromLanguage = UiLanguage.fromLanguageCode("en"),
+                toLanguage = UiLanguage.fromLanguageCode("ja"),
                 isChoosingFromLanguage = false,
                 isChoosingToLanguage = false,
                 error = null,
-                history = emptyList()
             ),
             onEvent = {}
         )

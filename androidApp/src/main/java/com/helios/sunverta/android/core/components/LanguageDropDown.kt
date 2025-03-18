@@ -6,7 +6,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,13 +18,13 @@ fun LanguageDropDown(
     isOpen: Boolean,
     onClick: () -> Unit,
     onDismiss: () -> Unit,
+    availableLanguages: List<UiLanguage>,
     onSelectLanguage: (UiLanguage) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val allLanguages = remember { UiLanguage.allLanguages }
     Box(modifier = modifier.clickable { onClick() }) {
         Text(
-            text = language.language.langName,
+            text = language.language.displayNameInEnglish!!,
             modifier = Modifier.align(Alignment.Center),
             color = MaterialTheme.colorScheme.onPrimary
         )
@@ -34,7 +33,7 @@ fun LanguageDropDown(
             onDismissRequest = onDismiss,
             modifier = Modifier.align(Alignment.TopStart)
         ) {
-            allLanguages.forEach { language ->
+            availableLanguages.forEach { language ->
                 LanguageDropDownItem(
                     language = language,
                     onClick = { onSelectLanguage(language) }
@@ -50,10 +49,11 @@ fun LanguageDropDown(
 fun LanguageDropDownPreview() {
     HeliosTranslatorTheme(darkTheme = true) {
         LanguageDropDown(
-            language = UiLanguage.byCode("en"),
+            language = UiLanguage.fromLanguageCode("en"),
             isOpen = false,
             onClick = {},
             onDismiss = {},
+            availableLanguages = emptyList(),
             onSelectLanguage = {})
     }
 }

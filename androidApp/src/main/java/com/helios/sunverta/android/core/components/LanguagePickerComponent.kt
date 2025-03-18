@@ -23,6 +23,7 @@ import com.helios.sunverta.features.translate.TranslateEvent
 
 @Composable
 fun LanguagePickerComponent(
+    availableLanguages: List<UiLanguage>,
     fromLanguage: UiLanguage,
     isChoosingFromLanguage: Boolean,
     toLanguage: UiLanguage,
@@ -36,6 +37,7 @@ fun LanguagePickerComponent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         LanguageDropDown(
+            availableLanguages = availableLanguages,
             language = fromLanguage,
             isOpen = isChoosingFromLanguage,
             onClick = { onEvent(TranslateEvent.OpenFromLanguageDropDown) },
@@ -61,6 +63,7 @@ fun LanguagePickerComponent(
         )
 
         LanguageDropDown(
+            availableLanguages = availableLanguages,
             language = toLanguage,
             isOpen = isChoosingToLanguage,
             onClick = { onEvent(TranslateEvent.OpenToLanguageDropDown) },
@@ -82,11 +85,12 @@ fun LanguagePickerComponent(
 fun LanguagePickerComponentPreview() {
     HeliosTranslatorTheme(darkTheme = true) {
         LanguagePickerComponent(
-            fromLanguage = UiLanguage.byCode("en"),
+            fromLanguage = UiLanguage.fromLanguageCode("en"),
             isChoosingFromLanguage = false,
-            toLanguage = UiLanguage.byCode("ja"),
+            toLanguage = UiLanguage.fromLanguageCode("ja"),
             isChoosingToLanguage = false,
             onEvent = {},
+            availableLanguages = emptyList()
         )
     }
 

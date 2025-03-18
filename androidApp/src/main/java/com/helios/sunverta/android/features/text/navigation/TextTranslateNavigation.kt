@@ -1,4 +1,4 @@
-package com.helios.kmptranslator.android.features.text.navigation
+package com.helios.sunverta.android.features.text.navigation
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue

@@ -8,15 +8,16 @@ actual class UiLanguage(
 ) {
 
     actual companion object {
-        actual fun byCode(languageCode: String): UiLanguage {
-            return allLanguages.find { it.language.langCode == languageCode }
-                ?: throw IllegalArgumentException("Unsupported language code")
+        actual fun fromLanguageCode(languageCode: String): UiLanguage {
+            val language = Language(langCode = languageCode)
+            return fromLanguage(language)
         }
 
-        actual val allLanguages: List<UiLanguage>
-            get() = Language.entries.map { language ->
-                UiLanguage(language = language, imageName = language.langName.lowercase())
-            }
+        actual fun fromLanguage(language: Language): UiLanguage {
+            return UiLanguage(
+                language = language,
+                imageName = language.langCode
+            )
+        }
     }
-
 }

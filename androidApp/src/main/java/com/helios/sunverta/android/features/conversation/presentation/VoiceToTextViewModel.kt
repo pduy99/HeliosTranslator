@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.helios.sunverta.core.data.repository.LanguageRepository
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
 import com.helios.sunverta.features.voicetotext.ConversationTranslateEvent
-import com.helios.sunverta.features.voicetotext.VoiceToTextViewModel
+import com.helios.sunverta.features.voicetotext.ConversationTranslateViewModel
 import com.helios.sunverta.features.voicetotext.domain.VoiceToTextParser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -17,8 +17,8 @@ class AndroidVoiceToTextViewModel @Inject constructor(
     languageRepository: LanguageRepository,
 ) : ViewModel() {
 
-    private val viewModel: VoiceToTextViewModel =
-        VoiceToTextViewModel(parser, translateUseCase, languageRepository, viewModelScope)
+    private val viewModel: ConversationTranslateViewModel =
+        ConversationTranslateViewModel(parser, translateUseCase, languageRepository, viewModelScope)
 
     val state = viewModel.state
 

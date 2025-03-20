@@ -9,6 +9,7 @@ data class ConversationTranslateUiState(
     val powerRatio: Float = 0f,
     val faceToFaceMode: Boolean = false,
     val personTalking: TalkingPerson = TalkingPerson.NONE,
+    val lastPersonTalking: TalkingPerson = TalkingPerson.NONE,
     val isTranslating: Boolean = false,
     val isListening: Boolean = false,
     val canRecord: Boolean = false,
@@ -19,7 +20,7 @@ data class ConversationTranslateUiState(
     data class PersonState(
         val language: UiLanguage,
         val isChoosingLanguage: Boolean = false,
-        val text: String = ""
+        val text: String = "",
     )
 
     enum class TalkingPerson {
@@ -33,6 +34,14 @@ data class ConversationTranslateUiState(
             TalkingPerson.PERSON_ONE -> personOne.language
             TalkingPerson.PERSON_TWO -> personTwo.language
             TalkingPerson.NONE -> throw IllegalArgumentException("Cannot get language for NONE person")
+        }
+    }
+
+    fun isWaitingForTranslation(person: TalkingPerson): Boolean {
+        return isTranslating && when (lastPersonTalking) {
+            TalkingPerson.PERSON_ONE -> person == TalkingPerson.PERSON_TWO
+            TalkingPerson.PERSON_TWO -> person == TalkingPerson.PERSON_ONE
+            TalkingPerson.NONE -> false
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.helios.sunverta.features.voicetotext
 
-import co.touchlab.kermit.Logger
 import com.helios.sunverta.core.data.repository.LanguageRepository
 import com.helios.sunverta.core.domain.model.Language
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class VoiceToTextViewModel(
+class ConversationTranslateViewModel(
     private val parser: VoiceToTextParser,
     private val translateUseCase: TranslateUseCase,
     private val languageRepository: LanguageRepository,
@@ -47,7 +46,6 @@ class VoiceToTextViewModel(
         viewModelScope.launch {
             parser.state.collect { parserState ->
                 if (!parserState.isSpeaking) {
-                    Logger.d(tag = "DUY", messageString = "TranslateIfNeeded")
                     translateIfNeeded()
                 }
             }
@@ -84,7 +82,7 @@ class VoiceToTextViewModel(
                 text = if (uiState.personTalking == ConversationTranslateUiState.TalkingPerson.PERSON_TWO)
                     parserState.result else uiState.personTwo.text
             ),
-            personTalking = if (parserState.isSpeaking) uiState.personTalking else ConversationTranslateUiState.TalkingPerson.NONE
+            personTalking = if (parserState.isSpeaking) uiState.personTalking else ConversationTranslateUiState.TalkingPerson.NONE,
         )
     }
 
@@ -182,11 +180,14 @@ class VoiceToTextViewModel(
             _state.update {
                 it.copy(
                     personTalking = person,
-                    personOne = it.personOne.copy(text = ""),
-                    personTwo = it.personTwo.copy(text = "")
+                    lastPersonTalking = person,
+                    personOne = if (person == ConversationTranslateUiState.TalkingPerson.PERSON_ONE)
+                        it.personOne.copy(text = "") else it.personOne,
+                    personTwo = if (person == ConversationTranslateUiState.TalkingPerson.PERSON_TWO)
+                        it.personTwo.copy(text = "") else it.personTwo
                 )
             }
-            val languageCode = currentState.getCurrentLanguage(person).language.bcp47Code
+            val languageCode = currentState.getCurrentLanguage(person).bcp47Code
                 ?: currentState.getCurrentLanguage(person).language.langCode
             parser.startListening(languageCode)
         }

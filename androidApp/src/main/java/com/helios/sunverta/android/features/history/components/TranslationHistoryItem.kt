@@ -56,7 +56,7 @@ fun TranslationHistoryItem(
                 SmallLanguageIcon(language = historyItem.fromLanguage)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = historyItem.fromLanguage.language.displayNameInEnglish!!,
+                    text = historyItem.fromLanguage.displayNameInEnglish!!,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -100,7 +100,7 @@ fun TranslationHistoryItem(
                 SmallLanguageIcon(language = historyItem.toLanguage)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = historyItem.toLanguage.language.displayNameInEnglish!!,
+                    text = historyItem.toLanguage.displayNameInEnglish!!,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )

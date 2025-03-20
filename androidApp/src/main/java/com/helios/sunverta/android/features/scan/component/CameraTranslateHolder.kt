@@ -18,12 +18,17 @@ import androidx.compose.ui.unit.dp
 import com.helios.sunverta.android.core.components.LanguagePickerComponent
 import com.helios.sunverta.android.core.theme.HeliosTranslatorTheme
 import com.helios.sunverta.core.presentation.UiLanguage
+import com.helios.sunverta.features.scantranslate.ScanTranslateEvent
 
 @Composable
 fun CameraTranslateHolder(
     modifier: Modifier = Modifier,
     fromLanguage: UiLanguage,
     toLanguage: UiLanguage,
+    isChoosingFromLanguage: Boolean,
+    isChoosingToLanguage: Boolean,
+    availableLanguages: List<UiLanguage>,
+    onEvent: (ScanTranslateEvent) -> Unit,
     content: @Composable (ColumnScope.() -> Unit)
 ) {
     Column(
@@ -35,11 +40,16 @@ fun CameraTranslateHolder(
         content()
         LanguagePickerComponent(
             fromLanguage = fromLanguage,
-            isChoosingFromLanguage = false,
+            isChoosingFromLanguage = isChoosingFromLanguage,
             toLanguage = toLanguage,
-            isChoosingToLanguage = false,
-            onEvent = { },
-            availableLanguages = emptyList(),
+            isChoosingToLanguage = isChoosingToLanguage,
+            onOpenFromLanguage = { onEvent(ScanTranslateEvent.OpenFromLanguagePicker) },
+            onStopChoosingLanguage = { onEvent(ScanTranslateEvent.StopChoosingLanguage) },
+            onOpenToLanguage = { onEvent(ScanTranslateEvent.OpenToLanguagePicker) },
+            onSelectFromLanguage = { onEvent(ScanTranslateEvent.ChooseFromLanguage(it)) },
+            onSelectToLanguage = { onEvent(ScanTranslateEvent.ChooseToLanguage(it)) },
+            availableLanguages = availableLanguages,
+            enableSwapLanguage = false,
             modifier = Modifier
                 .fillMaxWidth()
                 .safeContentPadding()
@@ -55,6 +65,10 @@ private fun CameraTranslateHolderPreview() {
         CameraTranslateHolder(
             fromLanguage = UiLanguage.fromLanguageCode("en"),
             toLanguage = UiLanguage.fromLanguageCode("ja"),
+            onEvent = {},
+            availableLanguages = emptyList(),
+            isChoosingFromLanguage = false,
+            isChoosingToLanguage = false,
             content = {
                 Box(
                     modifier = Modifier

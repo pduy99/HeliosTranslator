@@ -11,7 +11,7 @@ import com.helios.sunverta.core.presentation.UiLanguage
 fun SmallLanguageIcon(language: UiLanguage, modifier: Modifier = Modifier) {
     AsyncImage(
         model = language.drawableRes,
-        contentDescription = language.language.displayNameInEnglish,
+        contentDescription = language.displayNameInEnglish,
         modifier = modifier.size(25.dp)
     )
 }

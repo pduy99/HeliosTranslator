@@ -54,9 +54,9 @@ class TranslateViewModel(
         }
     }
 
-    fun onEvent(event: TranslateEvent) {
+    fun onEvent(event: TextTranslateEvent) {
         when (event) {
-            is TranslateEvent.ChangeTranslationText -> {
+            is TextTranslateEvent.ChangeTranslationText -> {
                 _state.update {
                     it.copy(
                         fromText = event.text
@@ -64,7 +64,7 @@ class TranslateViewModel(
                 }
             }
 
-            is TranslateEvent.ChooseFromLanguage -> {
+            is TextTranslateEvent.ChooseFromLanguage -> {
                 viewModelScope.launch {
                     languageRepository.saveFromLanguage(event.language.language)
                 }
@@ -73,7 +73,7 @@ class TranslateViewModel(
                 }
             }
 
-            is TranslateEvent.ChooseToLanguage -> {
+            is TextTranslateEvent.ChooseToLanguage -> {
                 viewModelScope.launch {
                     languageRepository.saveToLanguage(event.language.language)
 
@@ -86,7 +86,7 @@ class TranslateViewModel(
 
             }
 
-            TranslateEvent.CloseTranslation -> {
+            TextTranslateEvent.CloseTranslation -> {
                 _state.update {
                     it.copy(
                         isTranslating = false,
@@ -96,7 +96,7 @@ class TranslateViewModel(
                 }
             }
 
-            TranslateEvent.EditTranslation -> {
+            TextTranslateEvent.EditTranslation -> {
                 if (state.value.toText != null) {
                     _state.update {
                         it.copy(toText = null, isTranslating = false)
@@ -104,15 +104,15 @@ class TranslateViewModel(
                 }
             }
 
-            TranslateEvent.OnErrorSeen -> {
+            TextTranslateEvent.OnErrorSeen -> {
                 _state.update { it.copy(error = null) }
             }
 
-            TranslateEvent.OpenFromLanguageDropDown -> {
+            TextTranslateEvent.OpenFromLanguageDropDown -> {
                 _state.update { it.copy(isChoosingFromLanguage = true) }
             }
 
-            TranslateEvent.OpenToLanguageDropDown -> {
+            TextTranslateEvent.OpenToLanguageDropDown -> {
                 _state.update {
                     it.copy(
                         isChoosingToLanguage = true
@@ -120,7 +120,7 @@ class TranslateViewModel(
                 }
             }
 
-            TranslateEvent.StopChoosingLanguage -> {
+            TextTranslateEvent.StopChoosingLanguage -> {
                 _state.update {
                     it.copy(
                         isChoosingToLanguage = false,
@@ -129,7 +129,7 @@ class TranslateViewModel(
                 }
             }
 
-            TranslateEvent.SwapLanguages -> {
+            TextTranslateEvent.SwapLanguages -> {
                 val oldFromLanguage = state.value.fromLanguage.language
                 val oldToLanguage = state.value.toLanguage.language
 
@@ -145,11 +145,11 @@ class TranslateViewModel(
                 }
             }
 
-            TranslateEvent.Translate -> {
+            TextTranslateEvent.TextTranslate -> {
                 translate(state.value)
             }
 
-            is TranslateEvent.ReadAloudText -> {
+            is TextTranslateEvent.ReadAloudText -> {
                 state.value.toText?.let {
                     textToSpeech.speak(
                         language = state.value.toLanguage.language.langCode,

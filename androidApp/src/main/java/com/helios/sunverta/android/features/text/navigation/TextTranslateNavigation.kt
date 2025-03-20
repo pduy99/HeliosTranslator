@@ -7,7 +7,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.helios.sunverta.android.features.text.presentation.AndroidTranslateViewModel
 import com.helios.sunverta.android.features.text.presentation.TextTranslateScreen
-import com.helios.sunverta.features.translate.TranslateEvent
+import com.helios.sunverta.features.translate.TextTranslateEvent
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -26,9 +26,9 @@ fun NavGraphBuilder.textTranslateScreen(
             state = state,
             onEvent = { event ->
                 when (event) {
-                    is TranslateEvent.OpenCameraTranslateScreen -> onOpenCameraTranslateScreen()
-                    is TranslateEvent.OpenConversationTranslateScreen -> onOpenConversationTranslateScreen()
-                    is TranslateEvent.OpenHistoryScreen -> onOpenHistoryScreen()
+                    is TextTranslateEvent.OpenCameraTextTranslateScreen -> onOpenCameraTranslateScreen()
+                    is TextTranslateEvent.OpenConversationTextTranslateScreen -> onOpenConversationTranslateScreen()
+                    is TextTranslateEvent.OpenHistoryScreen -> onOpenHistoryScreen()
                     else -> viewModel.onEvent(event)
                 }
             }

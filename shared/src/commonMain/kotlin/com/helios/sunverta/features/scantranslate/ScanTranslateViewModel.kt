@@ -8,15 +8,14 @@ import com.helios.sunverta.features.scantranslate.domain.ImageTranslator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ScanTranslateViewModel(
-    val imageTranslator: ImageTranslator,
-    languageRepository: LanguageRepository,
+    private val imageTranslator: ImageTranslator,
+    private val languageRepository: LanguageRepository,
     coroutineScope: CoroutineScope?
 ) {
 
@@ -28,17 +27,31 @@ class ScanTranslateViewModel(
             ScanTranslateUiState()
         )
 
-    val state = combine(
-        _state,
-        languageRepository.getToLanguage(),
-        languageRepository.getFromLanguage()
-    ) { state, toLanguage, fromLanguage ->
-        state.copy(
-            toLanguage = UiLanguage.fromLanguageCode(toLanguage.langCode),
-            fromLanguage = UiLanguage.fromLanguageCode(fromLanguage.langCode)
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ScanTranslateUiState())
-        .toCommonStateFlow()
+    val state = _state.toCommonStateFlow()
+
+    init {
+        viewModelScope.launch {
+            combine(
+                languageRepository.getToLanguage(),
+                languageRepository.getFromLanguage()
+            ) { toLanguage, fromLanguage ->
+                _state.update {
+                    it.copy(
+                        fromLanguage = UiLanguage.fromLanguage(fromLanguage),
+                        toLanguage = UiLanguage.fromLanguage(toLanguage)
+                    )
+                }
+            }.collect()
+        }
+
+        viewModelScope.launch {
+            _state.update {
+                it.copy(availableLanguages = languageRepository.getAvailableLanguages().map {
+                    UiLanguage.fromLanguageCode(it.langCode)
+                })
+            }
+        }
+    }
 
     fun onEvent(event: ScanTranslateEvent) {
         when (event) {
@@ -81,8 +94,44 @@ class ScanTranslateViewModel(
                 }
             }
 
-            else -> {
+            is ScanTranslateEvent.ChooseFromLanguage -> {
+                viewModelScope.launch {
+                    languageRepository.saveFromLanguage(event.language.language)
+                }
+                _state.update {
+                    it.copy(isChoosingFromLanguage = false)
+                }
+            }
+            is ScanTranslateEvent.ChooseToLanguage -> {
+                viewModelScope.launch {
+                    languageRepository.saveToLanguage(event.language.language)
 
+                    _state.update {
+                        it.copy(isChoosingToLanguage = false)
+                    }
+                }
+            }
+            ScanTranslateEvent.OpenFromLanguagePicker -> {
+                _state.update { it.copy(isChoosingFromLanguage = true) }
+            }
+            ScanTranslateEvent.OpenToLanguagePicker -> {
+                _state.update {
+                    it.copy(
+                        isChoosingToLanguage = true
+                    )
+                }
+            }
+            ScanTranslateEvent.StopChoosingLanguage -> {
+                _state.update {
+                    it.copy(
+                        isChoosingToLanguage = false,
+                        isChoosingFromLanguage = false
+                    )
+                }
+            }
+
+            else -> {
+                // Platform specific ViewModel handles
             }
         }
     }

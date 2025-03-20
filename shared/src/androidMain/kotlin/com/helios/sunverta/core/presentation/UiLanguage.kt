@@ -3,11 +3,29 @@ package com.helios.sunverta.core.presentation
 import androidx.annotation.DrawableRes
 import com.helios.sunverta.R
 import com.helios.sunverta.core.domain.model.Language
+import java.util.Locale
 
 actual class UiLanguage(
     @DrawableRes val drawableRes: Int,
-    actual val language: Language
+    actual val language: Language,
 ) {
+    actual val bcp47Code: String?
+        get() {
+            val locales = Locale.getAvailableLocales().filter { it.language == language.langCode }
+            val bestLocale = locales.firstOrNull { it.country.isNotEmpty() } ?: locales.firstOrNull()
+            return bestLocale?.toLanguageTag()
+        }
+    actual val nativeName: String?
+        get() {
+            val locale = Locale(language.langCode)
+            return locale.getDisplayLanguage(locale)
+        }
+    actual val displayNameInEnglish: String?
+        get() {
+            val locale = Locale(language.langCode)
+            return locale.getDisplayLanguage(Locale.ENGLISH)
+        }
+
     actual companion object {
         actual fun fromLanguageCode(languageCode: String): UiLanguage {
             val language = Language(langCode = languageCode)

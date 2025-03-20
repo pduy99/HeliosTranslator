@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.SwapHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.sunverta.android.core.theme.HeliosTranslatorTheme
 import com.helios.sunverta.core.presentation.UiLanguage
-import com.helios.sunverta.features.translate.TranslateEvent
 
 @Composable
 fun LanguagePickerComponent(
@@ -28,21 +28,27 @@ fun LanguagePickerComponent(
     isChoosingFromLanguage: Boolean,
     toLanguage: UiLanguage,
     isChoosingToLanguage: Boolean,
-    onEvent: (TranslateEvent) -> Unit,
+    onOpenFromLanguage: () -> Unit,
+    onOpenToLanguage: () -> Unit,
+    onStopChoosingLanguage: () -> Unit,
+    onSelectToLanguage: (UiLanguage) -> Unit,
+    onSelectFromLanguage: (UiLanguage) -> Unit,
     modifier: Modifier = Modifier,
+    enableSwapLanguage: Boolean = true,
+    onSwapLanguages: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        LanguageDropDown(
+        LanguageSelector(
             availableLanguages = availableLanguages,
             language = fromLanguage,
             isOpen = isChoosingFromLanguage,
-            onClick = { onEvent(TranslateEvent.OpenFromLanguageDropDown) },
-            onDismiss = { onEvent(TranslateEvent.StopChoosingLanguage) },
-            onSelectLanguage = { onEvent(TranslateEvent.ChooseFromLanguage(it)) },
+            onClick = onOpenFromLanguage,
+            onDismiss = onStopChoosingLanguage,
+            onSelectLanguage = onSelectFromLanguage,
             modifier = Modifier
                 .weight(3.5f)
                 .clip(
@@ -56,19 +62,19 @@ fun LanguagePickerComponent(
             modifier = Modifier
                 .weight(1f)
                 .size(32.dp)
-                .clickable { onEvent(TranslateEvent.SwapLanguages) },
-            imageVector = Icons.Outlined.SwapHoriz,
+                .clickable { if (enableSwapLanguage) onSwapLanguages?.invoke() },
+            imageVector = if (enableSwapLanguage) Icons.Outlined.SwapHoriz else Icons.AutoMirrored.Outlined.ArrowForward,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onBackground
         )
 
-        LanguageDropDown(
+        LanguageSelector(
             availableLanguages = availableLanguages,
             language = toLanguage,
             isOpen = isChoosingToLanguage,
-            onClick = { onEvent(TranslateEvent.OpenToLanguageDropDown) },
-            onDismiss = { onEvent(TranslateEvent.StopChoosingLanguage) },
-            onSelectLanguage = { onEvent(TranslateEvent.ChooseToLanguage(it)) },
+            onClick = onOpenToLanguage,
+            onDismiss = onStopChoosingLanguage,
+            onSelectLanguage = onSelectToLanguage,
             modifier = Modifier
                 .weight(3.5f)
                 .clip(
@@ -89,7 +95,13 @@ fun LanguagePickerComponentPreview() {
             isChoosingFromLanguage = false,
             toLanguage = UiLanguage.fromLanguageCode("ja"),
             isChoosingToLanguage = false,
-            onEvent = {},
+            onOpenFromLanguage = { },
+            onSwapLanguages = { },
+            onStopChoosingLanguage = { },
+            onOpenToLanguage = { },
+            onSelectFromLanguage = { },
+            onSelectToLanguage = { },
+            enableSwapLanguage = true,
             availableLanguages = emptyList()
         )
     }

@@ -20,12 +20,12 @@ fun LanguageDropDownItem(
 
     DropdownMenuItem(
         modifier = modifier,
-        text = { Text(text = language.language.displayNameInEnglish!!) },
+        text = { Text(text = language.displayNameInEnglish!!) },
         onClick = onClick,
         leadingIcon = {
             Image(
                 painter = painterResource(id = language.drawableRes),
-                contentDescription = language.language.displayNameInEnglish,
+                contentDescription = language.displayNameInEnglish,
                 modifier = Modifier.size(40.dp)
             )
         }

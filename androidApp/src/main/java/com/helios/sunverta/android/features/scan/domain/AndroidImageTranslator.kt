@@ -2,8 +2,14 @@ package com.helios.sunverta.android.features.scan.domain
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.util.Log
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
+import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
+import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
+import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.helios.sunverta.core.domain.model.CommonImage
 import com.helios.sunverta.core.domain.model.Language
@@ -30,7 +36,8 @@ class AndroidImageTranslator @Inject constructor(
         toLanguage: Language,
         image: CommonImage
     ): List<TextWithBound> = withContext(Dispatchers.IO) {
-        val textBlocks = detectTextFromImage(image.bitmap)
+        val textBlocks = detectTextFromImage(image.bitmap, fromLanguage.langCode)
+        textBlocks
         val translatedTextBlocks = coroutineScope {
             textBlocks.map { block ->
                 async {
@@ -50,24 +57,24 @@ class AndroidImageTranslator @Inject constructor(
         translatedTextBlocks.filterNotNull()
     }
 
-    suspend fun detectTextFromImage(bitmap: Bitmap): List<TextWithBound> =
+    suspend fun detectTextFromImage(bitmap: Bitmap, languageCode: String): List<TextWithBound> =
         suspendCoroutine { continuation ->
             val image = InputImage.fromBitmap(bitmap, 0)
-            val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+            val recognizer = TextRecognition.getClient(getTextRecognitionOptions(languageCode))
 
             recognizer.process(image)
                 .addOnSuccessListener { text ->
                     val detectedTextBlocks = mutableListOf<TextWithBound>()
-
                     text.textBlocks.forEach { block ->
-                        block.lines.filter { it.confidence >= 0.5f }.forEach {
-                            detectedTextBlocks.add(
-                                TextWithBound(
-                                    it.text,
-                                    it.boundingBox?.toComposeRect()
+                        block.lines.filter { it.confidence >= 0.5f && it.recognizedLanguage == languageCode }
+                            .forEach {
+                                detectedTextBlocks.add(
+                                    TextWithBound(
+                                        it.text,
+                                        it.boundingBox?.toComposeRect()
+                                    )
                                 )
-                            )
-                        }
+                            }
                     }
                     continuation.resume(detectedTextBlocks)
                 }
@@ -75,6 +82,23 @@ class AndroidImageTranslator @Inject constructor(
                     continuation.resumeWithException(e)
                 }
         }
+
+    private fun getTextRecognitionOptions(languageCode: String): TextRecognizerOptionsInterface {
+        val (optionName, options) = when (languageCode) {
+            "ja" -> "JapaneseTextRecognizerOptions" to JapaneseTextRecognizerOptions.Builder()
+                .build()
+
+            "ko" -> "KoreanTextRecognizerOptions" to KoreanTextRecognizerOptions.Builder().build()
+            "hi", "mr", "sa" -> "DevanagariTextRecognizerOptions" to DevanagariTextRecognizerOptions.Builder()
+                .build()
+
+            "zh" -> "ChineseTextRecognizerOptions" to ChineseTextRecognizerOptions.Builder().build()
+            else -> "DefaultTextRecognizerOptions" to TextRecognizerOptions.DEFAULT_OPTIONS
+        }
+
+        Log.d("TextRecognitionOptions", "Using $optionName for language code: $languageCode")
+        return options
+    }
 }
 
 fun Rect.toComposeRect(): androidx.compose.ui.geometry.Rect {

@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.helios.sunverta.core.data.repository.LanguageRepository
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
 import com.helios.sunverta.core.speech.TextToSpeech
-import com.helios.sunverta.features.translate.TranslateEvent
+import com.helios.sunverta.features.translate.TextTranslateEvent
 import com.helios.sunverta.features.translate.TranslateViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -30,7 +30,7 @@ class AndroidTranslateViewModel @Inject constructor(
 
     val state = viewModel.state
 
-    fun onEvent(event: TranslateEvent) {
+    fun onEvent(event: TextTranslateEvent) {
         viewModel.onEvent(event)
     }
 

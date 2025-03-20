@@ -81,6 +81,10 @@ dependencies {
 
     // MlKit
     implementation(libs.mlkit.text.recognition)
+    implementation(libs.mlkit.text.recognition.korean)
+    implementation(libs.mlkit.text.recognition.chinese)
+    implementation(libs.mlkit.text.recognition.devanagari)
+    implementation(libs.mlkit.text.recognition.japanese)
 
     kspAndroidTest(libs.hiltAndroidCompiler)
     debugImplementation(libs.compose.ui.tooling)

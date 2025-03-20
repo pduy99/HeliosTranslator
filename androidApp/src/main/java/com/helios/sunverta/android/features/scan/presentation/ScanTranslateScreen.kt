@@ -119,7 +119,11 @@ private fun ScanTranslateContent(
             .fillMaxSize()
             .safeDrawingPadding(),
         fromLanguage = uiState.fromLanguage,
-        toLanguage = uiState.toLanguage
+        toLanguage = uiState.toLanguage,
+        onEvent = onEvent,
+        availableLanguages = uiState.availableLanguages,
+        isChoosingFromLanguage = uiState.isChoosingFromLanguage,
+        isChoosingToLanguage = uiState.isChoosingToLanguage,
     ) {
         val shouldShowCamera = remember(uiState.capturedImage) { uiState.capturedImage == null }
 

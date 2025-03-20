@@ -68,7 +68,10 @@ camerax-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref =
 camerax-compose = { module = "androidx.camera:camera-compose", version.ref = "cameraX" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 mlkit-text-recognition = {module = "com.google.mlkit:text-recognition", version.ref = "mlKit"}
-
+mlkit-text-recognition-chinese = {module = "com.google.mlkit:text-recognition-chinese", version.ref = "mlKit"}
+mlkit-text-recognition-devanagari = {module = "com.google.mlkit:text-recognition-devanagari", version.ref = "mlKit"}
+mlkit-text-recognition-japanese = {module = "com.google.mlkit:text-recognition-japanese", version.ref = "mlKit"}
+mlkit-text-recognition-korean = {module = "com.google.mlkit:text-recognition-korean", version.ref = "mlKit"}
 
 # TESTING
 assertK = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertK" }

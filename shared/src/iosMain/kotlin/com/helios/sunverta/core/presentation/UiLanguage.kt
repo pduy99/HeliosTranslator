@@ -19,9 +19,13 @@ actual class UiLanguage(
             val englishLocale = NSLocale("en_US")
             return englishLocale.localizedStringForLanguageCode(language.langCode)
         }
-    actual val displayNameInEnglish: String?
+    actual val displayNameInEnglish: String
         get() {
-            return NSLocale.currentLocale.localizedStringForLanguageCode(language.langCode)
+            return if (language.englishName.isNotBlank()) {
+                language.englishName
+            } else {
+                NSLocale.currentLocale.localizedStringForLanguageCode(language.langCode) ?: ""
+            }
         }
 
     actual companion object {

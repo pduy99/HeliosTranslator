@@ -16,6 +16,7 @@ plugins {
 
 val buildConfigGenerator by tasks.registering(Sync::class) {
     var baseUrl = "YOUR_BASE_URL"
+    var apiKey = "YOUR_API_KEY"
     try {
         val properties = Properties()
         val localProperties = File("./local.properties")
@@ -25,6 +26,7 @@ val buildConfigGenerator by tasks.registering(Sync::class) {
             }
         } else error("File from not found")
         baseUrl = properties.getProperty("BASE_URL")
+        apiKey = properties.getProperty("API_KEY")
     } catch (ignore: Exception) {
 
     }
@@ -36,6 +38,7 @@ val buildConfigGenerator by tasks.registering(Sync::class) {
         |
         |object BuildKonfig {
         |  const val BASE_URL = "$baseUrl"
+        |  const val API_KEY =  "$apiKey"
         |}
         |
       """.trimMargin()
@@ -78,6 +81,7 @@ kotlin {
                 implementation(libs.ktor.serialization)
                 implementation(libs.ktor.serialization.json)
                 implementation(libs.ktor.client.logging)
+                implementation(libs.ktor.client.auth)
                 implementation(libs.kotlinDateTime)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.touchlab.kermit)

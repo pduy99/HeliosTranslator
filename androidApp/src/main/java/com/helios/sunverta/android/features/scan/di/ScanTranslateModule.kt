@@ -1,22 +1,21 @@
 package com.helios.sunverta.android.features.scan.di
 
 import com.helios.sunverta.android.features.scan.domain.AndroidImageTranslator
-import com.helios.sunverta.core.domain.usecase.TranslateUseCase
+import com.helios.sunverta.android.features.scan.domain.MLKitTextRecognitionService
 import com.helios.sunverta.features.scantranslate.domain.ImageTranslator
+import com.helios.sunverta.features.scantranslate.domain.TextRecognitionService
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ViewModelComponent::class)
-object ScanTranslateModule {
+@InstallIn(SingletonComponent::class)
+abstract class ScanTranslateModule {
 
-    @Provides
-    @ViewModelScoped
-    fun provideImageTranslator(translateUseCase: TranslateUseCase): ImageTranslator =
-        AndroidImageTranslator(
-            translateUseCase = translateUseCase
-        )
+    @Binds
+    abstract fun bindsTextRecognitionService(textRecognitionService: MLKitTextRecognitionService): TextRecognitionService
+
+    @Binds
+    abstract fun bindImageTranslator(imageTranslator: AndroidImageTranslator): ImageTranslator
 }

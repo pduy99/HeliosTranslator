@@ -47,7 +47,7 @@ class ScanTranslateViewModel(
         viewModelScope.launch {
             _state.update {
                 it.copy(availableLanguages = languageRepository.getAvailableLanguages().map {
-                    UiLanguage.fromLanguageCode(it.langCode)
+                    UiLanguage.fromLanguage(it)
                 })
             }
         }
@@ -102,6 +102,7 @@ class ScanTranslateViewModel(
                     it.copy(isChoosingFromLanguage = false)
                 }
             }
+
             is ScanTranslateEvent.ChooseToLanguage -> {
                 viewModelScope.launch {
                     languageRepository.saveToLanguage(event.language.language)
@@ -111,9 +112,11 @@ class ScanTranslateViewModel(
                     }
                 }
             }
+
             ScanTranslateEvent.OpenFromLanguagePicker -> {
                 _state.update { it.copy(isChoosingFromLanguage = true) }
             }
+
             ScanTranslateEvent.OpenToLanguagePicker -> {
                 _state.update {
                     it.copy(
@@ -121,6 +124,7 @@ class ScanTranslateViewModel(
                     )
                 }
             }
+
             ScanTranslateEvent.StopChoosingLanguage -> {
                 _state.update {
                     it.copy(

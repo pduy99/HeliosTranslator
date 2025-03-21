@@ -18,8 +18,8 @@ import com.helios.sunverta.core.domain.usecase.GetAndCleanTranslateHistoryUseCas
 import com.helios.sunverta.core.domain.usecase.GetTranslateHistoryUseCase
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
 import com.helios.sunverta.core.network.HttpClientFactory
-import com.helios.sunverta.core.network.KtorTranslateDataSource
-import com.helios.sunverta.core.network.RemoteLanguageDataSourceImpl
+import com.helios.sunverta.core.network.deepl.DeepLLanguageDataSourceImpl
+import com.helios.sunverta.core.network.deepl.DeepLTranslateDataSource
 import com.helios.sunverta.database.TranslateDatabase
 import com.squareup.sqldelight.db.SqlDriver
 import dagger.Module
@@ -42,7 +42,7 @@ object AppModule {
     @Provides
     @Singleton
     fun providesTranslateDataSource(httpClient: HttpClient): TranslateDataSource {
-        return KtorTranslateDataSource(httpClient)
+        return DeepLTranslateDataSource(httpClient)
     }
 
     @Provides
@@ -106,7 +106,7 @@ object AppModule {
     fun providesRemoteLanguageDataSource(
         httpClient: HttpClient,
     ): RemoteLanguageDataSource {
-        return RemoteLanguageDataSourceImpl(httpClient)
+        return DeepLLanguageDataSourceImpl(httpClient)
     }
 
     @Provides

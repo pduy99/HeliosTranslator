@@ -55,7 +55,7 @@ class ConversationTranslateViewModel(
             _state.update {
                 it.copy(
                     availableLanguages = languageRepository.getAvailableLanguages().map {
-                        UiLanguage.fromLanguageCode(it.langCode)
+                        UiLanguage.fromLanguage(it)
                     }
                 )
             }
@@ -73,12 +73,12 @@ class ConversationTranslateViewModel(
             isListening = parserState.isSpeaking,
             powerRatio = parserState.powerRatio,
             personOne = uiState.personOne.copy(
-                language = UiLanguage.fromLanguageCode(fromLanguage.langCode),
+                language = UiLanguage.fromLanguage(fromLanguage),
                 text = if (uiState.personTalking == ConversationTranslateUiState.TalkingPerson.PERSON_ONE)
                     parserState.result else uiState.personOne.text
             ),
             personTwo = uiState.personTwo.copy(
-                language = UiLanguage.fromLanguageCode(toLanguage.langCode),
+                language = UiLanguage.fromLanguage(toLanguage),
                 text = if (uiState.personTalking == ConversationTranslateUiState.TalkingPerson.PERSON_TWO)
                     parserState.result else uiState.personTwo.text
             ),

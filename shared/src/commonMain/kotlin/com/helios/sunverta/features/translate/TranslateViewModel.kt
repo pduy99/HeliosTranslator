@@ -48,7 +48,7 @@ class TranslateViewModel(
         viewModelScope.launch {
             _state.update {
                 it.copy(availableLanguages = languageRepository.getAvailableLanguages().map {
-                    UiLanguage.fromLanguageCode(it.langCode)
+                    UiLanguage.fromLanguage(it)
                 })
             }
         }

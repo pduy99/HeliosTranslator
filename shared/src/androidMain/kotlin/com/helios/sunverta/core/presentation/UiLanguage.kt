@@ -12,7 +12,8 @@ actual class UiLanguage(
     actual val bcp47Code: String?
         get() {
             val locales = Locale.getAvailableLocales().filter { it.language == language.langCode }
-            val bestLocale = locales.firstOrNull { it.country.isNotEmpty() } ?: locales.firstOrNull()
+            val bestLocale =
+                locales.firstOrNull { it.country.isNotEmpty() } ?: locales.firstOrNull()
             return bestLocale?.toLanguageTag()
         }
     actual val nativeName: String?
@@ -20,10 +21,14 @@ actual class UiLanguage(
             val locale = Locale(language.langCode)
             return locale.getDisplayLanguage(locale)
         }
-    actual val displayNameInEnglish: String?
+    actual val displayNameInEnglish: String
         get() {
-            val locale = Locale(language.langCode)
-            return locale.getDisplayLanguage(Locale.ENGLISH)
+            if (language.englishName.isNotBlank()) {
+                return language.englishName
+            } else {
+                val locale = Locale(language.langCode)
+                return locale.getDisplayLanguage(Locale.ENGLISH)
+            }
         }
 
     actual companion object {

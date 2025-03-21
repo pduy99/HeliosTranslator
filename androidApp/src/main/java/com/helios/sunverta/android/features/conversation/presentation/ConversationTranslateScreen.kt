@@ -27,6 +27,7 @@ import com.helios.sunverta.android.features.conversation.presentation.components
 import com.helios.sunverta.core.presentation.UiLanguage
 import com.helios.sunverta.features.voicetotext.ConversationTranslateEvent
 import com.helios.sunverta.features.voicetotext.ConversationTranslateUiState
+import com.helios.sunverta.features.voicetotext.ConversationTranslateUiState.TalkingPerson
 
 @Composable
 fun VoiceTranslateScreen(
@@ -44,6 +45,9 @@ fun VoiceTranslateScreen(
     LaunchedEffect(recordAudioPermissionLauncher) {
         recordAudioPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
     }
+
+    uiState.isWaitingForTranslation(TalkingPerson.PERSON_ONE)
+    uiState.isWaitingForTranslation(TalkingPerson.PERSON_TWO)
 
     Column(
         modifier = modifier
@@ -86,71 +90,26 @@ fun VoiceTranslateScreen(
                 .weight(1f)
                 .padding(horizontal = 16.dp),
             voiceAnimationState = when (uiState.personTalking) {
-                ConversationTranslateUiState.TalkingPerson.PERSON_ONE -> VoiceState.Active(
+                TalkingPerson.PERSON_TWO -> VoiceState.Active(
                     uiState.powerRatio
                 )
 
                 else -> VoiceState.Idle
             },
+            isTranslating = uiState.isWaitingForTranslation(TalkingPerson.PERSON_TWO),
             isMirrored = uiState.faceToFaceMode,
-            speakingLanguage = uiState.personOne.language,
-            onIdleClick = {
-                onEvent(
-                    ConversationTranslateEvent.ToggleRecording(
-                        ConversationTranslateUiState.TalkingPerson.PERSON_ONE
-                    )
-                )
-            },
-            onActiveClick = {
-                onEvent(
-                    ConversationTranslateEvent.ToggleRecording(
-                        ConversationTranslateUiState.TalkingPerson.PERSON_ONE
-                    )
-                )
-            },
-            isChoosingLanguage = uiState.personOne.isChoosingLanguage,
-            onLanguageDropdownClick = {
-                onEvent(
-                    ConversationTranslateEvent.OpenLanguageDropDown(
-                        ConversationTranslateUiState.TalkingPerson.PERSON_ONE
-                    )
-                )
-            },
-            onLanguageDropDownDismiss = { onEvent(ConversationTranslateEvent.StopChoosingLanguage) },
-            onSelectLanguage = {
-                onEvent(
-                    ConversationTranslateEvent.ChooseLanguage(
-                        ConversationTranslateUiState.TalkingPerson.PERSON_ONE,
-                        it
-                    )
-                )
-            },
-            content = uiState.personOne.text
-        )
-
-        VoiceTranslateBox(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 16.dp),
-            voiceAnimationState = when (uiState.personTalking) {
-                ConversationTranslateUiState.TalkingPerson.PERSON_TWO -> VoiceState.Active(
-                    uiState.powerRatio
-                )
-
-                else -> VoiceState.Idle
-            },
             speakingLanguage = uiState.personTwo.language,
             onIdleClick = {
                 onEvent(
                     ConversationTranslateEvent.ToggleRecording(
-                        ConversationTranslateUiState.TalkingPerson.PERSON_TWO
+                        TalkingPerson.PERSON_TWO
                     )
                 )
             },
             onActiveClick = {
                 onEvent(
                     ConversationTranslateEvent.ToggleRecording(
-                        ConversationTranslateUiState.TalkingPerson.PERSON_TWO
+                        TalkingPerson.PERSON_TWO
                     )
                 )
             },
@@ -158,7 +117,7 @@ fun VoiceTranslateScreen(
             onLanguageDropdownClick = {
                 onEvent(
                     ConversationTranslateEvent.OpenLanguageDropDown(
-                        ConversationTranslateUiState.TalkingPerson.PERSON_TWO
+                        TalkingPerson.PERSON_TWO
                     )
                 )
             },
@@ -166,12 +125,61 @@ fun VoiceTranslateScreen(
             onSelectLanguage = {
                 onEvent(
                     ConversationTranslateEvent.ChooseLanguage(
-                        ConversationTranslateUiState.TalkingPerson.PERSON_TWO,
+                        TalkingPerson.PERSON_TWO,
                         it
                     )
                 )
             },
-            content = uiState.personTwo.text
+            content = uiState.personTwo.text,
+            availableLanguages = uiState.availableLanguages
+        )
+
+        VoiceTranslateBox(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 16.dp),
+            voiceAnimationState = when (uiState.personTalking) {
+                TalkingPerson.PERSON_ONE -> VoiceState.Active(
+                    uiState.powerRatio
+                )
+
+                else -> VoiceState.Idle
+            },
+            isTranslating = uiState.isWaitingForTranslation(TalkingPerson.PERSON_ONE),
+            speakingLanguage = uiState.personOne.language,
+            onIdleClick = {
+                onEvent(
+                    ConversationTranslateEvent.ToggleRecording(
+                        TalkingPerson.PERSON_ONE
+                    )
+                )
+            },
+            onActiveClick = {
+                onEvent(
+                    ConversationTranslateEvent.ToggleRecording(
+                        TalkingPerson.PERSON_ONE
+                    )
+                )
+            },
+            isChoosingLanguage = uiState.personOne.isChoosingLanguage,
+            onLanguageDropdownClick = {
+                onEvent(
+                    ConversationTranslateEvent.OpenLanguageDropDown(
+                        TalkingPerson.PERSON_ONE
+                    )
+                )
+            },
+            onLanguageDropDownDismiss = { onEvent(ConversationTranslateEvent.StopChoosingLanguage) },
+            onSelectLanguage = {
+                onEvent(
+                    ConversationTranslateEvent.ChooseLanguage(
+                        TalkingPerson.PERSON_ONE,
+                        it
+                    )
+                )
+            },
+            content = uiState.personOne.text,
+            availableLanguages = uiState.availableLanguages
         )
     }
 }
@@ -182,8 +190,16 @@ fun VoiceToTextPreview() {
     HeliosTranslatorTheme(darkTheme = true) {
         VoiceTranslateScreen(
             uiState = ConversationTranslateUiState(
-                personOne = ConversationTranslateUiState.PersonState(language = UiLanguage.byCode("en")),
-                personTwo = ConversationTranslateUiState.PersonState(language = UiLanguage.byCode("ja"))
+                personOne = ConversationTranslateUiState.PersonState(
+                    language = UiLanguage.fromLanguageCode(
+                        "en"
+                    )
+                ),
+                personTwo = ConversationTranslateUiState.PersonState(
+                    language = UiLanguage.fromLanguageCode(
+                        "ja"
+                    )
+                )
             ),
             onNavigateUp = {},
             onEvent = {}

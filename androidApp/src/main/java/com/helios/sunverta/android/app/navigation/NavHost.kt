@@ -6,13 +6,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.helios.sunverta.android.features.conversation.navigation.VoiceTranslateDestination
 import com.helios.sunverta.android.features.conversation.navigation.voiceTranslateScreen
-import com.helios.kmptranslator.android.features.text.navigation.TextTranslateDestination
-import com.helios.kmptranslator.android.features.text.navigation.textTranslateScreen
 import com.helios.sunverta.android.features.history.navigation.TranslateHistoryDestination
 import com.helios.sunverta.android.features.history.navigation.translateHistoryScreen
 import com.helios.sunverta.android.features.scan.navigation.ScanTranslateDestination
 import com.helios.sunverta.android.features.scan.navigation.scanTranslateScreen
 import com.helios.sunverta.android.features.settings.navigation.settingScreen
+import com.helios.sunverta.android.features.text.navigation.TextTranslateDestination
+import com.helios.sunverta.android.features.text.navigation.textTranslateScreen
 
 @Composable
 fun AppNavHost(

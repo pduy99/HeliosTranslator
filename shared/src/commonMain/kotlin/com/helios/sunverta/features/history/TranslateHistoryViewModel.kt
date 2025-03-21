@@ -34,8 +34,8 @@ class TranslateHistoryViewModel(
                                 id = item.id ?: -1,
                                 fromText = item.fromText,
                                 toText = item.toText,
-                                fromLanguage = UiLanguage.byCode(item.fromLanguageCode),
-                                toLanguage = UiLanguage.byCode(item.toLanguageCode)
+                                fromLanguage = UiLanguage.fromLanguageCode(item.fromLanguageCode),
+                                toLanguage = UiLanguage.fromLanguageCode(item.toLanguageCode)
                             )
                         }
                     )

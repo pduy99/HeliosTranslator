@@ -1,18 +1,21 @@
 package com.helios.sunverta.features.scantranslate
 
 
-import com.helios.sunverta.core.util.CommonStateFlow
+import com.helios.sunverta.core.data.repository.LanguageRepository
+import com.helios.sunverta.core.presentation.UiLanguage
 import com.helios.sunverta.core.util.toCommonStateFlow
 import com.helios.sunverta.features.scantranslate.domain.ImageTranslator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ScanTranslateViewModel(
-    val imageTranslator: ImageTranslator,
+    private val imageTranslator: ImageTranslator,
+    private val languageRepository: LanguageRepository,
     coroutineScope: CoroutineScope?
 ) {
 
@@ -23,7 +26,32 @@ class ScanTranslateViewModel(
         MutableStateFlow(
             ScanTranslateUiState()
         )
-    val state: CommonStateFlow<ScanTranslateUiState> = _state.asStateFlow().toCommonStateFlow()
+
+    val state = _state.toCommonStateFlow()
+
+    init {
+        viewModelScope.launch {
+            combine(
+                languageRepository.getToLanguage(),
+                languageRepository.getFromLanguage()
+            ) { toLanguage, fromLanguage ->
+                _state.update {
+                    it.copy(
+                        fromLanguage = UiLanguage.fromLanguage(fromLanguage),
+                        toLanguage = UiLanguage.fromLanguage(toLanguage)
+                    )
+                }
+            }.collect()
+        }
+
+        viewModelScope.launch {
+            _state.update {
+                it.copy(availableLanguages = languageRepository.getAvailableLanguages().map {
+                    UiLanguage.fromLanguageCode(it.langCode)
+                })
+            }
+        }
+    }
 
     fun onEvent(event: ScanTranslateEvent) {
         when (event) {
@@ -42,7 +70,10 @@ class ScanTranslateViewModel(
                         image = event.image
                     )
                     _state.update {
-                        it.copy(isTranslating = false, translatedTextBlock = translatedTextBlock)
+                        it.copy(
+                            isTranslating = false,
+                            translatedTextBlock = translatedTextBlock
+                        )
                     }
                 }
             }
@@ -63,8 +94,44 @@ class ScanTranslateViewModel(
                 }
             }
 
-            else -> {
+            is ScanTranslateEvent.ChooseFromLanguage -> {
+                viewModelScope.launch {
+                    languageRepository.saveFromLanguage(event.language.language)
+                }
+                _state.update {
+                    it.copy(isChoosingFromLanguage = false)
+                }
+            }
+            is ScanTranslateEvent.ChooseToLanguage -> {
+                viewModelScope.launch {
+                    languageRepository.saveToLanguage(event.language.language)
 
+                    _state.update {
+                        it.copy(isChoosingToLanguage = false)
+                    }
+                }
+            }
+            ScanTranslateEvent.OpenFromLanguagePicker -> {
+                _state.update { it.copy(isChoosingFromLanguage = true) }
+            }
+            ScanTranslateEvent.OpenToLanguagePicker -> {
+                _state.update {
+                    it.copy(
+                        isChoosingToLanguage = true
+                    )
+                }
+            }
+            ScanTranslateEvent.StopChoosingLanguage -> {
+                _state.update {
+                    it.copy(
+                        isChoosingToLanguage = false,
+                        isChoosingFromLanguage = false
+                    )
+                }
+            }
+
+            else -> {
+                // Platform specific ViewModel handles
             }
         }
     }

@@ -20,12 +20,12 @@ fun LanguageDropDownItem(
 
     DropdownMenuItem(
         modifier = modifier,
-        text = { Text(text = language.language.langName) },
+        text = { Text(text = language.displayNameInEnglish!!) },
         onClick = onClick,
         leadingIcon = {
             Image(
                 painter = painterResource(id = language.drawableRes),
-                contentDescription = language.language.langName,
+                contentDescription = language.displayNameInEnglish,
                 modifier = Modifier.size(40.dp)
             )
         }
@@ -35,5 +35,9 @@ fun LanguageDropDownItem(
 @Preview
 @Composable
 fun LanguageDropDownItemPreview() {
-    LanguageDropDownItem(language = UiLanguage.byCode("en"), onClick = {}, modifier = Modifier)
+    LanguageDropDownItem(
+        language = UiLanguage.fromLanguageCode("en"),
+        onClick = {},
+        modifier = Modifier
+    )
 }

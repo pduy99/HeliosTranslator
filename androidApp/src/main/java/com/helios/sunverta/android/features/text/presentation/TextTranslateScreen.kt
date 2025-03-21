@@ -24,6 +24,7 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.PeopleOutline
 import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,14 +54,15 @@ import com.helios.sunverta.android.core.theme.HeliosTranslatorTheme
 import com.helios.sunverta.android.core.util.asString
 import com.helios.sunverta.android.features.text.components.TranslateTextField
 import com.helios.sunverta.core.presentation.UiLanguage
-import com.helios.sunverta.features.translate.TranslateEvent
+import com.helios.sunverta.features.translate.TextTranslateEvent
 import com.helios.sunverta.features.translate.TranslateState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextTranslateScreen(
     state: TranslateState,
     modifier: Modifier = Modifier,
-    onEvent: (TranslateEvent) -> Unit,
+    onEvent: (TextTranslateEvent) -> Unit,
 ) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
@@ -72,7 +74,7 @@ fun TextTranslateScreen(
     LaunchedEffect(key1 = state.error) {
         state.error?.let {
             Toast.makeText(context, it.asUiText().asString(context), Toast.LENGTH_SHORT).show()
-            onEvent(TranslateEvent.OnErrorSeen)
+            onEvent(TextTranslateEvent.OnErrorSeen)
         }
     }
 
@@ -101,7 +103,7 @@ fun TextTranslateScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                onEvent(TranslateEvent.OpenHistoryScreen)
+                                onEvent(TextTranslateEvent.OpenHistoryScreen)
                             }
                         ) {
                             Icon(
@@ -133,11 +135,17 @@ fun TextTranslateScreen(
 
             item {
                 LanguagePickerComponent(
+                    availableLanguages = state.availableLanguages,
                     fromLanguage = state.fromLanguage,
                     isChoosingFromLanguage = state.isChoosingFromLanguage,
                     toLanguage = state.toLanguage,
                     isChoosingToLanguage = state.isChoosingToLanguage,
-                    onEvent = onEvent,
+                    onOpenFromLanguage = { onEvent(TextTranslateEvent.OpenFromLanguageDropDown) },
+                    onSwapLanguages = { onEvent(TextTranslateEvent.SwapLanguages) },
+                    onStopChoosingLanguage = { onEvent(TextTranslateEvent.StopChoosingLanguage) },
+                    onOpenToLanguage = { onEvent(TextTranslateEvent.OpenToLanguageDropDown) },
+                    onSelectToLanguage = { onEvent(TextTranslateEvent.ChooseToLanguage(it)) },
+                    onSelectFromLanguage = { onEvent(TextTranslateEvent.ChooseFromLanguage(it)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp, horizontal = 16.dp)
@@ -152,9 +160,9 @@ fun TextTranslateScreen(
                     toLanguage = state.toLanguage,
                     onTranslateClick = {
                         keyboardController?.hide()
-                        onEvent(TranslateEvent.Translate)
+                        onEvent(TextTranslateEvent.TextTranslate)
                     },
-                    onTextChanged = { onEvent(TranslateEvent.ChangeTranslationText(it)) },
+                    onTextChanged = { onEvent(TextTranslateEvent.ChangeTranslationText(it)) },
                     onCopyClick = {
                         clipboardManager.setText(
                             buildAnnotatedString {
@@ -167,11 +175,11 @@ fun TextTranslateScreen(
                             Toast.LENGTH_SHORT
                         ).show()
                     },
-                    onCloseClick = { onEvent(TranslateEvent.CloseTranslation) },
+                    onCloseClick = { onEvent(TextTranslateEvent.CloseTranslation) },
                     onSpeakerClick = {
-                        onEvent(TranslateEvent.ReadAloudText)
+                        onEvent(TextTranslateEvent.ReadAloudText)
                     },
-                    onTextFieldClick = { onEvent(TranslateEvent.EditTranslation) },
+                    onTextFieldClick = { onEvent(TextTranslateEvent.EditTranslation) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
@@ -200,7 +208,7 @@ fun TextTranslateScreen(
 @Composable
 private fun MainFunctionsFAB(
     modifier: Modifier = Modifier,
-    onEvent: (TranslateEvent) -> Unit
+    onEvent: (TextTranslateEvent) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -247,7 +255,7 @@ private fun MainFunctionsFAB(
                     .size(90.dp)
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 onClick = {
-                    onEvent(TranslateEvent.OpenCameraTranslateScreen)
+                    onEvent(TextTranslateEvent.OpenCameraTextTranslateScreen)
                 },
             ) {
                 Icon(
@@ -269,7 +277,7 @@ private fun MainFunctionsFAB(
                     .size(48.dp)
                     .background(Color(0xFF404759)),
                 onClick = {
-                    onEvent(TranslateEvent.OpenConversationTranslateScreen)
+                    onEvent(TextTranslateEvent.OpenConversationTextTranslateScreen)
                 },
             ) {
                 Icon(
@@ -300,12 +308,11 @@ fun TextTranslateScreenPreview() {
                 fromText = "Hello",
                 toText = "お問い合わせ",
                 isTranslating = false,
-                fromLanguage = UiLanguage.byCode("en"),
-                toLanguage = UiLanguage.byCode("ja"),
+                fromLanguage = UiLanguage.fromLanguageCode("en"),
+                toLanguage = UiLanguage.fromLanguageCode("ja"),
                 isChoosingFromLanguage = false,
                 isChoosingToLanguage = false,
                 error = null,
-                history = emptyList()
             ),
             onEvent = {}
         )

@@ -2,10 +2,13 @@ package com.helios.sunverta.android.features.scan.presentation
 
 import android.Manifest
 import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.RectF
 import androidx.camera.compose.CameraXViewfinder
 import androidx.camera.core.SurfaceRequest
 import androidx.camera.core.TorchState
 import androidx.camera.viewfinder.compose.MutableCoordinateTransformer
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -59,70 +62,110 @@ fun ScanTranslateScreen(
     onNavigateUp: () -> Unit,
     onPermissionDenied: () -> Unit,
 ) {
-    val cameraPermissionState = rememberPermissionState(
-        Manifest.permission.CAMERA
-    ) { granted ->
-        if (!granted) {
-            onPermissionDenied.invoke()
+    CameraPermissionHandler(
+        onPermissionDenied = onPermissionDenied,
+        content = { isPermissionGranted ->
+            if (isPermissionGranted && surfaceRequest != null) {
+                ScanTranslateContent(
+                    modifier = modifier,
+                    uiState = uiState,
+                    surfaceRequest = surfaceRequest,
+                    onTapToFocus = onTapToFocus,
+                    onEvent = onEvent,
+                    onNavigateUp = onNavigateUp
+                )
+            }
         }
+    )
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+private fun CameraPermissionHandler(
+    onPermissionDenied: () -> Unit,
+    content: @Composable (Boolean) -> Unit
+) {
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA) { granted ->
+        if (!granted) onPermissionDenied()
     }
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(Unit) {
         cameraPermissionState.launchPermissionRequest()
     }
 
     when {
-        cameraPermissionState.status.isGranted -> {
-            surfaceRequest?.let { surfaceRequest ->
-                CameraTranslateHolder(
-                    modifier = modifier
-                        .background(MaterialTheme.colorScheme.background)
-                        .fillMaxSize()
-                        .safeDrawingPadding(),
-                    fromLanguage = uiState.fromLanguage,
-                    toLanguage = uiState.toLanguage
-                ) {
-                    if (uiState.capturedImage == null) {
-                        CameraPreview(
-                            modifier = Modifier.weight(1f),
-                            surfaceRequest = surfaceRequest,
-                            isTorchEnable = uiState.isTorchEnable,
-                            onImageCapture = {
-                                onEvent(ScanTranslateEvent.CaptureImage)
-                            },
-                            onToggleTorch = {
-                                onEvent(ScanTranslateEvent.ToggleTorch)
-                            },
-                            onTapToFocus = onTapToFocus,
-                            onNavigateUp = onNavigateUp
-                        )
-                    } else {
-                        Box(
-                            modifier = modifier.weight(1f),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            TranslatedImage(
-                                uiState = uiState,
-                                onDiscardImage = {
-                                    onEvent(ScanTranslateEvent.Reset)
-                                }
-                            )
-
-                            if (uiState.isTranslating) {
-                                CircularProgressIndicator(
-                                    color = MaterialTheme.colorScheme.inversePrimary
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        cameraPermissionState.status.isGranted -> content(true)
         cameraPermissionState.status is PermissionStatus.Denied -> {
             if ((cameraPermissionState.status as PermissionStatus.Denied).shouldShowRationale) {
-                onPermissionDenied.invoke()
+                onPermissionDenied()
             }
+            content(false)
+        }
+    }
+}
+
+@Composable
+private fun ScanTranslateContent(
+    modifier: Modifier,
+    uiState: ScanTranslateUiState,
+    surfaceRequest: SurfaceRequest,
+    onTapToFocus: (Offset) -> Unit,
+    onEvent: (ScanTranslateEvent) -> Unit,
+    onNavigateUp: () -> Unit,
+) {
+    CameraTranslateHolder(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize()
+            .safeDrawingPadding(),
+        fromLanguage = uiState.fromLanguage,
+        toLanguage = uiState.toLanguage,
+        onEvent = onEvent,
+        availableLanguages = uiState.availableLanguages,
+        isChoosingFromLanguage = uiState.isChoosingFromLanguage,
+        isChoosingToLanguage = uiState.isChoosingToLanguage,
+    ) {
+        val shouldShowCamera = remember(uiState.capturedImage) { uiState.capturedImage == null }
+
+        if (shouldShowCamera) {
+            CameraPreview(
+                modifier = Modifier.weight(1f),
+                surfaceRequest = surfaceRequest,
+                isTorchEnable = uiState.isTorchEnable,
+                onImageCapture = { onEvent(ScanTranslateEvent.CaptureImage) },
+                onToggleTorch = { onEvent(ScanTranslateEvent.ToggleTorch) },
+                onTapToFocus = onTapToFocus,
+                onNavigateUp = onNavigateUp
+            )
+        } else {
+            TranslatedImageContent(
+                modifier = Modifier.weight(1f),
+                uiState = uiState,
+                onDiscardImage = { onEvent(ScanTranslateEvent.Reset) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun TranslatedImageContent(
+    modifier: Modifier,
+    uiState: ScanTranslateUiState,
+    onDiscardImage: () -> Unit
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        TranslatedImage(
+            uiState = uiState,
+            onDiscardImage = onDiscardImage
+        )
+
+        if (uiState.isTranslating) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.inversePrimary
+            )
         }
     }
 }
@@ -185,75 +228,92 @@ private fun BoxScope.TranslatedImage(
         mutableStateOf(true)
     }
 
+    val textAlpha by animateFloatAsState(
+        targetValue = if (translatedTextVisible) 1f else 0f
+    )
+
     Image(
         modifier = Modifier.fillMaxSize(),
         bitmap = uiState.capturedImage!!.toImageBitmap(),
         contentDescription = null,
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.FillBounds
     )
 
-    if (uiState.translatedTextBlock.isNotEmpty() && translatedTextVisible) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            // Get original image dimensions
-            val originalWidth =
-                uiState.capturedImage!!.bitmap.width.toFloat()
-            val originalHeight =
-                uiState.capturedImage!!.bitmap.height.toFloat()
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val originalWidth =
+            uiState.capturedImage!!.bitmap.width.toFloat()
+        val originalHeight =
+            uiState.capturedImage!!.bitmap.height.toFloat()
 
-            // Get displayed image dimensions
-            val displayedWidth = size.width
-            val displayedHeight = size.height
+        val displayedWidth = size.width
+        val displayedHeight = size.height
 
-            // Scaling factors
-            val scaleX = displayedWidth / originalWidth
-            val scaleY = displayedHeight / originalHeight
+        val scaleX = displayedWidth / originalWidth
+        val scaleY = displayedHeight / originalHeight
 
-            uiState.translatedTextBlock.forEach { block ->
-                block.boundingBox?.let { rect ->
-                    drawIntoCanvas { canvas ->
-                        // Calculate scaled text size based on original text height
-                        val originalTextHeight = rect.height.toFloat()
-                        val scaledTextSize =
-                            (originalTextHeight * scaleY * 0.8f).coerceAtMost(40f)
+        val backgroundPaint =
+            Paint().apply {
+                color = android.graphics.Color.WHITE
+                style = Paint.Style.FILL
+            }
 
+        val textPaint = Paint().apply {
+            color = android.graphics.Color.BLACK
+            textAlign = Paint.Align.LEFT
+        }
 
-                        val textPaint = Paint().apply {
-                            color = android.graphics.Color.BLACK
-                            textSize = scaledTextSize
+        uiState.translatedTextBlock.forEach { block ->
+            block.boundingBox?.let { rect ->
+                drawIntoCanvas { canvas ->
+
+                    backgroundPaint.alpha = (255 * textAlpha).toInt()
+                    textPaint.alpha = (255 * textAlpha).toInt()
+
+                    val rect = RectF(
+                        rect.left * scaleX,
+                        rect.top * scaleY,
+                        rect.right * scaleX,
+                        rect.bottom * scaleY
+                    )
+
+                    // Draw background rectangle
+                    canvas.nativeCanvas.drawRect(
+                        rect,
+                        backgroundPaint
+                    )
+
+                    // Calculate optimal text size to fit the width and height
+                    var textSize = 1f
+                    val maxWidth = rect.width()
+                    val maxHeight = rect.height()
+                    val bounds = Rect()
+
+                    // Binary search for the ideal text size
+                    var low = 1f
+                    var high = maxHeight
+                    while (low < high) {
+                        val mid = (low + high + 1) / 2
+                        textPaint.textSize = mid
+                        textPaint.getTextBounds(block.text, 0, block.text.length, bounds)
+
+                        if (bounds.width() <= maxWidth && bounds.height() <= maxHeight) {
+                            textSize = mid
+                            low = mid
+                        } else {
+                            high = mid - 1
                         }
-
-                        val backgroundPaint =
-                            Paint().apply {
-                                color = android.graphics.Color.WHITE
-                                style = Paint.Style.FILL
-                            }
-
-                        // Scale bounding box coordinates to match displayed image size
-                        val left = rect.left * scaleX
-                        val top = rect.top * scaleY
-
-                        // Calculate text background size
-                        val textWidth = textPaint.measureText(block.text)
-                        val textHeight = textPaint.textSize
-                        val padding = 8f
-
-                        // Draw background rectangle
-                        canvas.nativeCanvas.drawRect(
-                            left - padding,
-                            top - padding,
-                            left + textWidth + padding,
-                            top + textHeight + padding,
-                            backgroundPaint
-                        )
-
-                        // Draw translated text on top
-                        canvas.nativeCanvas.drawText(
-                            block.text,
-                            left,
-                            top + textHeight,
-                            textPaint
-                        )
                     }
+
+                    // Apply the found text size
+                    textPaint.textSize = textSize
+
+                    textPaint.getTextBounds(block.text, 0, block.text.length, bounds)
+
+                    val x = rect.left + (maxWidth - bounds.width()) / 2
+                    val y = rect.top + (maxHeight + bounds.height()) / 2
+
+                    // Draw the translated text
+                    canvas.nativeCanvas.drawText(block.text, x, y, textPaint)
                 }
             }
         }
@@ -280,8 +340,8 @@ fun CameraPreviewPreview() {
             uiState = ScanTranslateUiState(
                 isTranslating = false,
                 translatedTextBlock = emptyList(),
-                fromLanguage = UiLanguage.byCode("en"),
-                toLanguage = UiLanguage.byCode("ja")
+                fromLanguage = UiLanguage.fromLanguageCode("en"),
+                toLanguage = UiLanguage.fromLanguageCode("ja")
             ),
             onNavigateUp = {},
             onEvent = {},

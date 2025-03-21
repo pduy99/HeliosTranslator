@@ -33,16 +33,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.sunverta.android.R
-import com.helios.sunverta.android.core.components.LanguageDropDown
+import com.helios.sunverta.android.core.components.LanguageSelector
+import com.helios.sunverta.android.core.components.LoadingDots
 import com.helios.sunverta.android.core.theme.HeliosTranslatorTheme
 import com.helios.sunverta.core.presentation.UiLanguage
 
 @Composable
 fun VoiceTranslateBox(
     modifier: Modifier = Modifier,
+    availableLanguages: List<UiLanguage>,
     voiceAnimationState: VoiceState,
     speakingLanguage: UiLanguage,
     content: String,
+    isTranslating: Boolean = false,
     isMirrored: Boolean = false,
     onIdleClick: () -> Unit,
     onActiveClick: () -> Unit,
@@ -79,7 +82,8 @@ fun VoiceTranslateBox(
             .background(MaterialTheme.colorScheme.surface)
             .padding(horizontal = 8.dp)
     ) {
-        LanguageDropDown(
+        LanguageSelector(
+            availableLanguages = availableLanguages,
             language = speakingLanguage,
             isOpen = isChoosingLanguage,
             onClick = onLanguageDropdownClick,
@@ -93,14 +97,21 @@ fun VoiceTranslateBox(
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            Text(
-                text = if (showHint) stringResource(id = R.string.voice_translate_hint) else content,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .align(Alignment.Center)
-            )
+            if (isTranslating) {
+                LoadingDots(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                )
+            } else {
+                Text(
+                    text = if (showHint) stringResource(id = R.string.voice_translate_hint) else content,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                )
+            }
         }
 
         Row(
@@ -130,7 +141,7 @@ fun VoiceTranslateBox(
 private fun A1() {
     HeliosTranslatorTheme(darkTheme = true) {
         VoiceTranslateBox(
-            speakingLanguage = UiLanguage.byCode("en"),
+            speakingLanguage = UiLanguage.fromLanguageCode("en"),
             voiceAnimationState = VoiceState.Idle,
             content = "Tap the mic button to start the conversation",
             onIdleClick = {},
@@ -138,7 +149,8 @@ private fun A1() {
             isChoosingLanguage = false,
             onLanguageDropdownClick = {},
             onLanguageDropDownDismiss = {},
-            onSelectLanguage = {}
+            onSelectLanguage = {},
+            availableLanguages = emptyList()
         )
     }
 }
@@ -148,7 +160,7 @@ private fun A1() {
 private fun A2() {
     HeliosTranslatorTheme(darkTheme = true) {
         VoiceTranslateBox(
-            speakingLanguage = UiLanguage.byCode("en"),
+            speakingLanguage = UiLanguage.fromLanguageCode("en"),
             voiceAnimationState = VoiceState.Active(0.8f),
             content = "Tap the mic button to start the conversation",
             onIdleClick = {},
@@ -156,7 +168,8 @@ private fun A2() {
             isChoosingLanguage = false,
             onLanguageDropdownClick = {},
             onLanguageDropDownDismiss = {},
-            onSelectLanguage = {}
+            onSelectLanguage = {},
+            availableLanguages = emptyList()
         )
     }
 }
@@ -166,7 +179,7 @@ private fun A2() {
 private fun A3() {
     HeliosTranslatorTheme(darkTheme = true) {
         VoiceTranslateBox(
-            speakingLanguage = UiLanguage.byCode("en"),
+            speakingLanguage = UiLanguage.fromLanguageCode("en"),
             voiceAnimationState = VoiceState.Idle,
             content = "Tap the mic button to start the conversation",
             isMirrored = true,
@@ -175,7 +188,28 @@ private fun A3() {
             isChoosingLanguage = false,
             onLanguageDropdownClick = {},
             onLanguageDropDownDismiss = {},
-            onSelectLanguage = {}
+            onSelectLanguage = {},
+            availableLanguages = emptyList()
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun A4() {
+    HeliosTranslatorTheme(darkTheme = true) {
+        VoiceTranslateBox(
+            speakingLanguage = UiLanguage.fromLanguageCode("en"),
+            voiceAnimationState = VoiceState.Active(0.8f),
+            content = "Tap the mic button to start the conversation",
+            onIdleClick = {},
+            onActiveClick = {},
+            isTranslating = true,
+            isChoosingLanguage = false,
+            onLanguageDropdownClick = {},
+            onLanguageDropDownDismiss = {},
+            onSelectLanguage = {},
+            availableLanguages = emptyList()
         )
     }
 }

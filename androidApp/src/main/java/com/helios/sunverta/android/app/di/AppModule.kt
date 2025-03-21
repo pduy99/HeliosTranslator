@@ -1,19 +1,25 @@
 package com.helios.sunverta.android.app.di
 
 import android.app.Application
+import com.helios.sunverta.core.data.datasource.LocalLanguageDataSource
+import com.helios.sunverta.core.data.datasource.RemoteLanguageDataSource
 import com.helios.sunverta.core.data.datasource.TranslateDataSource
 import com.helios.sunverta.core.data.datasource.TranslateHistoryDataSource
+import com.helios.sunverta.core.data.repository.LanguageRepository
+import com.helios.sunverta.core.data.repository.LanguageRepositoryImpl
 import com.helios.sunverta.core.data.repository.OfflineTranslateHistoryRepository
 import com.helios.sunverta.core.data.repository.RemoteTranslateRepository
 import com.helios.sunverta.core.data.repository.TranslateHistoryRepository
 import com.helios.sunverta.core.data.repository.TranslateRepository
 import com.helios.sunverta.core.database.DatabaseDriverFactory
+import com.helios.sunverta.core.database.LocalLanguageDataSourceImpl
 import com.helios.sunverta.core.database.SqlDelightTranslateHistoryDataSource
 import com.helios.sunverta.core.domain.usecase.GetAndCleanTranslateHistoryUseCase
 import com.helios.sunverta.core.domain.usecase.GetTranslateHistoryUseCase
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
 import com.helios.sunverta.core.network.HttpClientFactory
 import com.helios.sunverta.core.network.KtorTranslateDataSource
+import com.helios.sunverta.core.network.RemoteLanguageDataSourceImpl
 import com.helios.sunverta.database.TranslateDatabase
 import com.squareup.sqldelight.db.SqlDriver
 import dagger.Module
@@ -47,8 +53,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesHistoryDataSource(sqlDriver: SqlDriver): TranslateHistoryDataSource {
-        return SqlDelightTranslateHistoryDataSource(TranslateDatabase(driver = sqlDriver))
+    fun providesTranslateDatabase(sqlDriver: SqlDriver): TranslateDatabase {
+        return TranslateDatabase(driver = sqlDriver)
+    }
+
+    @Provides
+    @Singleton
+    fun providesHistoryDataSource(database: TranslateDatabase): TranslateHistoryDataSource {
+        return SqlDelightTranslateHistoryDataSource(database)
     }
 
     @Provides
@@ -87,5 +99,33 @@ object AppModule {
     @Singleton
     fun providesTranslateRepository(translateDataSource: TranslateDataSource): TranslateRepository {
         return RemoteTranslateRepository(translateDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun providesRemoteLanguageDataSource(
+        httpClient: HttpClient,
+    ): RemoteLanguageDataSource {
+        return RemoteLanguageDataSourceImpl(httpClient)
+    }
+
+    @Provides
+    @Singleton
+    fun providesLocalLanguageDataSource(
+        database: TranslateDatabase
+    ): LocalLanguageDataSource {
+        return LocalLanguageDataSourceImpl(database)
+    }
+
+    @Provides
+    @Singleton
+    fun providesLanguageRepository(
+        remoteLanguageDataSource: RemoteLanguageDataSource,
+        localLanguageDataSource: LocalLanguageDataSource
+    ): LanguageRepository {
+        return LanguageRepositoryImpl(
+            remoteLanguageDataSource = remoteLanguageDataSource,
+            localLanguageDataSource = localLanguageDataSource
+        )
     }
 }

@@ -1,8 +1,7 @@
 package com.helios.sunverta.features.translate
 
-import com.helios.sunverta.core.domain.usecase.GetTranslateHistoryUseCase
+import com.helios.sunverta.core.data.repository.LanguageRepository
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
-import com.helios.sunverta.core.presentation.UiHistoryItem
 import com.helios.sunverta.core.presentation.UiLanguage
 import com.helios.sunverta.core.result.Result
 import com.helios.sunverta.core.speech.TextToSpeech
@@ -11,16 +10,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TranslateViewModel(
     private val translateUseCase: TranslateUseCase,
     private val textToSpeech: TextToSpeech,
-    getTranslateHistoryUseCase: GetTranslateHistoryUseCase,
+    private val languageRepository: LanguageRepository,
     coroutineScope: CoroutineScope?,
 ) {
 
@@ -30,27 +28,35 @@ class TranslateViewModel(
     private var translateJob: Job? = null
 
     private val _state = MutableStateFlow(TranslateState())
-    val state = combine(
-        _state,
-        getTranslateHistoryUseCase.execute()
-    ) { state, history ->
-        if (state.history != history) {
-            state.copy(history = history.map { item ->
-                UiHistoryItem(
-                    id = item.id ?: -1,
-                    fromText = item.fromText,
-                    toText = item.toText,
-                    fromLanguage = UiLanguage.byCode(item.fromLanguageCode),
-                    toLanguage = UiLanguage.byCode(item.toLanguageCode)
-                )
-            })
-        } else state
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TranslateState())
-        .toCommonStateFlow()
+    val state = _state.toCommonStateFlow()
 
-    fun onEvent(event: TranslateEvent) {
+    init {
+        viewModelScope.launch {
+            combine(
+                languageRepository.getToLanguage(),
+                languageRepository.getFromLanguage()
+            ) { toLanguage, fromLanguage ->
+                _state.update {
+                    it.copy(
+                        fromLanguage = UiLanguage.fromLanguage(fromLanguage),
+                        toLanguage = UiLanguage.fromLanguage(toLanguage)
+                    )
+                }
+            }.collect()
+        }
+
+        viewModelScope.launch {
+            _state.update {
+                it.copy(availableLanguages = languageRepository.getAvailableLanguages().map {
+                    UiLanguage.fromLanguageCode(it.langCode)
+                })
+            }
+        }
+    }
+
+    fun onEvent(event: TextTranslateEvent) {
         when (event) {
-            is TranslateEvent.ChangeTranslationText -> {
+            is TextTranslateEvent.ChangeTranslationText -> {
                 _state.update {
                     it.copy(
                         fromText = event.text
@@ -58,20 +64,29 @@ class TranslateViewModel(
                 }
             }
 
-            is TranslateEvent.ChooseFromLanguage -> {
+            is TextTranslateEvent.ChooseFromLanguage -> {
+                viewModelScope.launch {
+                    languageRepository.saveFromLanguage(event.language.language)
+                }
                 _state.update {
-                    it.copy(isChoosingFromLanguage = false, fromLanguage = event.language)
+                    it.copy(isChoosingFromLanguage = false)
                 }
             }
 
-            is TranslateEvent.ChooseToLanguage -> {
-                _state.update {
-                    it.copy(isChoosingToLanguage = false, toLanguage = event.language)
+            is TextTranslateEvent.ChooseToLanguage -> {
+                viewModelScope.launch {
+                    languageRepository.saveToLanguage(event.language.language)
+
+                    _state.update {
+                        it.copy(isChoosingToLanguage = false)
+                    }
+
+                    translate(state.value.copy(toLanguage = event.language))
                 }
-                translate(_state.value)
+
             }
 
-            TranslateEvent.CloseTranslation -> {
+            TextTranslateEvent.CloseTranslation -> {
                 _state.update {
                     it.copy(
                         isTranslating = false,
@@ -81,23 +96,23 @@ class TranslateViewModel(
                 }
             }
 
-            TranslateEvent.EditTranslation -> {
-                if (_state.value.toText != null) {
+            TextTranslateEvent.EditTranslation -> {
+                if (state.value.toText != null) {
                     _state.update {
                         it.copy(toText = null, isTranslating = false)
                     }
                 }
             }
 
-            TranslateEvent.OnErrorSeen -> {
+            TextTranslateEvent.OnErrorSeen -> {
                 _state.update { it.copy(error = null) }
             }
 
-            TranslateEvent.OpenFromLanguageDropDown -> {
+            TextTranslateEvent.OpenFromLanguageDropDown -> {
                 _state.update { it.copy(isChoosingFromLanguage = true) }
             }
 
-            TranslateEvent.OpenToLanguageDropDown -> {
+            TextTranslateEvent.OpenToLanguageDropDown -> {
                 _state.update {
                     it.copy(
                         isChoosingToLanguage = true
@@ -105,7 +120,7 @@ class TranslateViewModel(
                 }
             }
 
-            TranslateEvent.StopChoosingLanguage -> {
+            TextTranslateEvent.StopChoosingLanguage -> {
                 _state.update {
                     it.copy(
                         isChoosingToLanguage = false,
@@ -114,34 +129,28 @@ class TranslateViewModel(
                 }
             }
 
-            TranslateEvent.SwapLanguages -> {
+            TextTranslateEvent.SwapLanguages -> {
+                val oldFromLanguage = state.value.fromLanguage.language
+                val oldToLanguage = state.value.toLanguage.language
+
+                viewModelScope.launch {
+                    languageRepository.saveToLanguage(oldFromLanguage)
+                    languageRepository.saveFromLanguage(oldToLanguage)
+                }
                 _state.update {
                     it.copy(
-                        toLanguage = it.fromLanguage,
-                        fromLanguage = it.toLanguage,
                         fromText = it.toText ?: "",
                         toText = if (it.toText != null) it.fromText else null
                     )
                 }
             }
 
-            TranslateEvent.Translate -> {
-                translate(_state.value)
+            TextTranslateEvent.TextTranslate -> {
+                translate(state.value)
             }
 
-            is TranslateEvent.SubmitVoiceResult -> {
-                _state.update {
-                    it.copy(
-                        fromText = event.voiceResult ?: it.fromText,
-                        isTranslating = if (event.voiceResult != null) false else it.isTranslating,
-                        toText = if (event.voiceResult != null) null else it.toText
-                    )
-                }
-                translate(_state.value)
-            }
-
-            is TranslateEvent.ReadAloudText -> {
-                _state.value.toText?.let {
+            is TextTranslateEvent.ReadAloudText -> {
+                state.value.toText?.let {
                     textToSpeech.speak(
                         language = state.value.toLanguage.language.langCode,
                         text = it,

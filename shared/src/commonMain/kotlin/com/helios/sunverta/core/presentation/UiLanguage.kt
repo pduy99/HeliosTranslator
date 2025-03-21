@@ -5,9 +5,13 @@ import com.helios.sunverta.core.domain.model.Language
 expect class UiLanguage {
 
     val language: Language
+    val bcp47Code: String?
+    val nativeName: String?
+    val displayNameInEnglish: String?
 
     companion object {
-        fun byCode(languageCode: String): UiLanguage
-        val allLanguages: List<UiLanguage>
+        fun fromLanguage(language: Language): UiLanguage
+
+        fun fromLanguageCode(languageCode: String): UiLanguage
     }
 }

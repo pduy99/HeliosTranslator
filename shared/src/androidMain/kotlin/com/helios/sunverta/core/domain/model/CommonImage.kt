@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import java.io.ByteArrayOutputStream
 
-actual class CommonImage(val bitmap: Bitmap) {
+actual class CommonImage(val bitmap: Bitmap, val rotation: Int) {
     actual fun toByteArray(): ByteArray {
         return run {
             val byteArrayOutputStream = ByteArrayOutputStream()

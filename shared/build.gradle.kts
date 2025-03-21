@@ -84,6 +84,7 @@ kotlin {
                 implementation(libs.ktor.client.auth)
                 implementation(libs.kotlinDateTime)
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.touchlab.kermit)
                 implementation(compose.ui)
                 implementation(compose.runtime)

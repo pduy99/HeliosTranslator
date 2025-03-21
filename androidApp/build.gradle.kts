@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,7 +10,19 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
 }
 
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
 android {
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
     namespace = "com.helios.sunverta.android"
     compileSdk = 35
     defaultConfig {
@@ -15,7 +30,7 @@ android {
         minSdk = 25
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0"
     }
     buildFeatures {
         compose = true
@@ -28,7 +43,9 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }
     compileOptions {
@@ -54,6 +71,9 @@ dependencies {
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.compose.material.extended.icons)
     implementation(libs.androidx.navigation.compose)
+
+    // Kotlin serialization
+    implementation(libs.kotlinx.serialization.json)
 
     // Hilt
     implementation(libs.androidx.hilt.navigation.compose)

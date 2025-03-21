@@ -29,7 +29,8 @@ Pods
 /build.sh
 *.hprof
 /local.properties
-
+/keystore.properties
+/androidApp/release/upload-keystore.jks
 
 .next
 .cache

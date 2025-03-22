@@ -1,4 +1,4 @@
-package com.helios.sunverta.features.voicetotext.domain
+package com.helios.sunverta.features.conversationtranslate.domain
 
 import com.helios.sunverta.core.util.CommonStateFlow
 

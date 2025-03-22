@@ -1,4 +1,4 @@
-package com.helios.sunverta.features.translate
+package com.helios.sunverta.features.texttranslate
 
 import com.helios.sunverta.core.presentation.UiLanguage
 

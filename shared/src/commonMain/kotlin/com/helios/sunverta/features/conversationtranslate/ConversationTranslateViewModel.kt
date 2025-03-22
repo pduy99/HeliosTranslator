@@ -1,12 +1,12 @@
-package com.helios.sunverta.features.voicetotext
+package com.helios.sunverta.features.conversationtranslate
 
 import com.helios.sunverta.core.data.repository.LanguageRepository
 import com.helios.sunverta.core.domain.model.Language
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
 import com.helios.sunverta.core.presentation.UiLanguage
 import com.helios.sunverta.core.result.Result
-import com.helios.sunverta.features.voicetotext.domain.VoiceToTextParser
-import com.helios.sunverta.features.voicetotext.domain.VoiceToTextParserState
+import com.helios.sunverta.features.conversationtranslate.domain.VoiceToTextParser
+import com.helios.sunverta.features.conversationtranslate.domain.VoiceToTextParserState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

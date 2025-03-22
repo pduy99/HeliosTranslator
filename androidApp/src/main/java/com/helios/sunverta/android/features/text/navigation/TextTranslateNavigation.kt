@@ -7,7 +7,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.helios.sunverta.android.features.text.presentation.AndroidTranslateViewModel
 import com.helios.sunverta.android.features.text.presentation.TextTranslateScreen
-import com.helios.sunverta.features.translate.TextTranslateEvent
+import com.helios.sunverta.features.texttranslate.TextTranslateEvent
 import kotlinx.serialization.Serializable
 
 @Serializable

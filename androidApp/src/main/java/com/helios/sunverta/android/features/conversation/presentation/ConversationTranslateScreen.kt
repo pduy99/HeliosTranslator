@@ -25,9 +25,9 @@ import com.helios.sunverta.android.core.theme.HeliosTranslatorTheme
 import com.helios.sunverta.android.features.conversation.presentation.components.VoiceState
 import com.helios.sunverta.android.features.conversation.presentation.components.VoiceTranslateBox
 import com.helios.sunverta.core.presentation.UiLanguage
-import com.helios.sunverta.features.voicetotext.ConversationTranslateEvent
-import com.helios.sunverta.features.voicetotext.ConversationTranslateUiState
-import com.helios.sunverta.features.voicetotext.ConversationTranslateUiState.TalkingPerson
+import com.helios.sunverta.features.conversationtranslate.ConversationTranslateEvent
+import com.helios.sunverta.features.conversationtranslate.ConversationTranslateUiState
+import com.helios.sunverta.features.conversationtranslate.ConversationTranslateUiState.TalkingPerson
 
 @Composable
 fun VoiceTranslateScreen(

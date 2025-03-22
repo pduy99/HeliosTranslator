@@ -1,4 +1,4 @@
-package com.helios.sunverta.features.voicetotext
+package com.helios.sunverta.features.conversationtranslate
 
 import com.helios.sunverta.core.presentation.UiLanguage
 

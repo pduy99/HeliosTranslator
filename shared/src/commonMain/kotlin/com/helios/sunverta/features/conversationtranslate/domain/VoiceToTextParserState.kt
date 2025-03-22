@@ -1,4 +1,4 @@
-package com.helios.sunverta.features.voicetotext.domain
+package com.helios.sunverta.features.conversationtranslate.domain
 
 data class VoiceToTextParserState(
     val result: String = "",

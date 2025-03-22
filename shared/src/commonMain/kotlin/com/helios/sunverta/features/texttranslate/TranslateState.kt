@@ -1,4 +1,4 @@
-package com.helios.sunverta.features.translate
+package com.helios.sunverta.features.texttranslate
 
 import androidx.compose.runtime.Immutable
 import com.helios.sunverta.core.data.model.TranslateError

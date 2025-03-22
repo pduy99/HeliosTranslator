@@ -54,8 +54,8 @@ import com.helios.sunverta.android.core.theme.HeliosTranslatorTheme
 import com.helios.sunverta.android.core.util.asString
 import com.helios.sunverta.android.features.text.components.TranslateTextField
 import com.helios.sunverta.core.presentation.UiLanguage
-import com.helios.sunverta.features.translate.TextTranslateEvent
-import com.helios.sunverta.features.translate.TranslateState
+import com.helios.sunverta.features.texttranslate.TextTranslateEvent
+import com.helios.sunverta.features.texttranslate.TranslateState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

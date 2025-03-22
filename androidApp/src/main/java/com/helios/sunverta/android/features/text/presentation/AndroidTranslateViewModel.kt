@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.helios.sunverta.core.data.repository.LanguageRepository
 import com.helios.sunverta.core.domain.usecase.TranslateUseCase
 import com.helios.sunverta.core.speech.TextToSpeech
-import com.helios.sunverta.features.translate.TextTranslateEvent
-import com.helios.sunverta.features.translate.TranslateViewModel
+import com.helios.sunverta.features.texttranslate.TextTranslateEvent
+import com.helios.sunverta.features.texttranslate.TranslateViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

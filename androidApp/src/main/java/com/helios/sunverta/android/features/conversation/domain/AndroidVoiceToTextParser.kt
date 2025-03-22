@@ -10,8 +10,8 @@ import android.util.Log
 import com.helios.sunverta.android.R
 import com.helios.sunverta.core.util.CommonStateFlow
 import com.helios.sunverta.core.util.toCommonStateFlow
-import com.helios.sunverta.features.voicetotext.domain.VoiceToTextParser
-import com.helios.sunverta.features.voicetotext.domain.VoiceToTextParserState
+import com.helios.sunverta.features.conversationtranslate.domain.VoiceToTextParser
+import com.helios.sunverta.features.conversationtranslate.domain.VoiceToTextParserState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 

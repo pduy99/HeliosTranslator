@@ -1,0 +1,114 @@
+version: 2.1
+
+orbs:
+  gradle: circleci/gradle@2.2.0
+  android: circleci/android@2.1.2
+
+jobs:
+  build-android:
+    executor:
+      name: android/android-machine
+      tag: 2023.05.1
+      resource-class: large
+    steps:
+      - checkout
+
+      - run:
+          name: Decode Android key store
+          command: |
+            mkdir -p androidApp/release/
+            echo $BASE64_KEYSTORE | base64 -d > androidApp/release/upload-keystore.jks
+      - run:
+          name: Create keystore.properties
+          command: printf 'keyAlias=%s\nkeyPassword=%s\nstoreFile=%s\nstorePassword=%s' \ $RELEASE_KEY_ALIAS $RELEASE_KEY_PASSWORD $RELEASE_KEYSTORE $RELEASE_STORE_PASSWORD > keystore.properties
+
+      - restore_cache:
+          keys:
+            - gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+            - gradle-wrapper-
+      - restore_cache:
+          keys:
+            - gradle-cache-{{ checksum "build.gradle.kts" }}-{{ checksum "androidApp/build.gradle.kts" }}
+            - gradle-cache-
+      - android/restore-build-cache
+
+      - run:
+          name: Setup Gradle
+          command: ./gradlew wrapper --stacktrace
+
+      - run:
+          name: Run Tests & Assemble (in parallel)
+          command: |
+            ./gradlew --parallel \
+              androidApp:testDebugUnitTest \
+              androidApp:assembleRelease \
+              --max-workers=4 \
+              --stacktrace
+
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: gradle-cache-{{ checksum "build.gradle.kts" }}-{{ checksum "androidApp/build.gradle.kts" }}
+      - android/save-build-cache
+
+      - store_test_results:
+          path: androidApp/build/test-results
+      - store_artifacts:
+          path: androidApp/build/outputs/apk/release
+          destination: release-apk
+      - store_artifacts:
+          path: androidApp/build/reports
+          destination: reports
+
+  build-ios:
+    macos:
+      xcode: 15.1.0
+    steps:
+      - checkout
+
+      - run:
+          name: Decode Android key store
+          command: |
+            mkdir -p androidApp/release/
+            echo $BASE64_KEYSTORE | base64 -d > androidApp/release/upload-keystore.jks
+      - run:
+          name: Create keystore.properties
+          command: printf 'keyAlias=%s\nkeyPassword=%s\nstoreFile=%s\nstorePassword=%s' \ $RELEASE_KEY_ALIAS $RELEASE_KEY_PASSWORD $RELEASE_KEYSTORE $RELEASE_STORE_PASSWORD > keystore.properties
+
+      - run:
+          name: Allow proper XCode dependency resolution
+          command: |
+            sudo defaults write com.apple.dt.Xcode IDEPackageSupportUseBuiltinSCM YES
+            rm ~/.ssh/id_rsa || true
+            for ip in $(dig @8.8.8.8 bitbucket.org +short); do ssh-keyscan bitbucket.org,$ip; ssh-keyscan $ip; done 2>/dev/null >> ~/.ssh/known_hosts || true
+            for ip in $(dig @8.8.8.8 github.com +short); do ssh-keyscan github.com,$ip; ssh-keyscan $ip; done 2>/dev/null >> ~/.ssh/known_hosts || true
+
+      - run:
+          name: Build Kotlin Framework
+          command: |
+            ./gradlew :shared:generateDummyFramework
+
+      - run:
+          name: Install Pod dependencies
+          command: |
+            cd iosApp
+            pod install
+      - run:
+          name: Install Fastlane
+          command: |
+            gem install fastlane
+      - run:
+          name: Fastlane Tests
+          command: |
+            cd iosApp
+            fastlane scan
+
+workflows:
+  build-all:
+    jobs:
+      - build-android
+      - build-ios

@@ -1,0 +1,48 @@
+CREATE TABLE historyEntity(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fromLanguageCode TEXT NOT NULL,
+    fromText TEXT NOT NULL,
+    toLanguageCode TEXT NOT NULL,
+    toText TEXT NOT NULL,
+    timestamp INTEGER NOT NULL
+);
+
+getHistory:
+SELECT *
+FROM historyEntity
+ORDER BY timestamp DESC;
+
+insertHistoryEntity:
+INSERT OR REPLACE
+INTO historyEntity(
+    id,
+    fromLanguageCode,
+    fromText,
+    toLanguageCode,
+    toText,
+    timestamp
+)
+VALUES(?, ?, ?, ?, ?, ?);
+
+deleteHistory:
+DELETE FROM historyEntity
+WHERE id = ?;
+
+deleteAllHistory:
+DELETE FROM historyEntity;
+
+getHistoryOlderThan:
+SELECT *
+FROM historyEntity
+WHERE timestamp < ?
+ORDER BY timestamp DESC;
+
+deleteHistoryOlderThan:
+DELETE FROM historyEntity
+WHERE timestamp < ?;
+
+getHistoryNewerThan:
+SELECT *
+FROM historyEntity
+WHERE timestamp >= ?
+ORDER BY timestamp DESC;

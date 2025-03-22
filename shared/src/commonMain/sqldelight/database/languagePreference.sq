@@ -1,0 +1,18 @@
+CREATE TABLE languagePreference (
+    type TEXT PRIMARY KEY CHECK (type IN ('from', 'to')) NOT NULL,
+    languageCode TEXT NOT NULL
+);
+
+getFromLanguage:
+SELECT * FROM languagePreference WHERE type = 'from' LIMIT 1;
+
+getToLanguage:
+SELECT * FROM languagePreference WHERE type = 'to' LIMIT 1;
+
+insertOrReplaceFromLanguage:
+INSERT OR REPLACE INTO languagePreference(type, languageCode)
+VALUES ('from', ?);
+
+insertOrReplaceToLanguage:
+INSERT OR REPLACE INTO languagePreference(type, languageCode)
+VALUES ('to', ?);

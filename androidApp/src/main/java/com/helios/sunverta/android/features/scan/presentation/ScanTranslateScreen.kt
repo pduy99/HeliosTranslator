@@ -232,6 +232,21 @@ private fun BoxScope.TranslatedImage(
         targetValue = if (translatedTextVisible) 1f else 0f
     )
 
+    // Pre-calculate optimal text sizes based on the original image dimensions
+    val textBlockSizes = remember(uiState.translatedTextBlock) {
+        val tempPaint = Paint()
+        uiState.translatedTextBlock.map { block ->
+            block.boundingBox?.let { rect ->
+                calculateMaxTextSize(
+                    text = block.text,
+                    maxWidth = rect.width,
+                    maxHeight = rect.height,
+                    paint = tempPaint
+                )
+            } ?: 0f
+        }
+    }
+
     Image(
         modifier = Modifier.fillMaxSize(),
         bitmap = uiState.capturedImage!!.toImageBitmap(),
@@ -262,14 +277,14 @@ private fun BoxScope.TranslatedImage(
             textAlign = Paint.Align.LEFT
         }
 
-        uiState.translatedTextBlock.forEach { block ->
+        uiState.translatedTextBlock.forEachIndexed { index, block ->
             block.boundingBox?.let { rect ->
                 drawIntoCanvas { canvas ->
 
                     backgroundPaint.alpha = (255 * textAlpha).toInt()
                     textPaint.alpha = (255 * textAlpha).toInt()
 
-                    val rect = RectF(
+                    val scaledRect = RectF(
                         rect.left * scaleX,
                         rect.top * scaleY,
                         rect.right * scaleX,
@@ -278,39 +293,20 @@ private fun BoxScope.TranslatedImage(
 
                     // Draw background rectangle
                     canvas.nativeCanvas.drawRect(
-                        rect,
+                        scaledRect,
                         backgroundPaint
                     )
 
-                    // Calculate optimal text size to fit the width and height
-                    var textSize = 1f
-                    val maxWidth = rect.width()
-                    val maxHeight = rect.height()
+                    // Use pre-calculated text size scaled by the current display scale
+                    // We assume uniform scaling for text size approximation, using scaleY or average
+                    val baseTextSize = textBlockSizes[index]
+                    textPaint.textSize = baseTextSize * scaleY
+
                     val bounds = Rect()
-
-                    // Binary search for the ideal text size
-                    var low = 1f
-                    var high = maxHeight
-                    while (low < high) {
-                        val mid = (low + high + 1) / 2
-                        textPaint.textSize = mid
-                        textPaint.getTextBounds(block.text, 0, block.text.length, bounds)
-
-                        if (bounds.width() <= maxWidth && bounds.height() <= maxHeight) {
-                            textSize = mid
-                            low = mid
-                        } else {
-                            high = mid - 1
-                        }
-                    }
-
-                    // Apply the found text size
-                    textPaint.textSize = textSize
-
                     textPaint.getTextBounds(block.text, 0, block.text.length, bounds)
 
-                    val x = rect.left + (maxWidth - bounds.width()) / 2
-                    val y = rect.top + (maxHeight + bounds.height()) / 2
+                    val x = scaledRect.left + (scaledRect.width() - bounds.width()) / 2
+                    val y = scaledRect.top + (scaledRect.height() + bounds.height()) / 2
 
                     // Draw the translated text
                     canvas.nativeCanvas.drawText(block.text, x, y, textPaint)
@@ -329,6 +325,32 @@ private fun BoxScope.TranslatedImage(
             }
         )
     }
+}
+
+private fun calculateMaxTextSize(
+    text: String,
+    maxWidth: Float,
+    maxHeight: Float,
+    paint: Paint
+): Float {
+    var low = 1f
+    var high = maxHeight
+    var textSize = 1f
+    val bounds = Rect()
+
+    while (low < high) {
+        val mid = (low + high + 1) / 2
+        paint.textSize = mid
+        paint.getTextBounds(text, 0, text.length, bounds)
+
+        if (bounds.width() <= maxWidth && bounds.height() <= maxHeight) {
+            textSize = mid
+            low = mid
+        } else {
+            high = mid - 1
+        }
+    }
+    return textSize
 }
 
 @Preview

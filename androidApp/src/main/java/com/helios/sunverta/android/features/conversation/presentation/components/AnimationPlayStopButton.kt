@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.Canvas
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Stop
@@ -18,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -97,7 +99,7 @@ private fun ActiveVoiceAnimation(
     color: Color,
     onActiveClick: () -> Unit
 ) {
-    val scale = animateFloatAsState(
+    val scale by animateFloatAsState(
         volume.coerceIn(0f, 1f),
         animationSpec = tween(200), label = "VoicePulseAnimation"
     )
@@ -105,35 +107,20 @@ private fun ActiveVoiceAnimation(
     Box(
         modifier = modifier
             .fillMaxSize()
-    )
-    {
-        Surface(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .scale(BUTTON_SIZE_RATIO + (INNER_ORB_RATIO - BUTTON_SIZE_RATIO) * scale.value)
-                .fillMaxSize(),
-            shape = CircleShape,
-            color = Color(0xFF2196F3).copy(alpha = 0.32f),
-            content = {}
-        )
-        Surface(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .scale(BUTTON_SIZE_RATIO + (MID_ORB_RADIO - BUTTON_SIZE_RATIO) * scale.value)
-                .fillMaxSize(),
-            shape = CircleShape,
-            color = color.copy(alpha = 0.16f),
-            content = {}
-        )
-        Surface(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .scale(BUTTON_SIZE_RATIO + (OUTER_ORB_RADIO - BUTTON_SIZE_RATIO) * scale.value)
-                .fillMaxSize(),
-            shape = CircleShape,
-            color = color.copy(alpha = 0.08f),
-            content = {}
-        )
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val baseRadius = size.minDimension / 2f * BUTTON_SIZE_RATIO
+            val innerRadius =
+                baseRadius + (size.minDimension / 2f * INNER_ORB_RATIO - baseRadius) * scale
+            val midRadius =
+                baseRadius + (size.minDimension / 2f * MID_ORB_RADIO - baseRadius) * scale
+            val outerRadius =
+                baseRadius + (size.minDimension / 2f * OUTER_ORB_RADIO - baseRadius) * scale
+
+            drawCircle(Color(0xFF2196F3).copy(alpha = 0.32f), radius = innerRadius, center = center)
+            drawCircle(color.copy(alpha = 0.16f), radius = midRadius, center = center)
+            drawCircle(color.copy(alpha = 0.08f), radius = outerRadius, center = center)
+        }
 
         IconButton(
             onClick = {
@@ -142,9 +129,7 @@ private fun ActiveVoiceAnimation(
             modifier = Modifier
                 .fillMaxSize(BUTTON_SIZE_RATIO)
                 .align(Alignment.Center)
-                .clip(
-                    CircleShape
-                )
+                .clip(CircleShape)
                 .background(color)
         ) {
             Icon(
@@ -153,7 +138,6 @@ private fun ActiveVoiceAnimation(
                 tint = Color.White,
                 modifier = Modifier
                     .fillMaxSize(BUTTON_SIZE_RATIO / 2f)
-                    .align(Alignment.Center)
             )
         }
     }

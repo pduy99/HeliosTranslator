@@ -8,6 +8,7 @@ expect class UiLanguage {
     val bcp47Code: String?
     val nativeName: String?
     val displayNameInEnglish: String
+    val flagEmoji: String
 
     companion object {
         fun fromLanguage(language: Language): UiLanguage

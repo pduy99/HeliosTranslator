@@ -16,7 +16,6 @@ class DeepLLanguageDataSourceImpl(
     override suspend fun getAvailableLanguages(): List<LanguageDto> {
         val response = httpClient.get {
             url(BuildKonfig.BASE_URL + "/languages")
-            contentType(ContentType.Application.Json)
         }
 
         return when (response.status.value) {

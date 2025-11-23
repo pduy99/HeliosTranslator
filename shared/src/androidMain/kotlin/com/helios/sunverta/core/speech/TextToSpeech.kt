@@ -7,7 +7,9 @@ import java.util.Locale
 
 actual class TextToSpeech(context: Context) : TextToSpeech.OnInitListener {
 
-    private val tts = TextToSpeech(context.applicationContext, this)
+    private val tts by lazy {
+        TextToSpeech(context.applicationContext, this)
+    }
 
     actual fun speak(language: String, text: String, onComplete: () -> Unit) {
         tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {

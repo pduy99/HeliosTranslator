@@ -21,12 +21,12 @@ actual class UiLanguage(
         }
     actual val displayNameInEnglish: String
         get() {
-            return if (language.englishName.isNotBlank()) {
-                language.englishName
-            } else {
+            return language.englishName.ifBlank {
                 NSLocale.currentLocale.localizedStringForLanguageCode(language.langCode) ?: ""
             }
         }
+    actual val flagEmoji: String
+        get() = LanguageUtils.getFlagEmoji(language.langCode)
 
     actual companion object {
         actual fun fromLanguageCode(languageCode: String): UiLanguage {

@@ -17,12 +17,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,102 +40,82 @@ fun TranslationHistoryItem(
     onCopyClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .shadow(
-                elevation = 5.dp,
-                shape = RoundedCornerShape(20.dp)
-            )
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(20.dp),
+        shadowElevation = 5.dp,
+        color = MaterialTheme.colorScheme.surface
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                SmallLanguageIcon(language = historyItem.fromLanguage)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = historyItem.fromLanguage.displayNameInEnglish!!,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.weight(1f))
-
-                IconButton(
-                    modifier = Modifier
-                        .size(32.dp),
-                    onClick = {
-                        onCopyClick(historyItem.fromText)
-                    },
-                    content = {
-                        Icon(
-                            imageVector = Icons.Outlined.ContentCopy,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.inverseOnSurface,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            LanguageSection(
+                language = historyItem.fromLanguage,
                 text = historyItem.fromText,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                textColor = MaterialTheme.colorScheme.onPrimary,
+                onCopyClick = onCopyClick
+            )
+
+            HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp)
+
+            LanguageSection(
+                language = historyItem.toLanguage,
+                text = historyItem.toText,
+                textColor = MaterialTheme.colorScheme.inversePrimary,
+                textStyle = MaterialTheme.typography.bodyLarge,
+                onCopyClick = onCopyClick
             )
         }
+    }
+}
 
-        HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp)
+@Composable
+private fun LanguageSection(
+    language: UiLanguage,
+    text: String,
+    textColor: Color,
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    onCopyClick: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SmallLanguageIcon(language = language)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = language.displayNameInEnglish ?: "Unknown",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.weight(1f))
 
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+            IconButton(
+                modifier = Modifier.size(32.dp),
+                onClick = {
+                    onCopyClick(text)
+                }
             ) {
-                SmallLanguageIcon(language = historyItem.toLanguage)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = historyItem.toLanguage.displayNameInEnglish!!,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                IconButton(
-                    modifier = Modifier
-                        .size(32.dp),
-                    onClick = {
-                        onCopyClick(historyItem.toText)
-                    },
-                    content = {
-                        Icon(
-                            imageVector = Icons.Outlined.ContentCopy,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.inverseOnSurface,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
+                Icon(
+                    imageVector = Icons.Outlined.ContentCopy,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.inverseOnSurface,
+                    modifier = Modifier.size(16.dp)
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = historyItem.toText,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.inversePrimary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = text,
+            style = textStyle,
+            color = textColor,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -151,5 +134,4 @@ fun TranslationHistoryItemPreview() {
             onCopyClick = {}
         )
     }
-
 }

@@ -8,11 +8,12 @@ import com.helios.sunverta.features.conversationtranslate.ConversationTranslateE
 import com.helios.sunverta.features.conversationtranslate.ConversationTranslateViewModel
 import com.helios.sunverta.features.conversationtranslate.domain.VoiceToTextParser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.Closeable
 import javax.inject.Inject
 
 @HiltViewModel
 class AndroidVoiceToTextViewModel @Inject constructor(
-    parser: VoiceToTextParser,
+    private val parser: VoiceToTextParser,
     translateUseCase: TranslateUseCase,
     languageRepository: LanguageRepository,
 ) : ViewModel() {
@@ -23,4 +24,9 @@ class AndroidVoiceToTextViewModel @Inject constructor(
     val state = viewModel.state
 
     fun onEvent(event: ConversationTranslateEvent) = viewModel.onEvent(event)
+
+    override fun onCleared() {
+        super.onCleared()
+        (parser as? Closeable)?.close()
+    }
 }

@@ -5,21 +5,29 @@ import com.helios.sunverta.core.data.datasource.RemoteLanguageDataSource
 import com.helios.sunverta.core.domain.model.Language
 import com.helios.sunverta.core.domain.model.toExternalLanguage
 import com.helios.sunverta.core.util.CommonFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class LanguageRepositoryImpl(
     private val remoteLanguageDataSource: RemoteLanguageDataSource,
     private val localLanguageDataSource: LocalLanguageDataSource
 ) : LanguageRepository {
     private var cachedAvailableLanguages: List<Language> = emptyList()
+    private val mutex = Mutex()
 
     override suspend fun getAvailableLanguages(): List<Language> {
-        return if (cachedAvailableLanguages.isNotEmpty()) {
-            cachedAvailableLanguages.toList()
-        } else {
-            remoteLanguageDataSource.getAvailableLanguages().map {
-                it.toExternalLanguage()
-            }.also {
-                cachedAvailableLanguages = it
+        if (cachedAvailableLanguages.isNotEmpty()) {
+            return cachedAvailableLanguages.toList()
+        }
+        return mutex.withLock {
+            if (cachedAvailableLanguages.isNotEmpty()) {
+                cachedAvailableLanguages.toList()
+            } else {
+                remoteLanguageDataSource.getAvailableLanguages().map {
+                    it.toExternalLanguage()
+                }.also {
+                    cachedAvailableLanguages = it
+                }
             }
         }
     }

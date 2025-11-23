@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -61,6 +62,8 @@ class AndroidScanTranslateViewModel @Inject constructor(
 
     private var surfaceMeteringPointFactory: SurfaceOrientedMeteringPointFactory? = null
 
+    private val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+
     private val cameraPreviewUseCase = Preview.Builder().build().apply {
         setSurfaceProvider { newSurfaceRequest ->
             _surfaceRequest.update { newSurfaceRequest }
@@ -82,7 +85,7 @@ class AndroidScanTranslateViewModel @Inject constructor(
 
         ImageCapture.Builder()
             .setResolutionSelector(resolutionSelector)
-            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
             .build()
     }
 
@@ -118,7 +121,7 @@ class AndroidScanTranslateViewModel @Inject constructor(
 
     private suspend fun captureImage() = suspendCoroutine { continuation ->
         cameraCaptureUseCase.takePicture(
-            Executors.newSingleThreadExecutor(),
+            cameraExecutor,
             object : ImageCapture.OnImageCapturedCallback() {
                 override fun onCaptureSuccess(imageProxy: ImageProxy) {
                     super.onCaptureSuccess(imageProxy)
@@ -183,5 +186,10 @@ class AndroidScanTranslateViewModel @Inject constructor(
             null
         }
         camera = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        cameraExecutor.shutdown()
     }
 }

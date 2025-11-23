@@ -18,13 +18,17 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class MLKitTextRecognitionService @Inject constructor() : TextRecognitionService {
+
+    private var currentRecognizer: com.google.mlkit.vision.text.TextRecognizer? = null
+    private var currentLanguageCode: String? = null
+
     override suspend fun detectTextFromImage(
         image: CommonImage,
         languageCode: String
     ): List<TextWithBound> =
         suspendCoroutine { continuation ->
             val image = InputImage.fromBitmap(image.bitmap, 0)
-            val recognizer = TextRecognition.getClient(getTextRecognitionOptions(languageCode))
+            val recognizer = getRecognizer(languageCode)
 
             recognizer.process(image)
                 .addOnSuccessListener { text ->
@@ -54,6 +58,20 @@ class MLKitTextRecognitionService @Inject constructor() : TextRecognitionService
             "hi", "mr", "sa" -> DevanagariTextRecognizerOptions.Builder().build()
             "zh" -> ChineseTextRecognizerOptions.Builder().build()
             else -> TextRecognizerOptions.DEFAULT_OPTIONS
+        }
+    }
+
+    private fun getRecognizer(languageCode: String): com.google.mlkit.vision.text.TextRecognizer {
+        synchronized(this) {
+            if (currentLanguageCode == languageCode && currentRecognizer != null) {
+                return currentRecognizer!!
+            }
+
+            currentRecognizer?.close()
+            val newRecognizer = TextRecognition.getClient(getTextRecognitionOptions(languageCode))
+            currentRecognizer = newRecognizer
+            currentLanguageCode = languageCode
+            return newRecognizer
         }
     }
 }

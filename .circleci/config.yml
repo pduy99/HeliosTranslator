@@ -28,7 +28,7 @@ jobs:
             - gradle-wrapper-
       - restore_cache:
           keys:
-            - gradle-cache-{{ checksum "build.gradle.kts" }}-{{ checksum "androidApp/build.gradle.kts" }}
+            - gradle-cache-{{ checksum "build.gradle.kts" }}-{{ checksum "androidApp/build.gradle.kts" }}-{{ checksum "gradle/libs.versions.toml" }}
             - gradle-cache-
       - android/restore-build-cache
 
@@ -40,6 +40,8 @@ jobs:
           name: Run Tests & Assemble (in parallel)
           command: |
             ./gradlew --parallel \
+              -Dorg.gradle.jvmargs="-Xmx6g -XX:+UseParallelGC" \
+              -Dkotlin.daemon.jvm.options="-Xmx4g" \
               androidApp:testDebugUnitTest \
               androidApp:assembleRelease \
               --max-workers=4 \
@@ -52,7 +54,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle/caches
-          key: gradle-cache-{{ checksum "build.gradle.kts" }}-{{ checksum "androidApp/build.gradle.kts" }}
+          key: gradle-cache-{{ checksum "build.gradle.kts" }}-{{ checksum "androidApp/build.gradle.kts" }}-{{ checksum "gradle/libs.versions.toml" }}
       - android/save-build-cache
 
       - store_test_results:
@@ -66,7 +68,7 @@ jobs:
 
   build-ios:
     macos:
-      xcode: 15.1.0
+      xcode: 16.4.0
     steps:
       - checkout
 

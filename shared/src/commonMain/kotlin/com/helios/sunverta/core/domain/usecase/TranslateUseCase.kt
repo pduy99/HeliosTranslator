@@ -19,7 +19,6 @@ class TranslateUseCase(
         fromText: String,
         toLanguage: Language
     ): Result<String, TranslateError> {
-        delay(3000)
         val translateResult = translateRepository.translate(
             fromLanguage.langCode, toLanguage.langCode, fromText,
         )

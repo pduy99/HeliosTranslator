@@ -14,11 +14,12 @@ import com.helios.sunverta.features.conversationtranslate.domain.VoiceToTextPars
 import com.helios.sunverta.features.conversationtranslate.domain.VoiceToTextParserState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import java.io.Closeable
 
 
 class AndroidVoiceToTextParser(
     private val app: Application,
-) : VoiceToTextParser, RecognitionListener {
+) : VoiceToTextParser, RecognitionListener, Closeable {
 
     private val recognizer = SpeechRecognizer.createSpeechRecognizer(app)
 
@@ -71,6 +72,10 @@ class AndroidVoiceToTextParser(
 
     override fun reset() {
         _state.value = VoiceToTextParserState()
+    }
+
+    override fun close() {
+        recognizer.destroy()
     }
 
     override fun onReadyForSpeech(params: Bundle?) {

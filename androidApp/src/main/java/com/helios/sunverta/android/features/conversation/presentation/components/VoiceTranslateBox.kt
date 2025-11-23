@@ -16,11 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,21 +50,13 @@ fun VoiceTranslateBox(
     onLanguageDropDownDismiss: () -> Unit,
     onSelectLanguage: (UiLanguage) -> Unit,
 ) {
-    var showHint by remember {
-        mutableStateOf(true)
-    }
+    val showHint = content.isBlank() && voiceAnimationState is VoiceState.Idle
 
     val rotation by animateFloatAsState(
         targetValue = if (isMirrored) 180f else 0f,
         animationSpec = tween(durationMillis = 800),
         label = "mirroredAnimation"
     )
-
-    LaunchedEffect(content, voiceAnimationState) {
-        if (content.isNotBlank() || voiceAnimationState !is VoiceState.Idle) {
-            showHint = false
-        }
-    }
 
     Column(
         modifier = modifier

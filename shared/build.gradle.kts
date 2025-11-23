@@ -138,6 +138,10 @@ android {
     defaultConfig {
         minSdk = 25
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }
 
 sqldelight {
@@ -153,7 +157,7 @@ tasks.named("preBuild") {
 
 tasks.withType<KotlinJvmCompile>().configureEach {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
+        jvmTarget.set(JvmTarget.JVM_17)
         freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
     }
 }

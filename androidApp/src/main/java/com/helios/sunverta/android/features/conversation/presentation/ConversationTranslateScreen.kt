@@ -16,10 +16,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
 import com.helios.sunverta.android.core.components.AppBar
 import com.helios.sunverta.android.core.theme.HeliosTranslatorTheme
 import com.helios.sunverta.android.features.conversation.presentation.components.VoiceState
@@ -36,18 +38,24 @@ fun VoiceTranslateScreen(
     onEvent: (ConversationTranslateEvent) -> Unit,
     onNavigateUp: () -> Unit
 ) {
+    val context = LocalContext.current
     val recordAudioPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         onEvent(ConversationTranslateEvent.PermissionResult(isGranted))
     }
 
-    LaunchedEffect(recordAudioPermissionLauncher) {
-        recordAudioPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+    fun checkPermissionAndToggleRecording(person: TalkingPerson) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            onEvent(ConversationTranslateEvent.ToggleRecording(person))
+        } else {
+            recordAudioPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+        }
     }
-
-    uiState.isWaitingForTranslation(TalkingPerson.PERSON_ONE)
-    uiState.isWaitingForTranslation(TalkingPerson.PERSON_TWO)
 
     Column(
         modifier = modifier
@@ -100,11 +108,7 @@ fun VoiceTranslateScreen(
             isMirrored = uiState.faceToFaceMode,
             speakingLanguage = uiState.personTwo.language,
             onIdleClick = {
-                onEvent(
-                    ConversationTranslateEvent.ToggleRecording(
-                        TalkingPerson.PERSON_TWO
-                    )
-                )
+                checkPermissionAndToggleRecording(TalkingPerson.PERSON_TWO)
             },
             onActiveClick = {
                 onEvent(
@@ -148,11 +152,7 @@ fun VoiceTranslateScreen(
             isTranslating = uiState.isWaitingForTranslation(TalkingPerson.PERSON_ONE),
             speakingLanguage = uiState.personOne.language,
             onIdleClick = {
-                onEvent(
-                    ConversationTranslateEvent.ToggleRecording(
-                        TalkingPerson.PERSON_ONE
-                    )
-                )
+                checkPermissionAndToggleRecording(TalkingPerson.PERSON_ONE)
             },
             onActiveClick = {
                 onEvent(

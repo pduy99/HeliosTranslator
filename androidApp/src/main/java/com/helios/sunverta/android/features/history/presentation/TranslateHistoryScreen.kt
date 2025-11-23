@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +29,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.helios.sunverta.android.R
@@ -65,28 +67,7 @@ fun TranslateHistoryScreen(
         },
         action = {
             if (uiState.history.isEmpty()) return@CenteredTitleScrollAppBar
-            if (uiState.menuExpanded) {
-                Box(
-                    modifier = Modifier
-                        .clip(
-                            RoundedCornerShape(16.dp)
-                        )
-                        .background(color = MaterialTheme.colorScheme.surfaceContainerHighest)
-                        .clickable {
-                            onEvent(TranslateHistoryEvent.DeleteAllHistory)
-                        }
-                ) {
-                    Text(
-                        text = stringResource(R.string.delete_history),
-                        modifier = Modifier.padding(
-                            start = 28.dp,
-                            top = 14.dp,
-                            bottom = 14.dp,
-                            end = 42.dp
-                        )
-                    )
-                }
-            } else {
+            Box {
                 IconButton(onClick = {
                     onEvent(TranslateHistoryEvent.ToggleMenu())
                 }) {
@@ -95,18 +76,31 @@ fun TranslateHistoryScreen(
                         contentDescription = null,
                     )
                 }
+
+                DropdownMenu(
+                    expanded = uiState.menuExpanded,
+                    onDismissRequest = { onEvent(TranslateHistoryEvent.ToggleMenu()) }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.delete_history)) },
+                        onClick = {
+                            onEvent(TranslateHistoryEvent.DeleteAllHistory)
+                        }
+                    )
+                }
             }
         },
         content = {
             if (uiState.history.isNotEmpty()) {
-                items(uiState.history.size) {
-                    val historyItem = uiState.history[it]
+                items(
+                    count = uiState.history.size,
+                    key = { index -> uiState.history[index].id }
+                ) { index ->
+                    val historyItem = uiState.history[index]
                     TranslationHistoryItem(
                         historyItem = historyItem,
-                        onCopyClick = {
-                            clipboardManager.setText(
-                                buildAnnotatedString { append(it) }
-                            )
+                        onCopyClick = { text ->
+                            clipboardManager.setText(AnnotatedString(text))
                             Toast.makeText(
                                 context,
                                 context.getString(R.string.copied_to_clipboard),
